@@ -3,15 +3,12 @@ version: "3.9"
 services:
   app:
     build: .
-    container_name: car_pooling_identity_api
+    container_name: cloud-gateway-service
     ports:
-      - "8080:8080"
+      - "8888:8888"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/identity_db
-      SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: learnJava!2025
     networks:
       - carpooling_network
 

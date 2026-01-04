@@ -31,7 +31,7 @@ The project follows a Clean Architecture approach, organized by functional **mod
 *   Docker & Docker Compose
 
 ### 1. Start the Database
-Use Docker Compose to spin up the PostgreSQL database.
+Use Docker Compose to spin up the PostgreSQL database (it will create the `identity_db` database automatically).
 
 ```bash
 docker-compose up -d
@@ -40,7 +40,7 @@ docker-compose up -d
 This will start a PostgreSQL container (`postgres_server`) on port `5432` with user `admin` and password `learnJava!2025`.
 
 ### 2. Run the Application
-You can run the application using the Maven Wrapper:
+With the database running you can start the Spring Boot application locally using the Maven Wrapper:
 
 ```bash
 ./mvnw spring-boot:run
@@ -62,7 +62,7 @@ Once the application is running, you can access the Swagger UI documentation at:
 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ## 🐳 Docker Compose Configuration
-The `docker-compose.yml` file is configured to run the database service:
+The `docker-compose.yml` file is configured to run both the API and the PostgreSQL database:
 
 ```yaml
 services:
@@ -71,6 +71,7 @@ services:
     container_name: postgres_server
     restart: always
     environment:
+      POSTGRES_DB: identity_db
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: learnJava!2025
     ports:
@@ -80,6 +81,20 @@ services:
     networks:
       - carpooling_network
 
+  app:
+    build: .
+    container_name: car_pooling_identity_api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DATABASE_URL: jdbc:postgresql://db_server:5432/identity_db
+      DATABASE_USERNAME: admin
+      DATABASE_PASSWORD: learnJava!2025
+    depends_on:
+      - db_server
+    networks:
+      - carpooling_network
 
 networks:
   carpooling_network:

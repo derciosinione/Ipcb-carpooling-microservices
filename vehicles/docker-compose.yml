@@ -8,17 +8,15 @@ services:
       - "8081:8081"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      DATABASE_URL: jdbc:postgresql://db_server:5432/vehicles_db
-      DATABASE_USERNAME: admin
-      DATABASE_PASSWORD: learnJava!2025
-    depends_on:
-      - db_server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/vehicles_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
     networks:
       - carpooling_network
 
 networks:
   carpooling_network:
-    name: carpooling_network
-    driver: bridge
+    external: true
 
 

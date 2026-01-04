@@ -1,6 +1,6 @@
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -12,6 +12,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
+.metadata/
 
 ### IntelliJ IDEA ###
 .idea
@@ -31,3 +32,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Mac OS ###
+.DS_Store
+
+### Logs ###
+logs/
+*.log
+
+### Docker ###
+pg_data/

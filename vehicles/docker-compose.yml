@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: car_pooling_vehicles_api
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DATABASE_URL: jdbc:postgresql://db_server:5432/vehicles_db
+      DATABASE_USERNAME: admin
+      DATABASE_PASSWORD: learnJava!2025
+    depends_on:
+      - db_server
+    networks:
+      - carpooling_network
+
+networks:
+  carpooling_network:
+    name: carpooling_network
+    driver: bridge
+
+

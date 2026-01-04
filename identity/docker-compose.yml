@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: car_pooling_identity_api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DATABASE_URL: jdbc:postgresql://db_server:5432/identity_db
+      DATABASE_USERNAME: admin
+      DATABASE_PASSWORD: learnJava!2025
+    depends_on:
+      - db_server
+    networks:
+      - carpooling_network
+
+networks:
+  carpooling_network:
+    name: carpooling_network
+    driver: bridge

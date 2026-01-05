@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # DATABASE (Stateful - 1 Replica)
+  # ==========================================
+  db_server:
+    image: postgres:16
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: learnJava!2025
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - carpooling_overlay_network
+
+  # ==========================================
+  # SERVICE DISCOVERY (Stateful - 1 Replica)
+  # ==========================================
+  service-discovery:
+    image: car-pooling/service-discovery:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - carpooling_overlay_network
+
+  # ==========================================
+  # IDENTITY SERVICE (Stateless - 2 Replicas)
+  # ==========================================
+  identity-service:
+    image: car-pooling/identity:latest
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_server:5432/identity_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      # Important for Swarm: prefer IP to avoid hostname conflicts
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_overlay_network
+    depends_on:
+      - db_server
+      - service-discovery
+
+  # ==========================================
+  # VEHICLES SERVICE (Stateless - 2 Replicas)
+  # ==========================================
+  vehicles-service:
+    image: car-pooling/vehicles:latest
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_server:5432/vehicles_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_overlay_network
+    depends_on:
+      - db_server
+      - service-discovery
+
+  # ==========================================
+  # CLOUD GATEWAY (Stateless - 2 Replicas)
+  # ==========================================
+  cloud-gateway:
+    image: car-pooling/cloud-gateway:latest
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_overlay_network
+    depends_on:
+      - service-discovery
+
+
+networks:
+  carpooling_overlay_network:
+    driver: overlay
+    attachable: true
+
+volumes:
+  pg_data:
+  portainer_data:

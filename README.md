@@ -37,14 +37,31 @@ Foi criado um script de conveniência que cria a rede Docker, compila os projeto
 1. Dê permissão de execução ao script (apenas na primeira vez):
    ```bash
    chmod +x start_all.sh
-   ```
-
-2. Execute o script:
-   ```bash
+   # Executar Docker Compose (Standard)
    ./start_all.sh
    ```
 
-### Execução Manual
+### Execução com Docker Swarm (Orquestração & Portainer)
+
+Para utilizar orquestração, réplicas e gestão visual com Portainer:
+
+1. Dê permissão de execução:
+   ```bash
+   chmod +x deploy_swarm.sh
+   ```
+
+2. Execute o script de deployment:
+   ```bash
+   ./deploy_swarm.sh
+   ```
+   *Este script inicializa o Swarm (se necessário), constrói as imagens e faz o deploy da stack.*
+
+3. **Portainer (Gestão Visual)**:
+   - Aceda a [http://localhost:9000](http://localhost:9000)
+   - Crie a conta de administrador inicial.
+   - Gerencie o cluster "local".
+
+### Execução Manual (Docker Compose)
 
 Se preferir executar passo a passo:
 

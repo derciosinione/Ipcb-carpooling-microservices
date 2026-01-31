@@ -17,22 +17,22 @@ services:
   # ==========================================
   # PORTAINER (Management UI)
   # ==========================================
-  portainer:
-    image: portainer/portainer-ce:latest
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
-    ports:
-      - "9000:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    networks:
-      - carpooling_network
+  # portainer:
+  #   image: portainer/portainer-ce:latest
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: any
+  #     placement:
+  #       constraints:
+  #         - node.role == manager
+  #   ports:
+  #     - "9000:9000"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - portainer_data:/data
+  #   networks:
+  #     - carpooling_network
 
 networks:
   carpooling_network:
@@ -40,3 +40,4 @@ networks:
 
 volumes:
   pg_data:
+  # portainer_data:

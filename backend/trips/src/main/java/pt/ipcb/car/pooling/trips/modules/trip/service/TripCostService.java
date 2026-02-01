@@ -27,7 +27,7 @@ public class TripCostService {
                 .orElseThrow(() -> new NotFoundException("Trip not found with id: " + tripId));
 
         Integer confirmedSeats = bookingRepository.sumConfirmedSeatsByTripId(tripId);
-        int totalTravelers = (confirmedSeats != null ? confirmedSeats : 0) + 1;
+        int totalTravelers = confirmedSeats != null ? confirmedSeats : 0;
 
         BigDecimal totalCost = trip.getTotalCost() == null ? BigDecimal.ZERO : trip.getTotalCost();
         BigDecimal costPerTraveler = BigDecimal.ZERO;

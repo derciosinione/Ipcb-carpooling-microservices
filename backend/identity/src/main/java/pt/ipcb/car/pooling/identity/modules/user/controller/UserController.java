@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pt.ipcb.car.pooling.identity.modules.user.contracts.request.UpdateUserRequest;
+import pt.ipcb.car.pooling.identity.modules.user.contracts.request.BatchUsersRequest;
 import pt.ipcb.car.pooling.identity.modules.user.contracts.response.UserResponse;
 import pt.ipcb.car.pooling.identity.modules.user.useCases.AddProfileToUserUseCase;
 import pt.ipcb.car.pooling.identity.modules.user.useCases.GetAllUsersUseCase;
 import pt.ipcb.car.pooling.identity.modules.user.useCases.GetUserByIdUseCase;
+import pt.ipcb.car.pooling.identity.modules.user.useCases.GetUsersByIdsUseCase;
 import pt.ipcb.car.pooling.identity.modules.user.useCases.RemoveProfileFromUserUseCase;
 import pt.ipcb.car.pooling.identity.modules.user.useCases.UpdateUserUseCase;
 
@@ -30,6 +32,7 @@ public class UserController {
 
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final GetUserByIdUseCase getUserByIdUseCase;
+    private final GetUsersByIdsUseCase getUsersByIdsUseCase;
     private final AddProfileToUserUseCase addProfileToUserUseCase;
     private final RemoveProfileFromUserUseCase removeProfileFromUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
@@ -43,6 +46,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
         var data = getUserByIdUseCase.execute(id);
+        return ResponseEntity.ok(data);
+    }
+
+    @PostMapping("/batch")
+    public ResponseEntity<List<UserResponse>> getUsersByIds(@Valid @RequestBody BatchUsersRequest request) {
+        var data = getUsersByIdsUseCase.execute(request.getIds());
         return ResponseEntity.ok(data);
     }
 

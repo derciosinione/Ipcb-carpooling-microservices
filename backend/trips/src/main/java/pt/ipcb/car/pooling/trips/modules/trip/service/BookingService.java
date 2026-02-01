@@ -37,6 +37,10 @@ public class BookingService {
         TripEntity trip = tripRepository.findById(request.getTripId())
                 .orElseThrow(() -> new NotFoundException("Trip not found with id: " + request.getTripId()));
 
+        if (trip.getDriverId().equals(userId)) {
+            throw new ForbiddenException("Driver cannot book their own trip");
+        }
+
         if (!"OPEN".equals(trip.getStatus().getName())) {
             throw new BadRequestException("Trip is not open for bookings");
         }

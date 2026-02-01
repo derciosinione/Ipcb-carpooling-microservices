@@ -10,7 +10,7 @@ import java.util.UUID;
 @FeignClient(name = "car-pooling-identity-api")
 public interface IdentityClient {
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/api/v1/users/{id}")
     Object getUserById(@PathVariable("id") UUID id);
     // Returning Object for now to avoid checking UserResponse details in Vehicles
     // service

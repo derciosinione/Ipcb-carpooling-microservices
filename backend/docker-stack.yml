@@ -23,7 +23,7 @@ services:
   identity-service:
     image: car-pooling/identity:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: any
     ports:
@@ -34,7 +34,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: learnJava!2025
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
-      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      EUREKA_INSTANCE_HOSTNAME: identity-service
     networks:
       - carpooling_network
     depends_on:
@@ -46,7 +47,7 @@ services:
   vehicles-service:
     image: car-pooling/vehicles:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: any
     ports:
@@ -57,7 +58,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: learnJava!2025
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
-      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      EUREKA_INSTANCE_HOSTNAME: vehicles-service
     networks:
       - carpooling_network
     depends_on:
@@ -69,7 +71,7 @@ services:
   trips-service:
     image: car-pooling/trips:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: any
     ports:
@@ -80,7 +82,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: learnJava!2025
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
-      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      EUREKA_INSTANCE_HOSTNAME: trips-service
     networks:
       - carpooling_network
     depends_on:
@@ -92,7 +95,7 @@ services:
   payments-service:
     image: car-pooling/payments:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: any
     ports:
@@ -103,7 +106,8 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: learnJava!2025
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
-      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      EUREKA_INSTANCE_HOSTNAME: payments-service
     networks:
       - carpooling_network
     depends_on:
@@ -124,7 +128,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
-      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      EUREKA_INSTANCE_HOSTNAME: cloud-gateway
     networks:
       - carpooling_network
     depends_on:

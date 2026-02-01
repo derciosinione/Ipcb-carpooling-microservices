@@ -1,7 +1,6 @@
-version: "3.9"
-
 services:
   app:
+    image: car-pooling/vehicles:latest
     build: .
     container_name: car_pooling_vehicles_api
     ports:

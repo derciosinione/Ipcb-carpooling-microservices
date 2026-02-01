@@ -102,6 +102,12 @@ Após iniciar, pode aceder aos painéis e APIs:
 - **Identity API**: [http://localhost:8080](http://localhost:8080)
 - **Vehicles API**: [http://localhost:8081](http://localhost:8081)
 
+---
+
+### 📖 Documentação de Endpoints
+Para uma lista detalhada de todos os endpoints disponíveis via Gateway, consulte o ficheiro:
+👉 **[endpoints.md](file:///Users/derciosinione/Developer/IPCB/AD/TrabalhoPratico/endpoints.md)**
+
 ## 📦 Estrutura do Projeto
 
 - `/carpooling_docker_compose_db`: Configuração da base de dados.

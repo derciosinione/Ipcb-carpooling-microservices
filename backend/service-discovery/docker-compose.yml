@@ -1,7 +1,6 @@
-version: "3.9"
-
 services:
   app:
+    image: car-pooling/service-discovery:latest
     build: .
     container_name: service-discovery
     ports:

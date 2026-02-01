@@ -47,26 +47,33 @@ echo "Building and Starting Database..."
 docker compose -f carpooling_docker_compose_db/docker-compose.yml up --build -d
 
 echo "Building Service Discovery..."
-docker build -t car-pooling/service-discovery:latest ./service-discovery
+docker compose -f service-discovery/docker-compose.yml build
 
 echo "Building Identity Service..."
-docker build -t car-pooling/identity:latest ./identity
+docker compose -f identity/docker-compose.yml build
 
 echo "Building Vehicles Service..."
-docker build -t car-pooling/vehicles:latest ./vehicles
+docker compose -f vehicles/docker-compose.yml build
 
 echo "Building Trips Service..."
-docker build -t car-pooling/trips:latest ./trips
+docker compose -f trips/docker-compose.yml build
 
 echo "Building Payments Service..."
-docker build -t car-pooling/payments:latest ./payments
+docker compose -f payments/docker-compose.yml build
 
 echo "Building Cloud Gateway..."
-docker build -t car-pooling/cloud-gateway:latest ./cloud-gateway-service
+docker compose -f cloud-gateway-service/docker-compose.yml build
 
 
 # 3. Deploy Stack
 echo "--------------------------------------------------"
+echo "Removing existing stack 'carpooling_stack' to ensure fresh images..."
+docker stack rm carpooling_stack || true
+
+# Wait for stack to be removed (approx 10 seconds for clean teardown)
+echo "Waiting for stack removal..."
+sleep 10
+
 echo "Deploying Stack 'carpooling_stack'..."
 docker stack deploy -c docker-stack.yml carpooling_stack
 

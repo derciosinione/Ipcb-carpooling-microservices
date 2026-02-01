@@ -18,3 +18,14 @@ echo "=================================================="
 echo "   All databases are verified and ready!"
 echo "=================================================="
 
+
+# Run this in the identity_db
+
+# CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+# insert into profiles (id, name, description, created_at)
+# values (gen_random_uuid(),'Condutor', 'Condutor', now());
+
+# insert into profiles (id, name, description, created_at)
+# values (gen_random_uuid(),'Passageiro', 'Passageiro', now());
+

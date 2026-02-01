@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/profiles")
+@RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
 public class ProfileController {
 

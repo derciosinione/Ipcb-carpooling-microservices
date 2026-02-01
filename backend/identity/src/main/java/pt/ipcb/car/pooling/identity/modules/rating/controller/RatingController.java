@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/ratings")
+@RequestMapping("/api/v1/ratings")
 @RequiredArgsConstructor
 public class RatingController {
 

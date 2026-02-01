@@ -12,26 +12,25 @@ import pt.ipcb.car.pooling.trips.modules.trip.service.BookingService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping("/api/v1/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 
     private final BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<BookingResponse> create(@Valid @RequestBody CreateBookingRequest request){
+    public ResponseEntity<BookingResponse> create(@Valid @RequestBody CreateBookingRequest request) {
         BookingResponse response = bookingService.createBooking(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{id}/accept")
-    public ResponseEntity<BookingResponse> accept(@PathVariable UUID id){
+    public ResponseEntity<BookingResponse> accept(@PathVariable UUID id) {
         return ResponseEntity.ok(bookingService.acceptBooking(id));
     }
 
-
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<BookingResponse> reject(@PathVariable UUID id){
+    public ResponseEntity<BookingResponse> reject(@PathVariable UUID id) {
         return ResponseEntity.ok(bookingService.acceptBooking(id));
     }
 }

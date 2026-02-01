@@ -29,12 +29,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/v1/**").permitAll()
                         // .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         // .requestMatchers(HttpMethod.POST, "/profiles").permitAll()
-//                        .anyRequest().authenticated()
-                        .anyRequest().permitAll()
-                )
+                        // .anyRequest().authenticated()
+                        .anyRequest().permitAll())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterBefore(securityFilter, BasicAuthenticationFilter.class);

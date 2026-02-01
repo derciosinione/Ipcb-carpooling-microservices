@@ -20,7 +20,7 @@ import pt.ipcb.car.pooling.identity.utils.ProfileConstants;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Authentication Endpoints")
 public class AuthController {

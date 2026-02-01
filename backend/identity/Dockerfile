@@ -3,14 +3,17 @@ FROM eclipse-temurin:21-jdk AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper and project files
+# Copy Maven wrapper and pom.xml first to cache dependencies
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
-COPY src src
 
-# Build the application
-RUN ./mvnw -q -e -DskipTests clean package
+# Pre-download dependencies (this layer is cached until pom.xml changes)
+RUN --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -v
+
+# Copy source and build
+COPY src src
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -q -e -DskipTests package
 
 # ===== STAGE 2: Create lightweight runtime image =====
 FROM eclipse-temurin:21-jre

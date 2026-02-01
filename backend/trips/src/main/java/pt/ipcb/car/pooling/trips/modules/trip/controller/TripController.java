@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/trips")
+@RequestMapping("/api/v1/trips")
 @RequiredArgsConstructor
 public class TripController {
 
@@ -27,23 +27,23 @@ public class TripController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TripResponse>> getAll(){
+    public ResponseEntity<List<TripResponse>> getAll() {
         List<TripResponse> trips = tripService.getAllTrips();
         return ResponseEntity.ok(trips);
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<TripResponse>> listAvailable(){
+    public ResponseEntity<List<TripResponse>> listAvailable() {
         return ResponseEntity.ok(tripService.getAvailableTrip());
     }
 
     @GetMapping("/driver/{driverId}")
-    public ResponseEntity<List<TripResponse>> listByDriver(@PathVariable UUID driverId){
+    public ResponseEntity<List<TripResponse>> listByDriver(@PathVariable UUID driverId) {
         return ResponseEntity.ok(tripService.getTripsDriver(driverId));
     }
 
     @GetMapping("/passenger/{passengerId}")
-    public ResponseEntity<List<TripResponse>> listByPassenger(@PathVariable UUID passengerId){
+    public ResponseEntity<List<TripResponse>> listByPassenger(@PathVariable UUID passengerId) {
         return ResponseEntity.ok(tripService.getTripByPassenger(passengerId));
     }
 
@@ -51,10 +51,8 @@ public class TripController {
     public ResponseEntity<List<TripResponse>> search(
             @RequestParam String origin,
             @RequestParam String destination,
-            @RequestParam(defaultValue = "1")  Integer seats){
+            @RequestParam(defaultValue = "1") Integer seats) {
         return ResponseEntity.ok(tripService.searchTrips(origin, destination, seats));
     }
-
-
 
 }

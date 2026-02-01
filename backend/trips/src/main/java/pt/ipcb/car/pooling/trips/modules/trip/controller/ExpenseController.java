@@ -13,14 +13,14 @@ import pt.ipcb.car.pooling.trips.modules.trip.contracts.ExpenseResponse;
 import pt.ipcb.car.pooling.trips.modules.trip.service.ExpenseService;
 
 @RestController
-@RequestMapping("/expenses")
+@RequestMapping("/api/v1/expenses")
 @RequiredArgsConstructor
 public class ExpenseController {
 
     private final ExpenseService expenseService;
 
     @PostMapping
-    public ResponseEntity<ExpenseResponse> create(@Valid @RequestBody CreateExpenseRequest request){
+    public ResponseEntity<ExpenseResponse> create(@Valid @RequestBody CreateExpenseRequest request) {
         ExpenseResponse response = expenseService.createExpense(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

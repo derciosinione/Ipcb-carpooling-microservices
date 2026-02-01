@@ -30,7 +30,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         // .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         // .requestMatchers(HttpMethod.POST, "/profiles").permitAll()
                         .anyRequest().authenticated())

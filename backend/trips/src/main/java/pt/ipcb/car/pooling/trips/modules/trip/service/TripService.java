@@ -1,8 +1,10 @@
 package pt.ipcb.car.pooling.trips.modules.trip.service;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pt.ipcb.car.pooling.trips.clients.GpsClient;
 import pt.ipcb.car.pooling.trips.exceptions.BadRequestException;
 import pt.ipcb.car.pooling.trips.exceptions.NotFoundException;
 import pt.ipcb.car.pooling.trips.modules.entities.TripEntity;
@@ -12,6 +14,9 @@ import pt.ipcb.car.pooling.trips.modules.repositories.TripRepository;
 import pt.ipcb.car.pooling.trips.modules.repositories.TripStatusRepository;
 import pt.ipcb.car.pooling.trips.modules.trip.contracts.CreateTripRequest;
 import pt.ipcb.car.pooling.trips.modules.trip.contracts.TripResponse;
+import pt.ipcb.car.pooling.trips.modules.trip.contracts.gps.DistanceRequest;
+import pt.ipcb.car.pooling.trips.modules.trip.contracts.gps.DistanceResponse;
+import pt.ipcb.car.pooling.trips.modules.trip.contracts.gps.LocationSuggestionResponse;
 import pt.ipcb.car.pooling.trips.modules.trip.mapper.TripMapper;
 
 import java.math.BigDecimal;
@@ -21,12 +26,14 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TripService {
 
     private final TripRepository tripRepository;
     private final TripStatusRepository tripStatusRepository;
     private final TripMapper tripMapper;
     private final BookingRepository bookingRepository;
+    private final GpsClient gpsClient;
 
     @Transactional
     public TripResponse createTrip(CreateTripRequest request) {
@@ -34,6 +41,7 @@ public class TripService {
             throw new BadRequestException("Driver ID is mandatory");
         }
         TripEntity trip = tripMapper.toEntity(request);
+        enrichTripWithGpsData(trip, request);
 
         TripStatusEntity openStatus = tripStatusRepository.findByName("OPEN")
                 .orElseThrow(() -> new NotFoundException("Status 'OPEN' not found in database"));
@@ -43,6 +51,35 @@ public class TripService {
         TripEntity savedTrip = tripRepository.save(trip);
 
         return toResponseWithCosts(savedTrip);
+    }
+
+    private void enrichTripWithGpsData(TripEntity trip, CreateTripRequest request) {
+        try {
+            LocationSuggestionResponse origin = gpsClient.reverse(request.getOriginLat(), request.getOriginLon());
+            LocationSuggestionResponse destination = gpsClient.reverse(request.getDestinationLat(),
+                    request.getDestinationLon());
+            if (origin == null || destination == null) {
+                throw new BadRequestException("Origin or destination coordinates are invalid");
+            }
+
+            trip.setOrigin(origin.getDisplayName());
+            trip.setDestination(destination.getDisplayName());
+
+            DistanceResponse distance = gpsClient.distance(new DistanceRequest(
+                    request.getOriginLat(),
+                    request.getOriginLon(),
+                    request.getDestinationLat(),
+                    request.getDestinationLon()));
+
+            if (distance != null && distance.getDistanceKm() != null) {
+                trip.setDistanceKm(distance.getDistanceKm());
+            }
+        } catch (BadRequestException e) {
+            throw e;
+        } catch (Exception e) {
+            log.warn("Failed to enrich trip with GPS data: {}", e.getMessage());
+            throw new BadRequestException("Could not validate origin/destination on map");
+        }
     }
 
     public List<TripResponse> getAllTrips(){

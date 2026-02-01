@@ -113,6 +113,30 @@ services:
     depends_on:
       - service-discovery
 
+  # ==========================================
+  # GPS SERVICE (Stateless - 3 Replicas)
+  # ==========================================
+  gps-service:
+    image: car-pooling/gps:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/gps_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      EUREKA_INSTANCE_HOSTNAME: gps-service
+    networks:
+      - carpooling_network
+    depends_on:
+      - service-discovery
+
 
   # ==========================================
   # CLOUD GATEWAY (Stateless - 2 Replicas)
@@ -163,4 +187,3 @@ networks:
 
 volumes:
   portainer_data:
-

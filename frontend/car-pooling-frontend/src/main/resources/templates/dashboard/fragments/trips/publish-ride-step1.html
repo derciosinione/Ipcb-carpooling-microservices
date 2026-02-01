@@ -10,23 +10,44 @@
                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Origem</label>
                 <div class="relative">
                     <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
-                    <input name="origin" x-model="formData.origin" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Ex: Lisboa" />
+                    <input name="origin" x-model="formData.origin" @input="clearCoordinates('origin'); searchLocations('origin')" autocomplete="off" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Pesquisar no mapa..." />
+                    <input type="hidden" name="originLat" :value="formData.originLat" />
+                    <input type="hidden" name="originLon" :value="formData.originLon" />
+                    <div x-show="originSuggestions.length > 0" @click.outside="originSuggestions = []" class="absolute z-20 mt-1 w-full rounded-md border bg-background shadow-lg max-h-56 overflow-auto">
+                        <template x-for="item in originSuggestions" :key="item.displayName + item.lat + item.lon">
+                            <button type="button" @click="selectLocation('origin', item)" class="w-full text-left px-3 py-2 text-sm hover:bg-muted border-b last:border-b-0">
+                                <span x-text="item.displayName"></span>
+                            </button>
+                        </template>
+                    </div>
                 </div>
             </div>
             <div class="space-y-2">
                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Destino</label>
                 <div class="relative">
                     <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
-                    <input name="destination" x-model="formData.destination" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Ex: Porto" />
+                    <input name="destination" x-model="formData.destination" @input="clearCoordinates('destination'); searchLocations('destination')" autocomplete="off" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Pesquisar no mapa..." />
+                    <input type="hidden" name="destinationLat" :value="formData.destinationLat" />
+                    <input type="hidden" name="destinationLon" :value="formData.destinationLon" />
+                    <div x-show="destinationSuggestions.length > 0" @click.outside="destinationSuggestions = []" class="absolute z-20 mt-1 w-full rounded-md border bg-background shadow-lg max-h-56 overflow-auto">
+                        <template x-for="item in destinationSuggestions" :key="item.displayName + item.lat + item.lon">
+                            <button type="button" @click="selectLocation('destination', item)" class="w-full text-left px-3 py-2 text-sm hover:bg-muted border-b last:border-b-0">
+                                <span x-text="item.displayName"></span>
+                            </button>
+                        </template>
+                    </div>
                 </div>
             </div>
             <div class="flex items-center gap-2 p-3 bg-blue-50 text-blue-800 rounded-md text-sm mt-4 border border-blue-100">
                 <i data-lucide="info" class="h-4 w-4 shrink-0"></i>
-                <p>Adicione cidades de passagem populares para conseguir mais passageiros.</p>
+                <p>Selecione origem e destino a partir dos resultados para validar no mapa.</p>
+            </div>
+            <div class="rounded-md border overflow-hidden">
+                <div id="publish-ride-map" class="h-56"></div>
             </div>
         </div>
         <div class="flex items-center p-6 pt-0 justify-end">
-            <button type="button" @click="step++" :disabled="!formData.origin || !formData.destination" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'opacity-100': formData.origin && formData.destination }">Seguinte</button>
+            <button type="button" @click="step++" :disabled="!formData.origin || !formData.destination || !formData.originLat || !formData.destinationLat" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'opacity-100': formData.origin && formData.destination && formData.originLat && formData.destinationLat }">Seguinte</button>
         </div>
     </div>
 </div>

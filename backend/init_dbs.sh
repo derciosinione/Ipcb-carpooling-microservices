@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATABASES=("identity_db" "vehicles_db" "trips_db" "carpooling_payments")
+DATABASES=("identity_db" "vehicles_db" "trips_db" "carpooling_payments" "gps_db")
 
 for DB in "${DATABASES[@]}"; do
   echo "Checking if database '$DB' exists..."

@@ -5,17 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pt.ipcb.carpooling.clients.GpsClient;
 import pt.ipcb.carpooling.clients.TripsClient;
-import pt.ipcb.carpooling.clients.VehicleClient;
 import pt.ipcb.carpooling.clients.IdentityClient;
+import pt.ipcb.carpooling.clients.VehicleClient;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.ExpenseDto;
+import pt.ipcb.carpooling.dto.LocationDto;
 import pt.ipcb.carpooling.dto.MetricsDto;
 import pt.ipcb.carpooling.dto.PassengerTripDto;
 import pt.ipcb.carpooling.dto.PublishRideForm;
@@ -45,6 +48,7 @@ public class DashboardController {
     private final VehicleClient vehicleClient;
     private final TripsClient tripsClient;
     private final IdentityClient identityClient;
+    private final GpsClient gpsClient;
 
     @GetMapping
     public String dashboardHome(Model model, HttpSession session) {
@@ -215,12 +219,18 @@ public class DashboardController {
                     .vehicleId(form.getVehicleId())
                     .origin(form.getOrigin())
                     .destination(form.getDestination())
+                    .originLat(form.getOriginLat())
+                    .originLon(form.getOriginLon())
+                    .destinationLat(form.getDestinationLat())
+                    .destinationLon(form.getDestinationLon())
                     .description(form.getDescription())
                     .departureTime(departureTime)
                     .availableSeats(form.getSeats())
                     .build();
 
             tripsClient.createTrip(request);
+            saveUserLocation(user.getId(), form.getOrigin(), form.getOriginLat(), form.getOriginLon());
+            saveUserLocation(user.getId(), form.getDestination(), form.getDestinationLat(), form.getDestinationLon());
             redirectAttributes.addFlashAttribute("success", "Boleia publicada com sucesso!");
             return "redirect:/dashboard/rides";
         } catch (Exception e) {
@@ -274,6 +284,20 @@ public class DashboardController {
         model.addAttribute("destination", destination);
         model.addAttribute("seats", seats);
         return "dashboard/search";
+    }
+
+    @GetMapping("/locations/search")
+    @ResponseBody
+    public List<LocationDto.LocationSuggestionResponse> searchLocations(@RequestParam("q") String query) {
+        if (query == null || query.isBlank() || query.trim().length() < 2) {
+            return List.of();
+        }
+        try {
+            return gpsClient.searchLocations(query.trim(), 6);
+        } catch (Exception e) {
+            log.warn("Error searching locations: {}", e.getMessage());
+            return List.of();
+        }
     }
 
     @GetMapping("/ride/{id}")
@@ -497,6 +521,21 @@ public class DashboardController {
                 .filter(trip -> "FINISHED".equalsIgnoreCase(trip.getTrip().getStatus())
                         || "CANCELED".equalsIgnoreCase(trip.getTrip().getStatus()))
                 .collect(Collectors.toList());
+    }
+
+    private void saveUserLocation(String userId, String label, Double lat, Double lon) {
+        if (userId == null || label == null || label.isBlank() || lat == null || lon == null) {
+            return;
+        }
+        try {
+            LocationDto.SaveUserLocationRequest request = new LocationDto.SaveUserLocationRequest();
+            request.setLabel(label);
+            request.setLat(lat);
+            request.setLon(lon);
+            gpsClient.saveRecentLocation(userId, request);
+        } catch (Exception e) {
+            log.warn("Could not save recent location for user {}: {}", userId, e.getMessage());
+        }
     }
 
     private String safeName(UserDto.UserResponse user) {

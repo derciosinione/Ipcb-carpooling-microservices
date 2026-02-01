@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  app:
+    image: car-pooling/gps:latest
+    build: .
+    container_name: car_pooling_gps_api
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_server:5432/gps_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+    networks:
+      - carpooling_network
+
+networks:
+  carpooling_network:
+    external: true

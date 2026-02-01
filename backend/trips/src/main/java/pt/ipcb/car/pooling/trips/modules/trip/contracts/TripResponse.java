@@ -13,6 +13,10 @@ public class TripResponse {
     private UUID vehicleId;
     private String origin;
     private String destination;
+    private Double originLat;
+    private Double originLon;
+    private Double destinationLat;
+    private Double destinationLon;
     private String description;
     private LocalDateTime departureTime;
     private Integer availableSeats;

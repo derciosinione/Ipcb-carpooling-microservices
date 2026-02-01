@@ -23,6 +23,9 @@ echo "--------------------------------------------------"
 echo "Starting Database Service..."
 docker compose -f carpooling_docker_compose_db/docker-compose.yml up -d --build
 
+echo "Ensuring application databases exist..."
+./init_dbs.sh
+
 # 3. Start Service Discovery
 echo "--------------------------------------------------"
 echo "Starting Service Discovery..."
@@ -44,6 +47,10 @@ docker compose -f trips/docker-compose.yml up -d --build
 echo "--------------------------------------------------"
 echo "Starting Payments Service..."
 docker compose -f payments/docker-compose.yml up -d --build
+
+echo "--------------------------------------------------"
+echo "Starting GPS Service..."
+docker compose -f gps/docker-compose.yml up -d --build
 
 echo "--------------------------------------------------"
 echo "Starting Cloud Gateway..."

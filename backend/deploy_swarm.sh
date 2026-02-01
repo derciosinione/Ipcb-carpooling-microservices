@@ -46,6 +46,9 @@ echo "Building Images..."
 echo "Building and Starting Database..."
 docker compose -f carpooling_docker_compose_db/docker-compose.yml up --build -d
 
+echo "Ensuring application databases exist..."
+./init_dbs.sh
+
 echo "Building Service Discovery..."
 docker compose -f service-discovery/docker-compose.yml build
 
@@ -60,6 +63,9 @@ docker compose -f trips/docker-compose.yml build
 
 echo "Building Payments Service..."
 docker compose -f payments/docker-compose.yml build
+
+echo "Building GPS Service..."
+docker compose -f gps/docker-compose.yml build
 
 echo "Building Cloud Gateway..."
 docker compose -f cloud-gateway-service/docker-compose.yml build

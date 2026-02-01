@@ -10,7 +10,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients(clients = {
         pt.ipcb.carpooling.clients.IdentityClient.class,
         pt.ipcb.carpooling.clients.VehicleClient.class,
-        pt.ipcb.carpooling.clients.TripsClient.class
+        pt.ipcb.carpooling.clients.TripsClient.class,
+        pt.ipcb.carpooling.clients.GpsClient.class
 })
 public class CarPoolingFrontendApplication {
 

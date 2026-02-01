@@ -25,6 +25,18 @@ public class CreateTripRequest {
     @NotBlank(message = "Destination cannot be empty")
     private String destination;
 
+    @NotNull(message = "Origin latitude is mandatory")
+    private Double originLat;
+
+    @NotNull(message = "Origin longitude is mandatory")
+    private Double originLon;
+
+    @NotNull(message = "Destination latitude is mandatory")
+    private Double destinationLat;
+
+    @NotNull(message = "Destination longitude is mandatory")
+    private Double destinationLon;
+
     @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
 

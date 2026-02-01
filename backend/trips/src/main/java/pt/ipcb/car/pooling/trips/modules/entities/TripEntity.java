@@ -35,6 +35,14 @@ public class TripEntity {
     @NotBlank
     private String destination;
 
+    private Double originLat;
+
+    private Double originLon;
+
+    private Double destinationLat;
+
+    private Double destinationLon;
+
     @Column(length = 500)
     private String description;
 

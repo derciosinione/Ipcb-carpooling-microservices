@@ -8,7 +8,144 @@
 </head>
 <body>
     <!-- Content Wrapper -->
-    <div layout:fragment="content" class="space-y-8 p-4 md:p-8 pt-6" x-data="{ step: 1, formData: { origin: '', destination: '', date: '', time: '', seats: 3, vehicleId: '', vehicleLabel: '', description: '' } }">
+    <div layout:fragment="content" class="space-y-8 p-4 md:p-8 pt-6" x-data="publishRideForm()">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+        <script>
+            window.publishRideForm = function () {
+                return {
+                    step: 1,
+                    map: null,
+                    routeLine: null,
+                    originMarker: null,
+                    destinationMarker: null,
+                    originSuggestions: [],
+                    destinationSuggestions: [],
+                    originSearchTimer: null,
+                    destinationSearchTimer: null,
+                    formData: {
+                        origin: '',
+                        destination: '',
+                        originLat: '',
+                        originLon: '',
+                        destinationLat: '',
+                        destinationLon: '',
+                        date: '',
+                        time: '',
+                        seats: 3,
+                        vehicleId: '',
+                        vehicleLabel: '',
+                        description: ''
+                    },
+                    init() {
+                        this.$nextTick(() => this.initMap());
+                    },
+                    initMap() {
+                        const mapEl = document.getElementById('publish-ride-map');
+                        if (!mapEl || typeof L === 'undefined') {
+                            return;
+                        }
+                        this.map = L.map(mapEl, { scrollWheelZoom: false }).setView([39.5, -8.0], 6);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '&copy; OpenStreetMap contributors'
+                        }).addTo(this.map);
+                    },
+                    searchLocations(type) {
+                        const query = type === 'origin' ? this.formData.origin : this.formData.destination;
+                        if (!query || query.length < 2) {
+                            if (type === 'origin') this.originSuggestions = [];
+                            if (type === 'destination') this.destinationSuggestions = [];
+                            return;
+                        }
+
+                        const timerField = type === 'origin' ? 'originSearchTimer' : 'destinationSearchTimer';
+                        clearTimeout(this[timerField]);
+                        this[timerField] = setTimeout(async () => {
+                            try {
+                                const response = await fetch(`/dashboard/locations/search?q=${encodeURIComponent(query)}`);
+                                const data = await response.json();
+                                if (type === 'origin') this.originSuggestions = data;
+                                if (type === 'destination') this.destinationSuggestions = data;
+                            } catch (error) {
+                                if (type === 'origin') this.originSuggestions = [];
+                                if (type === 'destination') this.destinationSuggestions = [];
+                            }
+                        }, 250);
+                    },
+                    selectLocation(type, item) {
+                        if (type === 'origin') {
+                            this.formData.origin = item.displayName;
+                            this.formData.originLat = item.lat;
+                            this.formData.originLon = item.lon;
+                            this.originSuggestions = [];
+                        } else {
+                            this.formData.destination = item.displayName;
+                            this.formData.destinationLat = item.lat;
+                            this.formData.destinationLon = item.lon;
+                            this.destinationSuggestions = [];
+                        }
+                        this.updatePreviewMap();
+                    },
+                    clearCoordinates(type) {
+                        if (type === 'origin') {
+                            this.formData.originLat = '';
+                            this.formData.originLon = '';
+                        } else {
+                            this.formData.destinationLat = '';
+                            this.formData.destinationLon = '';
+                        }
+                        this.updatePreviewMap();
+                    },
+                    updatePreviewMap() {
+                        if (!this.map) {
+                            return;
+                        }
+
+                        if (this.originMarker) {
+                            this.map.removeLayer(this.originMarker);
+                            this.originMarker = null;
+                        }
+                        if (this.destinationMarker) {
+                            this.map.removeLayer(this.destinationMarker);
+                            this.destinationMarker = null;
+                        }
+                        if (this.routeLine) {
+                            this.map.removeLayer(this.routeLine);
+                            this.routeLine = null;
+                        }
+
+                        const hasOrigin = this.formData.originLat && this.formData.originLon;
+                        const hasDestination = this.formData.destinationLat && this.formData.destinationLon;
+                        if (!hasOrigin && !hasDestination) {
+                            this.map.setView([39.5, -8.0], 6);
+                            return;
+                        }
+
+                        if (hasOrigin) {
+                            const origin = L.latLng(Number(this.formData.originLat), Number(this.formData.originLon));
+                            this.originMarker = L.marker(origin).addTo(this.map).bindPopup('Origem');
+                            this.map.setView(origin, 11);
+                        }
+
+                        if (hasDestination) {
+                            const destination = L.latLng(Number(this.formData.destinationLat), Number(this.formData.destinationLon));
+                            this.destinationMarker = L.marker(destination).addTo(this.map).bindPopup('Destino');
+                            if (!hasOrigin) {
+                                this.map.setView(destination, 11);
+                            }
+                        }
+
+                        if (hasOrigin && hasDestination) {
+                            const origin = L.latLng(Number(this.formData.originLat), Number(this.formData.originLon));
+                            const destination = L.latLng(Number(this.formData.destinationLat), Number(this.formData.destinationLon));
+                            this.routeLine = L.polyline([origin, destination], { color: '#0f172a', weight: 4, opacity: 0.8 }).addTo(this.map);
+                            this.map.fitBounds(this.routeLine.getBounds(), { padding: [30, 30] });
+                        }
+                    }
+                }
+            }
+        </script>
         <div>
             <h1 class="text-3xl font-bold tracking-tight">Publicar Boleia</h1>
             <p class="text-muted-foreground mt-2">Partilhe a sua viagem e comece a poupar nos custos de deslocação.</p>

@@ -19,9 +19,14 @@ public class TripDto {
         private String vehicleId;
         private String origin;
         private String destination;
+        private Double originLat;
+        private Double originLon;
+        private Double destinationLat;
+        private Double destinationLon;
         private String description;
         private LocalDateTime departureTime;
         private Integer availableSeats;
+        private BigDecimal distanceKm;
     }
 
     @Data
@@ -33,6 +38,10 @@ public class TripDto {
         private String vehicleId;
         private String origin;
         private String destination;
+        private Double originLat;
+        private Double originLon;
+        private Double destinationLat;
+        private Double destinationLon;
         private String description;
         private LocalDateTime departureTime;
         private Integer availableSeats;
@@ -40,6 +49,7 @@ public class TripDto {
         private Integer totalTravelers;
         private BigDecimal totalCost;
         private BigDecimal costPerSeat;
+        private BigDecimal distanceKm;
         private String status;
     }
 }

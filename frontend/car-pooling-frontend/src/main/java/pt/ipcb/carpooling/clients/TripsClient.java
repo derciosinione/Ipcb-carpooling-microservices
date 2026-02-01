@@ -34,6 +34,9 @@ public interface TripsClient {
     @PostMapping("/trips/api/v1/trips")
     TripDto.TripResponse createTrip(@RequestBody TripDto.CreateTripRequest request);
 
+    @PostMapping("/trips/api/v1/bookings")
+    BookingDto.BookingResponse createBooking(@RequestBody BookingDto.CreateBookingRequest request);
+
     @GetMapping("/trips/api/v1/bookings/trip/{tripId}")
     List<BookingDto.BookingResponse> getBookingsByTrip(@PathVariable("tripId") String tripId);
 

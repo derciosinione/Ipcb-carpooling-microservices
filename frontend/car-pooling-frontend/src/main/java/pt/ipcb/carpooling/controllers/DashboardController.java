@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pt.ipcb.carpooling.clients.TripsClient;
 import pt.ipcb.carpooling.clients.VehicleClient;
+import pt.ipcb.carpooling.clients.IdentityClient;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.ExpenseDto;
 import pt.ipcb.carpooling.dto.MetricsDto;
 import pt.ipcb.carpooling.dto.PublishRideForm;
 import pt.ipcb.carpooling.dto.TripDto;
+import pt.ipcb.carpooling.dto.UserDto;
 import pt.ipcb.carpooling.dto.VehicleDto;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +28,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 
 @Controller
@@ -37,6 +42,7 @@ public class DashboardController {
 
     private final VehicleClient vehicleClient;
     private final TripsClient tripsClient;
+    private final IdentityClient identityClient;
 
     @GetMapping
     public String dashboardHome(Model model, HttpSession session) {
@@ -235,11 +241,24 @@ public class DashboardController {
     public String search(@RequestParam(required = false) String origin,
             @RequestParam(required = false) String destination,
             @RequestParam(required = false, defaultValue = "1") Integer seats,
-            Model model) {
+            Model model,
+            HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user != null) {
+            model.addAttribute("currentUserId", user.getId());
+        }
         if (origin != null && destination != null) {
             try {
                 List<TripDto.TripResponse> results = tripsClient.searchTrips(origin, destination, seats);
                 model.addAttribute("results", results);
+                Map<String, UserDto.UserResponse> users = fetchUsersByIds(results.stream()
+                        .map(TripDto.TripResponse::getDriverId)
+                        .filter(Objects::nonNull)
+                        .toList());
+                model.addAttribute("userNames", users.entrySet().stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> safeName(e.getValue()))));
+                model.addAttribute("userInitials", users.entrySet().stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> initials(e.getValue()))));
             } catch (Exception e) {
                 log.error("Error searching trips: {}", e.getMessage());
                 model.addAttribute("results", List.of());
@@ -275,6 +294,7 @@ public class DashboardController {
 
         boolean isDriver = Objects.equals(trip.getDriverId(), user.getId());
         model.addAttribute("isDriver", isDriver);
+        model.addAttribute("currentUserId", user.getId());
         model.addAttribute("isCompleted", "FINISHED".equalsIgnoreCase(trip.getStatus()));
 
         List<BookingDto.BookingResponse> bookings;
@@ -296,6 +316,21 @@ public class DashboardController {
         model.addAttribute("confirmedBookings", confirmedBookings);
         model.addAttribute("totalSeats", (trip.getAvailableSeats() != null ? trip.getAvailableSeats() : 0)
                 + (trip.getConfirmedSeats() != null ? trip.getConfirmedSeats() : 0));
+
+        Set<String> userIds = bookings.stream()
+                .map(BookingDto.BookingResponse::getPassengerId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        if (trip.getDriverId() != null) {
+            userIds.add(trip.getDriverId());
+        }
+        if (!userIds.isEmpty()) {
+            Map<String, UserDto.UserResponse> users = fetchUsersByIds(userIds.stream().toList());
+            model.addAttribute("userNames", users.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> safeName(e.getValue()))));
+            model.addAttribute("userInitials", users.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> initials(e.getValue()))));
+        }
 
         try {
             List<ExpenseDto.ExpenseResponse> expenses = tripsClient.getExpensesByTrip(id);
@@ -344,6 +379,31 @@ public class DashboardController {
         return "redirect:/dashboard/ride/" + tripId;
     }
 
+    @PostMapping("/ride/{tripId}/book")
+    public String createBooking(@PathVariable String tripId,
+            @RequestParam(defaultValue = "1") Integer seats,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+
+        try {
+            BookingDto.CreateBookingRequest request = new BookingDto.CreateBookingRequest();
+            request.setTripId(tripId);
+            request.setSeats(seats);
+            request.setPassengerId(user.getId());
+            tripsClient.createBooking(request);
+            redirectAttributes.addFlashAttribute("success", "Pedido de reserva enviado!");
+        } catch (Exception e) {
+            log.error("Error creating booking for trip {}: {}", tripId, e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Erro ao solicitar reserva.");
+        }
+
+        return "redirect:/dashboard/ride/" + tripId;
+    }
+
     @PostMapping("/ride/{tripId}/expenses")
     public String addExpense(@PathVariable String tripId,
             @RequestParam String description,
@@ -376,6 +436,46 @@ public class DashboardController {
                 .filter(trip -> "FINISHED".equalsIgnoreCase(trip.getStatus())
                         || "CANCELED".equalsIgnoreCase(trip.getStatus()))
                 .collect(Collectors.toList());
+    }
+
+    private Map<String, UserDto.UserResponse> fetchUsersByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Map.of();
+        }
+        UserDto.BatchUsersRequest request = new UserDto.BatchUsersRequest(ids);
+        return identityClient.getUsersByIds(request).stream()
+                .collect(Collectors.toMap(UserDto.UserResponse::getId, u -> u));
+    }
+
+    private String safeName(UserDto.UserResponse user) {
+        if (user == null) {
+            return "Utilizador";
+        }
+        if (user.getName() != null && !user.getName().isBlank()) {
+            return user.getName();
+        }
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            return user.getEmail();
+        }
+        return "Utilizador";
+    }
+
+    private String initials(UserDto.UserResponse user) {
+        String name = safeName(user);
+        String[] parts = name.trim().split("\\s+");
+        if (parts.length == 0) {
+            return "U";
+        }
+        String first = parts[0];
+        String last = parts.length > 1 ? parts[parts.length - 1] : "";
+        String init = "";
+        if (!first.isEmpty()) {
+            init += first.charAt(0);
+        }
+        if (!last.isEmpty()) {
+            init += last.charAt(0);
+        }
+        return init.isEmpty() ? "U" : init.toUpperCase();
     }
 
     private java.math.BigDecimal sumTotalCost(List<TripDto.TripResponse> trips) {

@@ -11,6 +11,15 @@ public class BookingDto {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class CreateBookingRequest {
+        private String tripId;
+        private Integer seats;
+        private String passengerId;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class BookingResponse {
         private String id;
         private String tripId;

@@ -16,10 +16,10 @@
             <div th:each="booking : ${pendingBookings}" class="flex items-center justify-between bg-background p-3 rounded-lg border shadow-sm">
                 <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
                     <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                        <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" />
+                        <span class="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-primary font-bold" th:text="${userInitials != null && userInitials[booking.passengerId] != null ? userInitials[booking.passengerId] : 'U'}">U</span>
                     </span>
                     <div>
-                        <p class="font-medium text-sm" th:text="${'Utilizador ' + #strings.substring(booking.passengerId, 0, 6)}">Utilizador</p>
+                        <p class="font-medium text-sm" th:text="${userNames != null && userNames[booking.passengerId] != null ? userNames[booking.passengerId] : 'Utilizador'}">Utilizador</p>
                         <div class="flex items-center gap-2 text-xs text-muted-foreground">
                             <span class="flex items-center gap-0.5">★ 5.0</span>
                             <span>•</span>

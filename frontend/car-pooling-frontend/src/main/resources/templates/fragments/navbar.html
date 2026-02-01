@@ -29,7 +29,7 @@
                 <div th:if="${session.token != null}" class="flex items-center gap-4">
                     <div class="flex items-center gap-2 mr-2">
                         <i data-lucide="user" class="h-4 w-4 text-muted-foreground"></i>
-                        <span class="text-sm font-medium" th:text="${session.user.email}">user@email.com</span>
+                        <span class="text-sm font-medium" th:text="${session.user != null ? session.user.email : (session.userName != null ? session.userName : 'Utilizador')}">user@email.com</span>
                     </div>
                     <a th:href="@{/dashboard}" class="text-sm font-medium hover:text-primary transition-colors">
                         Painel

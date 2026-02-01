@@ -1,3 +1,4 @@
+<!-- ARCHIVED: Moved from dashboard/fragments/ride-header.html on 2026-02-01 -->
 <!-- Fragment: Ride Header -->
 <div th:fragment="rideHeader">
     <!-- Header -->
@@ -39,10 +40,10 @@
                         <i data-lucide="more-vertical" class="h-4 w-4"></i>
                     </button>
                     <div x-show="open" style="display: none;" class="absolute right-0 top-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2">
-                        <div x-show="!isCompleted" class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-red-600">
+                        <div x-show="!isCompleted" class="relative flex cursor-default select-none items-center rounded-sm px-2.5 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-red-600">
                             <span x-text="isDriver ? 'Cancelar Viagem' : 'Cancelar Reserva'"></span>
                         </div>
-                         <div x-show="isCompleted" class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                         <div x-show="isCompleted" class="relative flex cursor-default select-none items-center rounded-sm px-2.5 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
                             Arquivar Viagem
                         </div>
                     </div>

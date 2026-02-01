@@ -74,10 +74,10 @@
                             <span>Preferências</span>
                         </div>
                         <div class="h-px bg-muted my-1"></div>
-                        <div class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground hover:bg-accent text-red-600 focus:text-red-600 focus:bg-red-50">
+                        <a th:href="@{/logout}" class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground hover:bg-accent text-red-600 focus:text-red-600 focus:bg-red-50">
                             <i data-lucide="log-out" class="mr-2 h-4 w-4"></i>
                             <span>Sair</span>
-                        </div>
+                        </a>
                      </div>
                 </div>
             </div>
@@ -85,5 +85,5 @@
     </header>
 
     <!-- Insert Page Content -->
-    <div th:replace="dashboard/fragments/common/layout-content :: pageContent"></div>
+    <div th:replace="~{dashboard/fragments/common/layout-content :: pageContent}"></div>
 </div>

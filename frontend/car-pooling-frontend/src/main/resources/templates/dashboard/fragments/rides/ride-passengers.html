@@ -15,11 +15,11 @@
             <div th:each="booking : ${confirmedBookings}" class="flex items-center justify-between">
                 <div class="flex items-center gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded-lg -ml-2 transition-colors flex-1">
                     <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                        <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" />
+                        <span class="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-primary font-bold" th:text="${userInitials != null && userInitials[booking.passengerId] != null ? userInitials[booking.passengerId] : 'U'}">U</span>
                     </span>
                     <div>
                         <div class="flex items-center gap-1">
-                            <p class="font-medium text-sm" th:text="${'Utilizador ' + #strings.substring(booking.passengerId, 0, 6)}">Utilizador</p>
+                            <p class="font-medium text-sm" th:text="${userNames != null && userNames[booking.passengerId] != null ? userNames[booking.passengerId] : 'Utilizador'}">Utilizador</p>
                             <i data-lucide="shield" class="h-3 w-3 text-green-500"></i>
                         </div>
                         <p class="text-xs text-muted-foreground flex items-center gap-1" th:text="${booking.seats + ' lugar(es)'}">1 lugar</p>

@@ -4,6 +4,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import pt.ipcb.carpooling.dto.AuthDto;
+import pt.ipcb.carpooling.dto.UserDto;
+
+import java.util.List;
 
 @FeignClient(name = "cloud-gateway", url = "${api.gateway.url}", contextId = "identityClient")
 public interface IdentityClient {
@@ -19,4 +22,7 @@ public interface IdentityClient {
 
     @PostMapping("/identity/api/v1/auth/register/both")
     AuthDto.UserResponse registerBoth(@RequestBody AuthDto.RegisterRequest request);
+
+    @PostMapping("/identity/api/v1/users/batch")
+    List<UserDto.UserResponse> getUsersByIds(@RequestBody UserDto.BatchUsersRequest request);
 }

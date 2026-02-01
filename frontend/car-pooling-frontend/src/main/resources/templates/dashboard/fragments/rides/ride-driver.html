@@ -12,7 +12,7 @@
                     </span>
                     <div>
                         <div class="flex items-center gap-1">
-                            <p class="font-bold text-base" th:text="${trip != null ? 'Condutor ' + #strings.substring(trip.driverId, 0, 6) : 'Condutor'}">Condutor</p>
+                            <p class="font-bold text-base" th:text="${userNames != null && trip != null && userNames[trip.driverId] != null ? userNames[trip.driverId] : 'Condutor'}">Condutor</p>
                             <i data-lucide="badge-check" class="h-4 w-4 text-blue-500"></i>
                         </div>
                         <p class="text-sm text-muted-foreground flex items-center gap-1">

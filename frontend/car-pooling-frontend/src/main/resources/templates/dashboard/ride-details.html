@@ -7,8 +7,17 @@
     <title>Detalhes da Viagem</title>
 </head>
 <body>
-    <div layout:fragment="content" class="space-y-6 max-w-5xl mx-auto pb-12 p-4 md:p-8 pt-6" th:attr="x-data=|{ isModalOpen: new URLSearchParams(window.location.search).get('openExpenses') === 'true', isCompleted: ${isCompleted}, isDriver: ${isDriver} }|">
+    <div layout:fragment="content" class="space-y-6 pb-12 p-4 md:p-8 pt-6" th:attr="x-data=|{ isModalOpen: new URLSearchParams(window.location.search).get('openExpenses') === 'true', isCompleted: ${isCompleted}, isDriver: ${isDriver} }|">
         <div th:replace="dashboard/fragments/rides/ride-header :: rideHeader"></div>
+        <div x-show="!isDriver" class="rounded-lg border bg-card text-card-foreground shadow-sm p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="text-sm text-muted-foreground">Quer reservar esta viagem?</div>
+            <form th:if="${currentUserId != null && currentUserId != trip.driverId}" th:action="@{'/dashboard/ride/' + ${trip.id} + '/book'}" method="post" class="flex items-center gap-2">
+                <input type="number" name="seats" min="1" class="flex h-9 w-20 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="1" />
+                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3">
+                    Solicitar reserva
+                </button>
+            </form>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column: Route & Details -->
             <div class="lg:col-span-2 space-y-6">

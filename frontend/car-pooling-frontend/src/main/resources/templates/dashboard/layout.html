@@ -95,9 +95,9 @@
 <body class="min-h-screen bg-muted/20 font-sans" x-data="{ isMobileMenuOpen: false }">
 
     <div class="flex">
-        <div th:replace="dashboard/fragments/common/layout-sidebar :: desktopSidebar"></div>
+        <div th:replace="~{dashboard/fragments/common/layout-sidebar :: desktopSidebar}"></div>
 
-        <div th:replace="dashboard/fragments/common/layout-main-wrapper :: mainWrapper"></div>
+        <div th:replace="~{dashboard/fragments/common/layout-main-wrapper :: mainWrapper}"></div>
     </div>
     
     <!-- Invite Modal Integration -->

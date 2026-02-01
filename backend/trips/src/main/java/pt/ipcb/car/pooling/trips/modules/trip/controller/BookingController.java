@@ -31,6 +31,6 @@ public class BookingController {
 
     @PatchMapping("/{id}/reject")
     public ResponseEntity<BookingResponse> reject(@PathVariable UUID id) {
-        return ResponseEntity.ok(bookingService.acceptBooking(id));
+        return ResponseEntity.ok(bookingService.rejectBooking(id));
     }
 }

@@ -1,6 +1,6 @@
 # 📡 IPCB Car Pooling - API Endpoints
 
-This document lists the available endpoints for the microservices, accessible through the **API Gateway**.
+This document lists the available endpoints for the microservices, accessible through the **API Gateway**, as well as the web frontend routes.
 
 ## 🚀 API Gateway Base URL
 All requests should be directed to the Gateway:
@@ -22,16 +22,6 @@ All requests should be directed to the Gateway:
 | `POST` | `/identity/api/v1/auth/register/driver` | Register a new driver |
 | `POST` | `/identity/api/v1/auth/register/both` | Register a user with both roles |
 
-**Sign-In Response Example:**
-```json
-{
-  "id": "uuid-here",
-  "email": "user@example.com",
-  "token": "eyJhbGciOiJIUzI1Ni...",
-  "roles": ["Condutor"]
-}
-```
-
 ### Users (Secured)
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
@@ -40,6 +30,14 @@ All requests should be directed to the Gateway:
 | `PUT` | `/identity/api/v1/users/{id}` | Update user information |
 | `POST` | `/identity/api/v1/users/{id}/profiles/{role}` | Add a profile (role) to user |
 | `DELETE` | `/identity/api/v1/users/{id}/profiles/{role}` | Remove a profile from user |
+
+### Ratings (Secured)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/identity/api/v1/ratings` | Create a new rating |
+| `GET` | `/identity/api/v1/ratings/user/{userId}` | Get ratings for a specific user |
+| `PUT` | `/identity/api/v1/ratings/{id}` | Update an existing rating |
+| `DELETE` | `/identity/api/v1/ratings/{id}` | Delete a rating |
 
 ---
 
@@ -64,6 +62,7 @@ All requests should be directed to the Gateway:
 ## 🗺️ Trips Service (Secured)
 **Gateway Prefix**: `/trips`
 
+### Trip Management
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `POST` | `/trips/api/v1/trips` | Create a new trip |
@@ -72,6 +71,18 @@ All requests should be directed to the Gateway:
 | `GET` | `/trips/api/v1/trips/driver/{driverId}` | List trips by driver |
 | `GET` | `/trips/api/v1/trips/passenger/{passengerId}` | List trips by passenger |
 | `GET` | `/trips/api/v1/trips/search` | Search trips by origin/destination |
+
+### Bookings
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/trips/api/v1/bookings` | Book seats on a trip |
+| `PATCH` | `/trips/api/v1/bookings/{id}/accept` | Accept a booking request |
+| `PATCH` | `/trips/api/v1/bookings/{id}/reject` | Reject a booking request |
+
+### Expenses
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/trips/api/v1/expenses` | Register an expense for a trip |
 
 ---
 
@@ -82,7 +93,24 @@ All requests should be directed to the Gateway:
 | :--- | :--- | :--- |
 | `POST` | `/payments/api/v1/payments` | Create a new payment |
 | `GET` | `/payments/api/v1/payments/trips/{tripId}` | Get payments by trip ID |
-| `GET` | `/payments/api/v1/payments/ping` | Health check ping |
+
+---
+
+## 🌐 Web Frontend Routes
+The frontend provides a user-friendly interface for interacting with the microservices.
+
+| Route | Description |
+| :--- | :--- |
+| `/` | Home Page - Introduction and search entry |
+| `/auth` | Authentication Page - Login and Registration |
+| `/search` | Search Results Page |
+| `/ride/{id}` | Public Ride Details |
+| `/driver/{id}` | Driver Profile and Ratings |
+| `/dashboard` | User Dashboard Overview |
+| `/dashboard/rides` | User's Published/Joined Rides |
+| `/dashboard/vehicles` | Vehicle Management |
+| `/dashboard/publish-ride` | Form to publish a new ride |
+| `/dashboard/settings` | Account/Profile Settings |
 
 ---
 

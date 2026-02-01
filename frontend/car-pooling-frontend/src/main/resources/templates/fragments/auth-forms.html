@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- ==========================================
+         LOGIN FORM
+         ========================================== -->
+    <div th:fragment="login-form" class="mt-1 animate-in fade-in zoom-in-95 duration-500">
+        <form class="space-y-4" th:action="@{/auth/login}" method="POST">
+            <div class="space-y-1.5">
+                <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="email">Endereço de Email</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                        <i data-lucide="mail" class="h-4 w-4"></i>
+                    </div>
+                    <input name="email" class="flex h-10 w-full rounded-xl border-slate-200 bg-slate-50/50 pl-10 pr-3 py-2 text-sm transition-all focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" id="email" type="email" placeholder="nome@exemplo.com" required />
+                </div>
+            </div>
+            
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-between ml-1">
+                    <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500" for="password">Palavra-passe</label>
+                    <a href="#" class="text-[10px] font-bold text-primary hover:underline">Esqueceu?</a>
+                </div>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                        <i data-lucide="lock" class="h-4 w-4"></i>
+                    </div>
+                    <input name="password" class="flex h-10 w-full rounded-xl border-slate-200 bg-slate-50/50 pl-10 pr-3 py-2 text-sm transition-all focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" id="password" type="password" required />
+                </div>
+            </div>
+
+            <button type="submit" 
+                    class="group relative inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 active:scale-[0.98] w-full overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <span class="relative flex items-center gap-2">
+                    Entrar na Conta
+                    <i data-lucide="chevron-right" class="h-4 w-4 transition-transform group-hover:translate-x-1"></i>
+                </span>
+            </button>
+        </form>
+    </div>
+
+    <!-- ==========================================
+         REGISTER FORM
+         ========================================== -->
+    <div th:fragment="register-form" class="mt-1 animate-in fade-in zoom-in-95 duration-500">
+        <form class="space-y-3" th:action="@{/auth/register}" th:object="${registerForm}" method="POST">
+            <!-- Full Name Grid -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="firstName">Nome</label>
+                    <input th:field="*{firstName}" class="flex h-9 w-full rounded-xl border-slate-200 bg-slate-50/50 px-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" id="firstName" placeholder="João" required />
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="lastName">Apelido</label>
+                    <input th:field="*{lastName}" class="flex h-9 w-full rounded-xl border-slate-200 bg-slate-50/50 px-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" id="lastName" placeholder="Silva" required />
+                </div>
+            </div>
+
+            <!-- Username Field -->
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="username">Utilizador</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                        <i data-lucide="at-sign" class="h-3.5 w-3.5"></i>
+                    </div>
+                    <input th:field="*{username}" class="flex h-9 w-full rounded-xl border-slate-200 bg-slate-50/50 pl-9 pr-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" id="username" placeholder="joaosilva_99" required />
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="email-reg">Email</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                        <i data-lucide="mail" class="h-3.5 w-3.5"></i>
+                    </div>
+                    <input th:field="*{email}" class="flex h-9 w-full rounded-xl border-slate-200 bg-slate-50/50 pl-9 pr-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" id="email-reg" type="email" placeholder="seu@email.com" required />
+                </div>
+            </div>
+
+            <!-- Password Grid -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="password-reg">Senha</label>
+                    <input th:field="*{password}" class="flex h-9 w-full rounded-xl border-slate-200 bg-slate-50/50 px-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" id="password-reg" type="password" required />
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="confirmPassword">Confirmar</label>
+                    <input th:field="*{confirmPassword}" class="flex h-9 w-full rounded-xl border-slate-200 bg-slate-50/50 px-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" id="confirmPassword" type="password" required />
+                </div>
+            </div>
+            
+            <!-- Profile Selection -->
+            <div class="space-y-1.5 pt-1">
+                <label class="text-[10px] uppercase tracking-[0.1em] font-bold text-slate-400 opacity-80">Finalidade do Perfil:</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="relative group">
+                        <input th:field="*{passenger}" type="checkbox" id="passenger" class="peer hidden" />
+                        <label for="passenger" class="flex items-center justify-center gap-2 p-2 rounded-xl border border-slate-100 bg-slate-50/50 cursor-pointer transition-all peer-checked:bg-primary/5 peer-checked:border-primary peer-checked:text-primary hover:bg-slate-100">
+                            <i data-lucide="user" class="h-3.5 w-3.5"></i>
+                            <span class="text-[11px] font-bold">Passageiro</span>
+                        </label>
+                    </div>
+                    <div class="relative group">
+                        <input th:field="*{driver}" type="checkbox" id="driver" class="peer hidden" />
+                        <label for="driver" class="flex items-center justify-center gap-2 p-2 rounded-xl border border-slate-100 bg-slate-50/50 cursor-pointer transition-all peer-checked:bg-primary/5 peer-checked:border-primary peer-checked:text-primary hover:bg-slate-100">
+                            <i data-lucide="steering-wheel" class="h-3.5 w-3.5"></i>
+                            <span class="text-[11px] font-bold">Condutor</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" 
+                    class="group relative inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-slate-800 active:scale-[0.98] w-full overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <span class="relative">Criar Conta Grátis</span>
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

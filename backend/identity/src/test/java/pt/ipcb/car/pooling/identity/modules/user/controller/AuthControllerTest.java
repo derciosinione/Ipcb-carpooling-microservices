@@ -33,52 +33,52 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({ SecurityConfig.class })
 class AuthControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockitoBean
-    private AuthUseCase authUseCase;
+        @MockitoBean
+        private AuthUseCase authUseCase;
 
-    @MockitoBean
-    private CreateUserUseCase createUserUseCase;
+        @MockitoBean
+        private CreateUserUseCase createUserUseCase;
 
-    @MockitoBean // Use JwtProvider instead of TokenService
-    private JwtProvider jwtProvider;
+        @MockitoBean // Use JwtProvider instead of TokenService
+        private JwtProvider jwtProvider;
 
-    @Test
-    void auth_ShouldReturnToken_WhenCredentialsValid() throws Exception {
-        AuthRequest request = new AuthRequest("me@test.com", "pass");
-        AuthResponse response = new AuthResponse(UUID.randomUUID(), "me@test.com", "token123",
-                java.util.List.of("USER"));
+        @Test
+        void auth_ShouldReturnToken_WhenCredentialsValid() throws Exception {
+                AuthRequest request = new AuthRequest("me@test.com", "pass");
+                AuthResponse response = new AuthResponse(UUID.randomUUID(), "me@test.com", "token123", "Test User",
+                                java.util.List.of("USER"));
 
-        when(authUseCase.execute(request)).thenReturn(response);
+                when(authUseCase.execute(request)).thenReturn(response);
 
-        mockMvc.perform(post("/auth/sign-in")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("token123"));
-    }
+                mockMvc.perform(post("/auth/sign-in")
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.token").value("token123"));
+        }
 
-    @Test
-    void registerPassenger_ShouldCreatePassenger() throws Exception {
-        RegisterUserRequest request = RegisterUserRequest.builder()
-                .username("pass")
-                .email("pass@test.com")
-                .password("password123")
-                .build();
-        UserResponse response = UserResponse.builder().id(UUID.randomUUID()).build();
+        @Test
+        void registerPassenger_ShouldCreatePassenger() throws Exception {
+                RegisterUserRequest request = RegisterUserRequest.builder()
+                                .username("pass")
+                                .email("pass@test.com")
+                                .password("password123")
+                                .build();
+                UserResponse response = UserResponse.builder().id(UUID.randomUUID()).build();
 
-        when(createUserUseCase.execute(any(), eq(Set.of(ProfileConstants.PASSENGER)))).thenReturn(response);
+                when(createUserUseCase.execute(any(), eq(Set.of(ProfileConstants.PASSENGER)))).thenReturn(response);
 
-        mockMvc.perform(post("/auth/register/passenger")
-                .with(csrf()) // Must include csrf for POST
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
-    }
+                mockMvc.perform(post("/auth/register/passenger")
+                                .with(csrf()) // Must include csrf for POST
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isCreated());
+        }
 }

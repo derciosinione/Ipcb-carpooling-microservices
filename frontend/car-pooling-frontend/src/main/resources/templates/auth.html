@@ -2,121 +2,88 @@
 <html lang="pt" 
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/layout}">
+      layout:decorate="~{fragments/auth-layout}">
 <head>
     <title>CarPooling - Autenticação</title>
 </head>
 <body>
-    <div layout:fragment="content" class="min-h-screen flex flex-col bg-muted/30">
-        <div class="p-4 md:p-8">
-            <a th:href="@{/}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-2">
-                <i data-lucide="arrow-left" class="h-4 w-4"></i>
-                Voltar para a Página Inicial
+    <div layout:fragment="content" class="h-screen w-full flex flex-col relative overflow-hidden font-sans antialiased text-slate-900 selection:bg-primary/30">
+        
+        <!-- Cinematic Mesh Gradient Background -->
+        <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px] animate-pulse"></div>
+            <div class="absolute top-[20%] -right-[5%] w-[35%] h-[35%] rounded-full bg-blue-500/10 blur-[100px]"></div>
+            <div class="absolute -bottom-[10%] left-[20%] w-[45%] h-[45%] rounded-full bg-indigo-500/15 blur-[130px] animate-pulse" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-[10%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[150px]"></div>
+            
+            <!-- Subtle Grid Pattern Overlay -->
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+        </div>
+
+        <!-- Início Link - Ultra Compact -->
+        <div class="relative z-10 px-6 py-4">
+            <a th:href="@{/}" class="group inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-muted-foreground hover:text-primary transition-all duration-300">
+                <i data-lucide="arrow-left" class="h-4 w-4 transition-transform group-hover:-translate-x-1"></i>
+                <span class="opacity-80 group-hover:opacity-100">Início</span>
             </a>
         </div>
         
-        <div class="flex-1 flex items-center justify-center p-4">
-            <div class="rounded-xl border bg-card text-card-foreground shadow-xl border-muted w-full max-w-md">
-                <div class="flex flex-col space-y-1.5 p-6 text-center">
-                    <div class="mx-auto bg-primary/10 p-3 rounded-full w-fit">
+        <div class="relative z-10 flex-1 flex items-center justify-center p-4">
+            <!-- Glassmorphic Card -->
+            <div class="w-full max-w-sm backdrop-blur-xl bg-white/70 dark:bg-slate-950/70 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/40 dark:border-white/10 rounded-2xl overflow-hidden transform transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
+                
+                <!-- Introduction - Premium Styling -->
+                <div class="p-6 text-center space-y-2">
+                    <div class="mx-auto bg-gradient-to-br from-primary/20 to-primary/5 p-3 rounded-2xl w-fit shadow-inner">
                         <i data-lucide="car" class="h-8 w-8 text-primary"></i>
                     </div>
-                    <h3 class="font-semibold tracking-tight text-2xl font-bold">Bem-vindo ao CarPooling</h3>
-                    <p class="text-sm text-muted-foreground">
-                        Inicie sessão ou crie a sua conta para começar a viajar.
+                    <h1 class="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-200 dark:to-white">
+                        Bem-vindo
+                    </h1>
+                    <p class="text-[13px] font-medium text-slate-500 max-w-[80%] mx-auto leading-relaxed">
+                        Inicie sessão para gerir a sua próxima viagem.
                     </p>
                 </div>
                 
-                <div class="p-6 pt-0" x-data="{ activeTab: '[[${tab}]]' || 'login' }">
-                    <div class="w-full">
-                        <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground w-full grid w-full grid-cols-2 mb-4">
-                            <button @click="activeTab = 'login'" 
-                                    :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'login' }"
-                                    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-                                Entrar
-                            </button>
-                            <button @click="activeTab = 'register'" 
-                                    :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'register' }"
-                                    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-                                Criar Conta
-                            </button>
-                        </div>
-                        
-                        <!-- Login Tab -->
-                        <div x-show="activeTab === 'login'" class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                            <form class="space-y-4" @submit.prevent="window.location.href='/dashboard'">
-                                <div class="space-y-2">
-                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="email">Email</label>
-                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="email" type="email" placeholder="seu@email.com" />
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between">
-                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="password">Palavra-passe</label>
-                                        <a href="#" class="text-xs text-primary hover:underline">Esqueceu-se da palavra-passe?</a>
-                                    </div>
-                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="password" type="password" />
-                                </div>
-                                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
-                                    Entrar
-                                </button>
-                            </form>
-                        </div>
-                        
-                        <!-- Register Tab -->
-                        <div x-show="activeTab === 'register'" class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                            <form class="space-y-4" @submit.prevent="window.location.href='/dashboard'">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="space-y-2">
-                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">Nome</label>
-                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="name" placeholder="João" required />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="lastname">Apelido</label>
-                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="lastname" placeholder="Silva" required />
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="reg-email">Email</label>
-                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reg-email" type="email" placeholder="seu@email.com" required />
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="reg-password">Palavra-passe</label>
-                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reg-password" type="password" required />
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="confirm-password">Confirmar Palavra-passe</label>
-                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="confirm-password" type="password" required />
-                                </div>
-                                
-                                <div class="space-y-2 pt-2">
-                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Quero registar-me como: <span class="text-xs text-muted-foreground font-normal">(Selecione um ou ambos)</span></label>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div class="flex items-center space-x-2 border p-3 rounded-md cursor-pointer hover:bg-muted transition-colors">
-                                            <input type="checkbox" id="passenger" class="accent-primary h-4 w-4" checked />
-                                            <label for="passenger" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer font-normal w-full">Passageiro</label>
-                                        </div>
-                                        <div class="flex items-center space-x-2 border p-3 rounded-md cursor-pointer hover:bg-muted transition-colors">
-                                            <input type="checkbox" id="driver" class="accent-primary h-4 w-4" />
-                                            <label for="driver" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer font-normal w-full">Condutor</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
-                                    Criar Conta
-                                </button>
-                            </form>
-                        </div>
+                <!-- Authentication Component -->
+                <div class="p-6 pt-0">
+                    
+                    <!-- Premium Tabs Selection -->
+                    <div class="grid grid-cols-2 p-1.5 mb-5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-inner">
+                        <a th:href="@{/auth(tab='login')}" 
+                                th:classappend="${tab == 'login' ? 'bg-white dark:bg-slate-700 text-primary shadow-md' : 'text-slate-500 hover:text-slate-700'}"
+                                class="flex items-center justify-center py-2 text-xs font-bold rounded-lg transition-all duration-300">
+                            Entrar
+                        </a>
+                        <a th:href="@{/auth(tab='register')}" 
+                                th:classappend="${tab == 'register' ? 'bg-white dark:bg-slate-700 text-primary shadow-md' : 'text-slate-500 hover:text-slate-700'}"
+                                class="flex items-center justify-center py-2 text-xs font-bold rounded-lg transition-all duration-300">
+                            Registar
+                        </a>
                     </div>
+                    
+                    <!-- Refined Flash Messages -->
+                    <div th:if="${error} or ${param.error}" class="animate-in fade-in slide-in-from-top-2 duration-300 bg-red-500/10 border border-red-500/20 text-red-600 text-[11px] font-medium p-3 rounded-xl mb-4 flex items-center gap-2">
+                        <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                        <span th:text="${error} ?: ${param.error}"></span>
+                    </div>
+                    <div th:if="${success}" class="animate-in fade-in slide-in-from-top-2 duration-300 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-[11px] font-medium p-3 rounded-xl mb-4 flex items-center gap-2">
+                        <i data-lucide="check-circle" class="h-4 w-4"></i>
+                        <span th:text="${success}"></span>
+                    </div>
+                    
+                <!-- Shared Form Content Area -->
+                <div th:if="${tab == 'register'}">
+                    <div th:replace="~{fragments/auth-forms :: register-form}"></div>
                 </div>
-                
-                <div class="flex items-center p-6 pt-0 flex justify-center border-t p-4 bg-muted/20">
-                    <p class="text-xs text-muted-foreground text-center">
-                        Ao continuar, aceita os nossos <a href="#" class="underline hover:text-primary">Termos de Uso</a> e a <a href="#" class="underline hover:text-primary">Política de Privacidade</a>.
-                    </p>
+                <div th:if="${tab != 'register'}">
+                    <div th:replace="~{fragments/auth-forms :: login-form}"></div>
                 </div>
+
             </div>
+            
         </div>
     </div>
+</div>
 </body>
 </html>

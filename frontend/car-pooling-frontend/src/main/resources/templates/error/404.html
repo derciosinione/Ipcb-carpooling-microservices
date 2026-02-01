@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/auth-layout}">
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <div layout:fragment="content" class="h-screen w-full flex items-center justify-center p-4 relative overflow-hidden">
+        
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 z-0 pointer-events-none">
+            <div class="absolute top-[20%] left-[10%] w-[30%] h-[30%] rounded-full bg-primary/10 blur-[100px] animate-pulse"></div>
+            <div class="absolute bottom-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-blue-500/5 blur-[120px]"></div>
+        </div>
+
+        <div class="relative z-10 text-center space-y-8 max-w-md animate-in fade-in zoom-in-95 duration-700">
+            <!-- 404 Illustration/Text -->
+            <div class="relative inline-block">
+                <span class="text-[120px] font-black tracking-tighter text-slate-900/5 dark:text-white/5 select-none">404</span>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="bg-primary/10 p-6 rounded-3xl backdrop-blur-sm border border-primary/20 shadow-2xl">
+                        <i data-lucide="map-pin-off" class="h-16 w-16 text-primary animate-bounce"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Ops! Perdeu-se no caminho?</h1>
+                <p class="text-slate-500 dark:text-slate-400 font-medium">A página que procura não existe ou foi movida para um novo destino.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a th:href="@{/}" class="group relative inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 active:scale-95 w-full sm:w-auto overflow-hidden shadow-lg shadow-slate-900/20">
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <span class="relative flex items-center gap-2">
+                        <i data-lucide="home" class="h-4 w-4"></i>
+                        Voltar ao Início
+                    </span>
+                </a>
+                <button onclick="history.back()" class="inline-flex items-center justify-center rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-6 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 transition-all hover:bg-slate-50 dark:hover:bg-slate-900 active:scale-95 w-full sm:w-auto">
+                    Página Anterior
+                </button>
+            </div>
+
+            <!-- Road Line Decoration -->
+            <div class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full relative overflow-hidden mt-12">
+                <div class="absolute inset-y-0 left-0 w-1/3 bg-primary animate-[move_3s_infinite_linear]"></div>
+            </div>
+            
+            <style>
+                @keyframes move {
+                    from { transform: translateX(-100%); }
+                    to { transform: translateX(300%); }
+                }
+            </style>
+        </div>
+    </div>
+</body>
+</html>

@@ -193,14 +193,13 @@
                     
                     <div class="flex items-center gap-3 pl-4 border-l">
                         <div class="text-right hidden sm:block">
-                            <p class="text-sm font-semibold">Ricardo Sousa</p>
-                            <p className="text-xs text-muted-foreground">Condutor Verificado</p>
+                            <p class="text-sm font-semibold" th:text="${session.userName != null ? session.userName : 'Utilizador'}">Ricardo Sousa</p>
+                            <p class="text-xs text-muted-foreground">Utilizador Verificado</p>
                         </div>
                         
                         <div class="relative" x-data="{ open: false }">
                             <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full cursor-pointer hover:opacity-80 transition-opacity" @click="open = !open">
-                                <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1588976612067-d015cbbdb38b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkcml2ZXIlMjBwb3J0cmFpdCUyMG1hbGUlMjBzbWlsaW5nfGVufDF8fHx8MTc2NzUxMzAyOXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" />
-                                <span class="flex h-full w-full items-center justify-center rounded-full bg-muted">RS</span>
+                                <span class="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-primary font-bold" th:text="${session.userInitials != null ? session.userInitials : 'U'}">RS</span>
                             </span>
                              <div x-show="open" @click.outside="open = false" class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none animate-in fade-in-0 zoom-in-95" style="display: none;">
                                 <div class="px-2 py-1.5 text-sm font-semibold">A minha conta</div>

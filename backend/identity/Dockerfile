@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline -v
 
 # Copy source and build
 COPY src src
-RUN --mount=type=cache,target=/root/.m2 ./mvnw -q -e -DskipTests package
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -e -DskipTests package
 
 # ===== STAGE 2: Create lightweight runtime image =====
 FROM eclipse-temurin:21-jre

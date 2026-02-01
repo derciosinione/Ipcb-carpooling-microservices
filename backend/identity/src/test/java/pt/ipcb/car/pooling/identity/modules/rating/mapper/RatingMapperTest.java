@@ -22,8 +22,8 @@ class RatingMapperTest {
         UUID ratedUserId = UUID.randomUUID();
         LocalDateTime now = LocalDateTime.now();
 
-        UserEntity rater = UserEntity.builder().id(raterId).Name("Rater").build();
-        UserEntity ratedUser = UserEntity.builder().id(ratedUserId).Name("Rated").build();
+        UserEntity rater = UserEntity.builder().id(raterId).name("Rater").build();
+        UserEntity ratedUser = UserEntity.builder().id(ratedUserId).name("Rated").build();
 
         RatingEntity entity = RatingEntity.builder()
                 .id(ratingId)

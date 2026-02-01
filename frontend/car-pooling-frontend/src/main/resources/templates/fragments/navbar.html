@@ -14,12 +14,28 @@
                 <a th:href="@{/#features}" class="text-sm font-medium hover:text-primary transition-colors">
                     Benefícios
                 </a>
-                <div class="flex items-center gap-4">
-                    <a th:href="@{/auth(tab='login')}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3">
+                
+                <!-- Guest Menu -->
+                <div th:if="${session.token == null}" class="flex items-center gap-4">
+                    <a th:href="@{/auth(tab='login')}" class="inline-flex items-center justify-center rounded-md text-sm font-medium h-9 px-3 hover:bg-accent transition-colors">
                         Entrar
                     </a>
-                    <a th:href="@{/auth(tab='register')}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3">
+                    <a th:href="@{/auth(tab='register')}" class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground h-9 px-3 hover:bg-primary/90 transition-colors">
                         Registar
+                    </a>
+                </div>
+
+                <!-- User Menu -->
+                <div th:if="${session.token != null}" class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 mr-2">
+                        <i data-lucide="user" class="h-4 w-4 text-muted-foreground"></i>
+                        <span class="text-sm font-medium" th:text="${session.user.email}">user@email.com</span>
+                    </div>
+                    <a th:href="@{/dashboard}" class="text-sm font-medium hover:text-primary transition-colors">
+                        Painel
+                    </a>
+                    <a th:href="@{/logout}" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input h-9 px-3 hover:bg-accent transition-colors">
+                        Sair
                     </a>
                 </div>
             </div>

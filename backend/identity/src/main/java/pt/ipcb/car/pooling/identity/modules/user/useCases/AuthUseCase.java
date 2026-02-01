@@ -49,6 +49,6 @@ public class AuthUseCase {
                 .withClaim("roles", roles)
                 .sign(algorithm);
 
-        return new AuthResponse(user.getId(), request.email(), token, roles);
+        return new AuthResponse(user.getId(), request.email(), token, user.getName(), roles);
     }
 }

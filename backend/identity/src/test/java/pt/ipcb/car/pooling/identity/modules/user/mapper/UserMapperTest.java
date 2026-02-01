@@ -37,7 +37,7 @@ class UserMapperTest {
                 .id(userId)
                 .username("testuser")
                 .email("test@example.com")
-                .Name("Test User")
+                .name("Test User")
                 .phone("123456789")
                 .description("Test Description")
                 .profiles(Set.of(profile))

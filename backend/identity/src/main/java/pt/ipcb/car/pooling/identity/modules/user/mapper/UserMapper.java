@@ -36,7 +36,7 @@ public class UserMapper {
                 .username(request.username())
                 .email(request.email())
                 .password(request.password())
-                .Name(request.name())
+                .name(request.name())
                 .phone(request.phone())
                 .description(request.description())
                 .build();

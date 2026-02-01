@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
@@ -25,12 +26,16 @@ import java.util.UUID;
 @Builder
 @Entity(name = "Users")
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String Name;
+
+    // Original field was Name, keeping it lowercase as per request evolution
+    private String name;
+
     @NotBlank(message = "Username can not be empty or blank")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username can only contain letters, numbers and underscores")
     private String username;
@@ -51,7 +56,4 @@ public class UserEntity {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    public UserEntity() {
-    }
 }

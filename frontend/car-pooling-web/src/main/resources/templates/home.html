@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>CarPooling - Partilhe viagens, poupe dinheiro</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        
+        <!-- Hero Section -->
+        <section class="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden bg-muted/40">
+            <div class="container px-4 md:px-6 mx-auto">
+                <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+                    <div class="flex flex-col justify-center space-y-4">
+                        <div class="space-y-2">
+                            <h1 class="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                                Partilhe viagens. <br class="hidden sm:inline" />
+                                <span class="text-primary">Poupe dinheiro.</span>
+                            </h1>
+                            <p class="max-w-[600px] text-muted-foreground md:text-xl">
+                                Uma forma inteligente e sustentável de viajar em conjunto. Ligue-se a pessoas no mesmo trajeto e divida os custos.
+                            </p>
+                        </div>
+                        
+                        <div class="flex flex-col gap-2 min-[400px]:flex-row">
+                            <a th:href="@{/search}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8 gap-2">
+                                <i data-lucide="search" class="h-4 w-4"></i>
+                                Procurar Boleia
+                            </a>
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 rounded-md px-8 gap-2">
+                                <i data-lucide="users" class="h-4 w-4"></i>
+                                Oferecer Boleia
+                            </button>
+                        </div>
+
+                        <div class="mt-8 p-1">
+                            <div class="rounded-lg border bg-card text-card-foreground shadow-lg border-muted">
+                                <div class="p-4 grid gap-4 md:grid-cols-[1fr_1fr_1fr_auto]">
+                                    <div class="flex items-center gap-2 border rounded-md px-3 py-2 bg-background">
+                                        <i data-lucide="map-pin" class="h-4 w-4 text-muted-foreground"></i>
+                                        <input class="flex h-10 w-full bg-background ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-0 p-0 h-auto focus-visible:ring-0" placeholder="De onde?" />
+                                    </div>
+                                    <div class="flex items-center gap-2 border rounded-md px-3 py-2 bg-background">
+                                        <i data-lucide="map-pin" class="h-4 w-4 text-muted-foreground"></i>
+                                        <input class="flex h-10 w-full bg-background ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-0 p-0 h-auto focus-visible:ring-0" placeholder="Para onde?" />
+                                    </div>
+                                    <div class="flex items-center gap-2 border rounded-md px-3 py-2 bg-background">
+                                        <i data-lucide="calendar" class="h-4 w-4 text-muted-foreground"></i>
+                                        <input type="date" class="flex h-10 w-full bg-background ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 border-0 p-0 h-auto focus-visible:ring-0" />
+                                    </div>
+                                    <a th:href="@{/search}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full md:w-auto">
+                                        Pesquisar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last shadow-xl">
+                        <img
+                          src="https://images.unsplash.com/photo-1568225738236-9905545aa783?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMHBlb3BsZSUyMGNhcnBvb2xpbmclMjByb2FkJTIwdHJpcHxlbnwxfHx8fDE3Njc1MTE2OTl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                          alt="People carpooling"
+                          class="h-full w-full object-cover"
+                        />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="w-full py-12 md:py-24 lg:py-32 bg-background">
+            <div class="container px-4 md:px-6 mx-auto">
+                <div class="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+                    <div class="space-y-2">
+                        <h2 class="text-3xl font-bold tracking-tighter sm:text-5xl">Por que usar o CarPooling?</h2>
+                        <p class="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                            Nossa plataforma foi desenhada para tornar sua mobilidade urbana mais eficiente, econômica e ecológica.
+                        </p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Feature Cards (replicated for brevity, would normally loop in Thymeleaf if data was dynamic) -->
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm border-muted hover:border-primary/50 transition-colors">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <div class="p-2 w-fit rounded-lg bg-primary/10 mb-2">
+                                <i data-lucide="search" class="h-6 w-6 text-primary"></i>
+                            </div>
+                            <h3 class="text-2xl font-semibold leading-none tracking-tight">Busca Inteligente</h3>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <p class="text-sm text-muted-foreground text-base">
+                                Encontre caronas compatíveis com base em sua localização, destino e horário de forma rápida.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Added similar blocks for other features or use th:each if I passed a list from Controller -->
+                     <div class="rounded-lg border bg-card text-card-foreground shadow-sm border-muted hover:border-primary/50 transition-colors">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <div class="p-2 w-fit rounded-lg bg-primary/10 mb-2">
+                                <i data-lucide="wallet" class="h-6 w-6 text-primary"></i>
+                            </div>
+                            <h3 class="text-2xl font-semibold leading-none tracking-tight">Economia Real</h3>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <p class="text-sm text-muted-foreground text-base">
+                                Divisão automática de custos de viagem entre todos os participantes de forma transparente.
+                            </p>
+                        </div>
+                    </div>
+                     <div class="rounded-lg border bg-card text-card-foreground shadow-sm border-muted hover:border-primary/50 transition-colors">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <div class="p-2 w-fit rounded-lg bg-primary/10 mb-2">
+                                <i data-lucide="leaf" class="h-6 w-6 text-primary"></i>
+                            </div>
+                            <h3 class="text-2xl font-semibold leading-none tracking-tight">Sustentabilidade</h3>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <p class="text-sm text-muted-foreground text-base">
+                                Reduza a pegada de carbono e contribua para um trânsito mais livre e um planeta mais verde.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Benefits -->
+        <section class="w-full py-12 md:py-24 bg-background">
+             <div class="container px-4 md:px-6 mx-auto">
+                <div class="text-center mb-12">
+                  <h2 class="text-3xl font-bold tracking-tighter sm:text-4xl">Para todos os viajantes</h2>
+                  <p class="text-muted-foreground mt-2 md:text-lg">
+                    Seja você motorista ou passageiro, todos saem ganhando.
+                  </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+                     <!-- Drivers -->
+                     <div class="rounded-lg border bg-card text-card-foreground overflow-hidden border-2 border-primary/10 shadow-lg">
+                        <div class="bg-primary/5 p-6 md:p-8 text-center border-b border-primary/10">
+                            <div class="mx-auto bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                                <i data-lucide="car" class="h-8 w-8 text-primary"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">Para Motoristas</h3>
+                            <p class="text-muted-foreground mt-2">Transforme seus lugares vazios em economia.</p>
+                        </div>
+                        <div class="p-6 md:p-8 space-y-6">
+                             <div class="flex gap-4">
+                                <div class="bg-green-100 p-2 rounded-lg h-fit">
+                                  <i data-lucide="wallet" class="h-5 w-5 text-green-700"></i>
+                                </div>
+                                <div>
+                                  <h4 class="font-bold">Reduza custos de viagem</h4>
+                                  <p class="text-sm text-muted-foreground">Recupere gastos com combustível e pedágio dividindo a conta.</p>
+                                </div>
+                              </div>
+                              <div class="flex gap-4">
+                                <div class="bg-blue-100 p-2 rounded-lg h-fit">
+                                  <i data-lucide="users" class="h-5 w-5 text-blue-700"></i>
+                                </div>
+                                <div>
+                                  <h4 class="font-bold">Boa companhia</h4>
+                                  <p class="text-sm text-muted-foreground">Conheça pessoas interessantes e torne a viagem menos monótona.</p>
+                                </div>
+                              </div>
+                              <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full mt-4">
+                                Oferecer Carona
+                              </button>
+                        </div>
+                     </div>
+
+                     <!-- Passengers -->
+                     <div class="rounded-lg border bg-card text-card-foreground overflow-hidden border-2 border-primary/10 shadow-lg">
+                        <div class="bg-primary/5 p-6 md:p-8 text-center border-b border-primary/10">
+                            <div class="mx-auto bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                                <i data-lucide="heart" class="h-8 w-8 text-primary"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold">Para Passageiros</h3>
+                            <p class="text-muted-foreground mt-2">Viaje com conforto pagando muito menos.</p>
+                        </div>
+                         <div class="p-6 md:p-8 space-y-6">
+                             <div class="flex gap-4">
+                                <div class="bg-orange-100 p-2 rounded-lg h-fit">
+                                  <i data-lucide="wallet" class="h-5 w-5 text-orange-700"></i>
+                                </div>
+                                <div>
+                                  <h4 class="font-bold">Mais barato que ônibus</h4>
+                                  <p class="text-sm text-muted-foreground">Economize significativamente em comparação a passagens convencionais.</p>
+                                </div>
+                              </div>
+                              <div class="flex gap-4">
+                                <div class="bg-purple-100 p-2 rounded-lg h-fit">
+                                  <i data-lucide="clock" class="h-5 w-5 text-purple-700"></i>
+                                </div>
+                                <div>
+                                  <h4 class="font-bold">Chegue mais rápido</h4>
+                                  <p class="text-sm text-muted-foreground">Viagens diretas sem as paradas frequentes do transporte público.</p>
+                                </div>
+                              </div>
+                              <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-4">
+                                Buscar Carona
+                              </button>
+                        </div>
+                     </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="w-full py-12 md:py-24 lg:py-32 bg-muted/30">
+            <div class="container px-4 md:px-6 mx-auto">
+                <div class="text-center mb-12">
+                  <h2 class="text-3xl font-bold tracking-tighter sm:text-4xl">Como Funciona</h2>
+                  <p class="text-muted-foreground mt-2 md:text-lg">Simples, rápido e seguro.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                   <div class="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-muted-foreground/20 -z-10"></div>
+                   
+                   <div class="flex flex-col items-center text-center space-y-4 bg-background p-6 rounded-xl shadow-sm md:bg-transparent md:shadow-none">
+                        <div class="flex items-center justify-center w-24 h-24 rounded-full bg-primary/10 text-primary border-4 border-background">
+                            <i data-lucide="user-plus" class="h-10 w-10"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">1. Cadastre-se</h3>
+                        <p class="text-muted-foreground">Crie sua conta gratuitamente como passageiro ou motorista em poucos segundos.</p>
+                    </div>
+                    
+                    <div class="flex flex-col items-center text-center space-y-4 bg-background p-6 rounded-xl shadow-sm md:bg-transparent md:shadow-none">
+                        <div class="flex items-center justify-center w-24 h-24 rounded-full bg-primary/10 text-primary border-4 border-background">
+                            <i data-lucide="map" class="h-10 w-10"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">2. Encontre ou Ofereça</h3>
+                        <p class="text-muted-foreground">Defina seu trajeto e horários. O sistema conecta você a pessoas com rotas similares.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center space-y-4 bg-background p-6 rounded-xl shadow-sm md:bg-transparent md:shadow-none">
+                        <div class="flex items-center justify-center w-24 h-24 rounded-full bg-primary/10 text-primary border-4 border-background">
+                            <i data-lucide="check-circle" class="h-10 w-10"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">3. Viaje e Economize</h3>
+                        <p class="text-muted-foreground">Confirme a viagem, aproveite a companhia e divida os custos automaticamente pelo app.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+         <section class="w-full py-12 md:py-24 bg-muted/30">
+            <div class="container px-4 md:px-6 mx-auto">
+                <div class="text-center mb-12">
+                  <h2 class="text-3xl font-bold tracking-tighter sm:text-4xl">O que dizem nossos usuários</h2>
+                  <p class="text-muted-foreground mt-2 md:text-lg">
+                    Histórias reais de quem já viaja compartilhando.
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="rounded-lg border bg-card text-card-foreground bg-background border-none shadow-sm relative overflow-visible mt-6 md:mt-0">
+                        <div class="absolute -top-4 left-6 bg-primary text-primary-foreground p-2 rounded-full">
+                            <i data-lucide="quote" class="h-4 w-4 fill-current"></i>
+                        </div>
+                         <div class="p-6 pt-8">
+                             <div class="flex items-center gap-1 mb-4">
+                                <i data-lucide="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="h-4 w-4 text-yellow-400 fill-yellow-400"></i>
+                             </div>
+                             <p class="text-muted-foreground mb-6 italic">"Uso o CarPooling toda semana para voltar da faculdade. É muito mais barato que ônibus e chego em casa na metade do tempo!"</p>
+                             <div class="flex items-center gap-3">
+                                <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                                    <img src="https://images.unsplash.com/photo-1563237023-b1e970526dcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHVzZXIlMjBoZWFkc2hvdHxlbnwxfHx8fDE3Njc1MTIzMjR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" class="aspect-square h-full w-full object-cover" />
+                                </span>
+                                <div>
+                                    <p class="font-bold text-sm">Ana Silva</p>
+                                    <p class="text-xs text-muted-foreground">Passageira</p>
+                                </div>
+                             </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+         </section>
+    </div>
+</body>
+</html>

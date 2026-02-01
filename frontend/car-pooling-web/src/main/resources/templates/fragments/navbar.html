@@ -1,0 +1,65 @@
+<nav th:fragment="navbar" class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" x-data="{ isOpen: false }">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="flex h-16 items-center justify-between">
+            <a th:href="@{/}" class="flex items-center gap-2 cursor-pointer">
+                <i data-lucide="car" class="h-6 w-6 text-primary"></i>
+                <span class="text-xl font-bold tracking-tight">CarPooling</span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center gap-6">
+                <a th:href="@{/#how-it-works}" class="text-sm font-medium hover:text-primary transition-colors">
+                    Como Funciona
+                </a>
+                <a th:href="@{/#features}" class="text-sm font-medium hover:text-primary transition-colors">
+                    Benefícios
+                </a>
+                <div class="flex items-center gap-4">
+                    <a th:href="@{/auth(tab='login')}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3">
+                        Entrar
+                    </a>
+                    <a th:href="@{/auth(tab='register')}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3">
+                        Registar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden p-2" @click="isOpen = !isOpen">
+                <i x-show="!isOpen" data-lucide="menu" class="h-6 w-6"></i>
+                <i x-show="isOpen" data-lucide="x" class="h-6 w-6" style="display: none;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div x-show="isOpen" 
+         x-transition
+         class="md:hidden border-t p-4 bg-background"
+         style="display: none;">
+        <div class="flex flex-col space-y-4">
+            <a th:href="@{/#how-it-works}" 
+               class="text-sm font-medium p-2 hover:bg-muted rounded-md"
+               @click="isOpen = false">
+                Como Funciona
+            </a>
+            <a th:href="@{/#features}" 
+               class="text-sm font-medium p-2 hover:bg-muted rounded-md"
+               @click="isOpen = false">
+                Benefícios
+            </a>
+            <div class="flex flex-col gap-2 pt-2">
+                <a th:href="@{/auth(tab='login')}" 
+                   class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start"
+                   @click="isOpen = false">
+                    Entrar
+                </a>
+                <a th:href="@{/auth(tab='register')}"
+                   class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full justify-start"
+                   @click="isOpen = false">
+                    Registar
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>

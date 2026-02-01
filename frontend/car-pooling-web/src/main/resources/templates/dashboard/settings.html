@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Definições</title>
+</head>
+<body>
+    <div layout:fragment="content" class="container mx-auto p-4 md:p-8 pt-6 space-y-6 max-w-4xl" x-data="{ activeTab: 'profile' }">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Preferências</h1>
+            <p class="text-muted-foreground mt-2">Gerencie a sua conta, notificações e preferências de privacidade.</p>
+        </div>
+
+        <div class="w-full">
+            <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full grid-cols-2 md:grid-cols-4 lg:w-[600px]">
+                <button @click="activeTab = 'profile'" :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'profile' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Perfil</button>
+                <button @click="activeTab = 'verification'" :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'verification' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative">Verificação</button>
+                <button @click="activeTab = 'notifications'" :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'notifications' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Notificações</button>
+                <button @click="activeTab = 'privacy'" :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'privacy' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Privacidade</button>
+            </div>
+
+            <!-- Profile Content -->
+            <div x-show="activeTab === 'profile'" class="mt-6 space-y-6">
+                 <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div class="flex flex-col space-y-1.5 p-6">
+                        <h3 class="font-semibold leading-none tracking-tight">Perfil Público</h3>
+                        <p class="text-sm text-muted-foreground">Esta informação será visível para outros utilizadores.</p>
+                    </div>
+                    <div class="p-6 pt-0 space-y-6">
+                        <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                            <div class="flex flex-col items-center gap-2 relative">
+                                <span class="relative flex h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-background shadow-sm">
+                                    <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1588976612067-d015cbbdb38b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkcml2ZXIlMjBwb3J0cmFpdCUyMG1hbGUlMjBzbWlsaW5nfGVufDF8fHx8MTc2NzUxMzAyOXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" />
+                                </span>
+                                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 mt-2">Alterar Foto</button>
+                            </div>
+                            
+                            <div class="flex-1 space-y-4 w-full">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nome</label>
+                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value="Ricardo" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Apelido</label>
+                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value="Sousa" />
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Biografia</label>
+                                    <textarea class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">Olá! Sou o Ricardo, tenho 35 anos e faço viagens regulares entre Lisboa e Porto a trabalho.</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="flex justify-end">
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Guardar Alterações</button>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Verification Content -->
+            <div x-show="activeTab === 'verification'" class="mt-6" style="display: none;">
+                <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+                            <h5 class="font-medium leading-none tracking-tight">Porquê verificar a conta?</h5>
+                        </div>
+                        <div class="text-sm [&_p]:leading-relaxed">
+                            Utilizadores verificados têm 3x mais hipóteses de conseguir boleias e aparecem com um emblema de confiança nos resultados de pesquisa.
+                        </div>
+                        
+                        <div class="mt-6 border rounded-lg p-4 space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-muted p-2 rounded-full">
+                                    <i data-lucide="file-text" class="h-5 w-5 text-muted-foreground"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <h4 class="font-medium">Cartão de Cidadão / Documento de Identificação</h4>
+                                    <p class="text-sm text-muted-foreground">Frente e Verso. Certifique-se que a fotografia e os dados estão legíveis.</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-colors cursor-pointer text-center">
+                                    <i data-lucide="upload" class="h-6 w-6 text-muted-foreground"></i>
+                                    <span class="text-sm font-medium">Carregar Frente</span>
+                                </div>
+                                <div class="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-colors cursor-pointer text-center">
+                                    <i data-lucide="upload" class="h-6 w-6 text-muted-foreground"></i>
+                                    <span class="text-sm font-medium">Carregar Verso</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-6">
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Enviar Documentos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Content (Placeholder) -->
+            <div x-show="activeTab === 'notifications'" class="mt-6" style="display: none;">
+                 <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div class="p-6">
+                         <h3 class="font-semibold mb-4">Gerir Notificações</h3>
+                         <div class="space-y-4">
+                             <div class="flex items-center justify-between pb-4 border-b">
+                                 <div>
+                                     <p class="font-medium">Novas reservas</p>
+                                     <p class="text-sm text-muted-foreground">Quando alguém reserva um lugar na sua boleia</p>
+                                 </div>
+                                 <input type="checkbox" checked class="h-5 w-5" />
+                             </div>
+                             <div class="flex items-center justify-between pb-4 border-b">
+                                 <div>
+                                     <p class="font-medium">Mensagens</p>
+                                     <p class="text-sm text-muted-foreground">Quando recebe uma nova mensagem</p>
+                                 </div>
+                                 <input type="checkbox" checked class="h-5 w-5" />
+                             </div>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Privacy Content (Placeholder) -->
+             <div x-show="activeTab === 'privacy'" class="mt-6" style="display: none;">
+                 <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div class="p-6">
+                         <h3 class="font-semibold mb-4 text-red-600">Zona de Perigo</h3>
+                         <p class="text-sm text-muted-foreground mb-4">A eliminação da conta é irreversível.</p>
+                         <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2">Eliminar Conta</button>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

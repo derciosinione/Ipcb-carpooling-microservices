@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>CarPooling - Autenticação</title>
+</head>
+<body>
+    <div layout:fragment="content" class="min-h-screen flex flex-col bg-muted/30">
+        <div class="p-4 md:p-8">
+            <a th:href="@{/}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-2">
+                <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                Voltar para a Página Inicial
+            </a>
+        </div>
+        
+        <div class="flex-1 flex items-center justify-center p-4">
+            <div class="rounded-xl border bg-card text-card-foreground shadow-xl border-muted w-full max-w-md">
+                <div class="flex flex-col space-y-1.5 p-6 text-center">
+                    <div class="mx-auto bg-primary/10 p-3 rounded-full w-fit">
+                        <i data-lucide="car" class="h-8 w-8 text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold tracking-tight text-2xl font-bold">Bem-vindo ao CarPooling</h3>
+                    <p class="text-sm text-muted-foreground">
+                        Inicie sessão ou crie a sua conta para começar a viajar.
+                    </p>
+                </div>
+                
+                <div class="p-6 pt-0" x-data="{ activeTab: '[[${tab}]]' || 'login' }">
+                    <div class="w-full">
+                        <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground w-full grid w-full grid-cols-2 mb-4">
+                            <button @click="activeTab = 'login'" 
+                                    :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'login' }"
+                                    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                                Entrar
+                            </button>
+                            <button @click="activeTab = 'register'" 
+                                    :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'register' }"
+                                    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                                Criar Conta
+                            </button>
+                        </div>
+                        
+                        <!-- Login Tab -->
+                        <div x-show="activeTab === 'login'" class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                            <form class="space-y-4" @submit.prevent="window.location.href='/dashboard'">
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="email">Email</label>
+                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="email" type="email" placeholder="seu@email.com" />
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="password">Palavra-passe</label>
+                                        <a href="#" class="text-xs text-primary hover:underline">Esqueceu-se da palavra-passe?</a>
+                                    </div>
+                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="password" type="password" />
+                                </div>
+                                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
+                                    Entrar
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Register Tab -->
+                        <div x-show="activeTab === 'register'" class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                            <form class="space-y-4" @submit.prevent="window.location.href='/dashboard'">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">Nome</label>
+                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="name" placeholder="João" required />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="lastname">Apelido</label>
+                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="lastname" placeholder="Silva" required />
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="reg-email">Email</label>
+                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reg-email" type="email" placeholder="seu@email.com" required />
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="reg-password">Palavra-passe</label>
+                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="reg-password" type="password" required />
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="confirm-password">Confirmar Palavra-passe</label>
+                                    <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="confirm-password" type="password" required />
+                                </div>
+                                
+                                <div class="space-y-2 pt-2">
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Quero registar-me como: <span class="text-xs text-muted-foreground font-normal">(Selecione um ou ambos)</span></label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="flex items-center space-x-2 border p-3 rounded-md cursor-pointer hover:bg-muted transition-colors">
+                                            <input type="checkbox" id="passenger" class="accent-primary h-4 w-4" checked />
+                                            <label for="passenger" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer font-normal w-full">Passageiro</label>
+                                        </div>
+                                        <div class="flex items-center space-x-2 border p-3 rounded-md cursor-pointer hover:bg-muted transition-colors">
+                                            <input type="checkbox" id="driver" class="accent-primary h-4 w-4" />
+                                            <label for="driver" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer font-normal w-full">Condutor</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
+                                    Criar Conta
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center p-6 pt-0 flex justify-center border-t p-4 bg-muted/20">
+                    <p class="text-xs text-muted-foreground text-center">
+                        Ao continuar, aceita os nossos <a href="#" class="underline hover:text-primary">Termos de Uso</a> e a <a href="#" class="underline hover:text-primary">Política de Privacidade</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

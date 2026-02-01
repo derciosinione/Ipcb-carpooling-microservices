@@ -109,4 +109,6 @@ Após iniciar, pode aceder aos painéis e APIs:
 - `/identity`: Microserviço de Identidade.
 - `/service-discovery`: Servidor Eureka.
 - `/vehicles`: Microserviço de Veículos.
+- `/trips`: Microserviço de Viagens.
+- `/payments`: Microserviço de Pagamentos.
 - `start_all.sh`: Script de automação.

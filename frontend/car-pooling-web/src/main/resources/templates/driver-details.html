@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>CarPooling - Perfil do Condutor</title>
+</head>
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-muted/20 flex flex-col font-sans">
+        
+        <div class="container mx-auto px-4 py-8 flex-1">
+             <a th:href="@{/search}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-transparent hover:text-primary mb-6 pl-0 gap-2 h-10 px-4 py-2">
+                <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                Voltar para a pesquisa
+            </a>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column: Main Profile Info -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="rounded-xl border bg-card text-card-foreground border-muted shadow-md overflow-hidden">
+                        <div class="h-32 bg-primary/10 w-full"></div>
+                        <div class="p-6 pt-0 relative pb-6">
+                            <div class="flex flex-col items-center -mt-16 mb-4">
+                                <span class="relative flex shrink-0 overflow-hidden rounded-full h-32 w-32 border-4 border-background shadow-lg">
+                                    <img class="aspect-square h-full w-full object-cover" src="https://images.unsplash.com/photo-1588976612067-d015cbbdb38b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkcml2ZXIlMjBwb3J0cmFpdCUyMG1hbGUlMjBzbWlsaW5nfGVufDF8fHx8MTc2NzUxMzAyOXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" />
+                                    <span class="flex h-full w-full items-center justify-center rounded-full bg-muted text-4xl">R</span>
+                                </span>
+                                <div class="mt-3 text-center">
+                                    <h1 class="text-2xl font-bold flex items-center justify-center gap-2">
+                                        Ricardo Sousa
+                                        <i data-lucide="shield" class="h-5 w-5 text-blue-500 fill-blue-50"></i>
+                                    </h1>
+                                    <p class="text-muted-foreground text-sm">Membro desde Março 2022</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 text-center mb-6">
+                                <div class="p-3 bg-muted/30 rounded-lg">
+                                    <div class="flex items-center justify-center gap-1 font-bold text-lg text-amber-500">
+                                        <i data-lucide="star" class="h-4 w-4 fill-current"></i>
+                                        4.9
+                                    </div>
+                                    <p class="text-xs text-muted-foreground">124 avaliações</p>
+                                </div>
+                                <div class="p-3 bg-muted/30 rounded-lg">
+                                    <div class="font-bold text-lg">
+                                        342
+                                    </div>
+                                    <p class="text-xs text-muted-foreground">Boleias realizadas</p>
+                                </div>
+                            </div>
+
+                            <div class="shrink-0 bg-border h-[1px] w-full my-4"></div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 text-sm">
+                                    <i data-lucide="shield" class="h-4 w-4 text-primary"></i>
+                                    <span>Identidade verificada</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm">
+                                    <i data-lucide="message-square" class="h-4 w-4 text-primary"></i>
+                                    <span>Taxa de resposta: 100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-xl border bg-card text-card-foreground border-muted shadow-sm">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <h3 class="font-semibold leading-none tracking-tight text-lg">Veículo</h3>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <div class="flex items-start gap-4">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80&w=800" 
+                                    alt="Volkswagen Golf" 
+                                    class="w-20 h-20 rounded-md object-cover bg-muted"
+                                />
+                                <div>
+                                    <h3 class="font-semibold">Volkswagen Golf</h3>
+                                    <p class="text-sm text-muted-foreground">Cinza Prata</p>
+                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground mt-2 text-xs font-normal">
+                                        AA-00-AA
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Bio & Reviews -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="rounded-xl border bg-card text-card-foreground border-muted shadow-sm">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <h3 class="font-semibold leading-none tracking-tight text-lg">Sobre o Ricardo</h3>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <p class="text-muted-foreground leading-relaxed">
+                                Olá! Sou o Ricardo, tenho 35 anos e faço viagens regulares entre Lisboa e Porto a trabalho. Gosto de conversar, ouvir boa música e garantir uma viagem segura e tranquila para todos. O meu carro é espaçoso e confortável.
+                            </p>
+                            
+                            <div class="mt-6">
+                                <h4 class="font-medium text-sm mb-3">Preferências de viagem</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-1">
+                                        Não fumador
+                                    </div>
+                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-1">
+                                        Animais aceites
+                                    </div>
+                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-1">
+                                        Música ambiente
+                                    </div>
+                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-1">
+                                        Conversa moderada
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-xl border bg-card text-card-foreground border-muted shadow-sm">
+                        <div class="flex flex-row items-center justify-between p-6">
+                            <h3 class="font-semibold leading-none tracking-tight text-lg">Avaliações (124)</h3>
+                            <div class="flex items-center gap-1 text-sm bg-amber-50 text-amber-700 px-3 py-1 rounded-full border border-amber-100">
+                                <i data-lucide="star" class="h-3 w-3 fill-current"></i>
+                                <span class="font-semibold">4.9</span>
+                                <span>/ 5.0</span>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0 space-y-6">
+                            <!-- Review 1 -->
+                            <div class="border-b last:border-0 pb-6 last:pb-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                                            <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" />
+                                        </span>
+                                        <div>
+                                            <h4 class="font-semibold text-sm">Ana Silva</h4>
+                                            <p class="text-xs text-muted-foreground">Há 2 dias</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-muted-foreground ml-[52px]">
+                                    Viagem excelente! O Ricardo é super pontual e simpático. O carro estava impecável. Recomendo muito!
+                                </p>
+                            </div>
+
+                            <!-- Review 2 -->
+                            <div class="border-b last:border-0 pb-6 last:pb-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                                            <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=100" />
+                                        </span>
+                                        <div>
+                                            <h4 class="font-semibold text-sm">Pedro Santos</h4>
+                                            <p class="text-xs text-muted-foreground">Semana passada</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-muted-foreground ml-[52px]">
+                                    Tudo correu como planeado. Condutor seguro e agradável.
+                                </p>
+                            </div>
+                            
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-4">
+                                Ver todas as avaliações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

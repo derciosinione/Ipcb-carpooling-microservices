@@ -1,0 +1,161 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # SERVICE DISCOVERY (Stateful - 1 Replica)
+  # ==========================================
+  service-discovery:
+    image: car-pooling/service-discovery:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - carpooling_network
+
+  # ==========================================
+  # IDENTITY SERVICE (Stateless - 3 Replicas)
+  # ==========================================
+  identity-service:
+    image: car-pooling/identity:latest
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/identity_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_network
+    depends_on:
+      - service-discovery
+
+  # ==========================================
+  # VEHICLES SERVICE (Stateless - 3 Replicas)
+  # ==========================================
+  vehicles-service:
+    image: car-pooling/vehicles:latest
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/vehicles_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_network
+    depends_on:
+      - service-discovery
+
+  # ==========================================
+  # TRIPS SERVICE (Stateless - 3 Replicas)
+  # ==========================================
+  trips-service:
+    image: car-pooling/trips:latest
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/trips_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_network
+    depends_on:
+      - service-discovery
+
+  # ==========================================
+  # PAYMENTS SERVICE (Stateless - 3 Replicas)
+  # ==========================================
+  payments-service:
+    image: car-pooling/payments:latest
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/carpooling_payments
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_network
+    depends_on:
+      - service-discovery
+
+
+  # ==========================================
+  # CLOUD GATEWAY (Stateless - 2 Replicas)
+  # ==========================================
+  cloud-gateway:
+    image: car-pooling/cloud-gateway:latest
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    networks:
+      - carpooling_network
+    depends_on:
+      - service-discovery
+
+  # ==========================================
+  # PORTAINER (Management UI)
+  # ==========================================
+  portainer:
+    image: portainer/portainer-ce:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - carpooling_network
+
+
+
+networks:
+  carpooling_network:
+    external: true
+
+volumes:
+  portainer_data:
+

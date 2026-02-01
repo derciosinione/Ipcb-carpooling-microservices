@@ -136,26 +136,26 @@ services:
       - service-discovery
 
   # ==========================================
-  # PORTAINER (Management UI)
+  # FRONTEND SERVICE
   # ==========================================
-  portainer:
-    image: portainer/portainer-ce:latest
+  web-service:
+    image: car-pooling/frontend:latest
     deploy:
       replicas: 1
       restart_policy:
         condition: any
-      placement:
-        constraints:
-          - node.role == manager
     ports:
-      - "9000:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - "3003:3002"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      GATEWAY_URL: http://cloud-gateway:8888
+    hostname: car-pooling-frontend
     networks:
       - carpooling_network
-
-
+    depends_on:
+      - service-discovery
+      - cloud-gateway
 
 networks:
   carpooling_network:

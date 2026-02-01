@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  car-pooling-frontend:
+    build: .
+    image: car-pooling/frontend:latest
+    ports:
+      - "3002:3002"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://service-discovery:8761/eureka/
+      - GATEWAY_URL=http://cloud-gateway:8888
+    networks:
+      - carpooling_network
+
+networks:
+  carpooling_network:
+    external: true

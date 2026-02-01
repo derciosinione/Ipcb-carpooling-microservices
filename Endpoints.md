@@ -6,20 +6,33 @@ This document lists the available endpoints for the microservices, accessible th
 All requests should be directed to the Gateway:
 **`http://localhost:8888`**
 
+> [!IMPORTANT]
+> All endpoints except for Authentication (`/identity/api/v1/auth/**`) require a valid JWT token in the `Authorization: Bearer <token>` header.
+
 ---
 
 ## 🔐 Identity Service
 **Gateway Prefix**: `/identity`
 
-### Authentication
+### Authentication (Public)
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/identity/api/v1/auth/sign-in` | Authenticate user and get JWT token |
+| `POST` | `/identity/api/v1/auth/sign-in` | Authenticate and get JWT token, ID, and roles |
 | `POST` | `/identity/api/v1/auth/register/passenger` | Register a new passenger |
 | `POST` | `/identity/api/v1/auth/register/driver` | Register a new driver |
 | `POST` | `/identity/api/v1/auth/register/both` | Register a user with both roles |
 
-### Users
+**Sign-In Response Example:**
+```json
+{
+  "id": "uuid-here",
+  "email": "user@example.com",
+  "token": "eyJhbGciOiJIUzI1Ni...",
+  "roles": ["Condutor"]
+}
+```
+
+### Users (Secured)
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/identity/api/v1/users` | List all users |
@@ -28,16 +41,9 @@ All requests should be directed to the Gateway:
 | `POST` | `/identity/api/v1/users/{id}/profiles/{role}` | Add a profile (role) to user |
 | `DELETE` | `/identity/api/v1/users/{id}/profiles/{role}` | Remove a profile from user |
 
-### Profiles
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/identity/api/v1/profiles` | List all profiles |
-| `GET` | `/identity/api/v1/profiles/{id}` | Get profile by ID |
-| `POST` | `/identity/api/v1/profiles` | Create a new profile |
-
 ---
 
-## 🚗 Vehicles Service
+## 🚗 Vehicles Service (Secured)
 **Gateway Prefix**: `/vehicles`
 
 ### Vehicles
@@ -55,20 +61,28 @@ All requests should be directed to the Gateway:
 
 ---
 
-### Health Checks
-| Service | Endpoint |
-| :--- | :--- |
-| Identity | `http://localhost:8888/identity/api/v1/health` |
-| Vehicles | `http://localhost:8888/vehicles/api/v1/health` |
+## 🗺️ Trips Service (Secured)
+**Gateway Prefix**: `/trips`
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/trips/api/v1/trips` | Create a new trip |
+| `GET` | `/trips/api/v1/trips` | List all trips |
+| `GET` | `/trips/api/v1/trips/available` | List available trips |
+| `GET` | `/trips/api/v1/trips/driver/{driverId}` | List trips by driver |
+| `GET` | `/trips/api/v1/trips/passenger/{passengerId}` | List trips by passenger |
+| `GET` | `/trips/api/v1/trips/search` | Search trips by origin/destination |
 
 ---
 
-## 🗺️ Other Services
-The following services are registered in Service Discovery but may not have explicit Gateway routes yet:
+## 💰 Payments Service (Secured)
+**Gateway Prefix**: `/payments`
 
-- **Trips Service**: Registered in Eureka.
-- **Payments Service**: Registered in Eureka.
-- **Frontend**: Registered as `CARPOOLING-FRONTEND`.
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/payments/api/v1/payments` | Create a new payment |
+| `GET` | `/payments/api/v1/payments/trips/{tripId}` | Get payments by trip ID |
+| `GET` | `/payments/api/v1/payments/ping` | Health check ping |
 
 ---
 

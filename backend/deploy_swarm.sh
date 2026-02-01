@@ -64,6 +64,9 @@ docker compose -f payments/docker-compose.yml build
 echo "Building Cloud Gateway..."
 docker compose -f cloud-gateway-service/docker-compose.yml build
 
+echo "Building Frontend Service..."
+docker compose -f ../frontend/car-pooling-frontend/docker-compose.yml build
+
 
 # 3. Deploy Stack
 echo "--------------------------------------------------"

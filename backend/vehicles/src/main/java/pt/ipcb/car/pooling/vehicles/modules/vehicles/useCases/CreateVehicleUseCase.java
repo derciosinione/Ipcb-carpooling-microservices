@@ -3,8 +3,8 @@ package pt.ipcb.car.pooling.vehicles.modules.vehicles.useCases;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pt.ipcb.car.pooling.vehicles.modules.models.entities.ModelEntity;
-import pt.ipcb.car.pooling.vehicles.modules.models.repository.ModelRepository;
+import pt.ipcb.car.pooling.vehicles.modules.brands.entities.BrandEntity;
+import pt.ipcb.car.pooling.vehicles.modules.brands.repository.IBrandRepository;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.contracts.request.CreateVehicleRequest;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.contracts.response.VehicleResponse;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.entities.VehicleEntity;
@@ -17,7 +17,7 @@ import pt.ipcb.car.pooling.vehicles.modules.vehicles.repository.VehicleRepositor
 public class CreateVehicleUseCase {
 
         private final VehicleRepository vehicleRepository;
-        private final ModelRepository modelRepository;
+        private final IBrandRepository brandRepository;
         private final VehicleMapper vehicleMapper;
         private final IdentityClient identityClient;
 
@@ -32,10 +32,10 @@ public class CreateVehicleUseCase {
                         throw new RuntimeException("User verification failed: " + e.getMessage());
                 }
 
-                ModelEntity model = modelRepository.findById(request.getModelId())
-                                .orElseThrow(() -> new RuntimeException("Model not found"));
+                BrandEntity brand = brandRepository.findById(request.getBrandId())
+                                .orElseThrow(() -> new RuntimeException("Brand not found"));
 
-                VehicleEntity vehicle = vehicleMapper.toEntity(request, model, userId);
+                VehicleEntity vehicle = vehicleMapper.toEntity(request, brand, userId);
 
                 VehicleEntity savedVehicle = vehicleRepository.save(vehicle);
 

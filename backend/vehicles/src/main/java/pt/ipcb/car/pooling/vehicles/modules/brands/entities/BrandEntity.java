@@ -29,9 +29,6 @@ public class BrandEntity {
 
     private String description;
 
-    @jakarta.persistence.OneToMany(mappedBy = "brand")
-    private java.util.List<pt.ipcb.car.pooling.vehicles.modules.models.entities.ModelEntity> models;
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 

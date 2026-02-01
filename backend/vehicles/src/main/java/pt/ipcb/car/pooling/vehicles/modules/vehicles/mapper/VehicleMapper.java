@@ -1,7 +1,6 @@
 package pt.ipcb.car.pooling.vehicles.modules.vehicles.mapper;
 
 import org.springframework.stereotype.Component;
-import pt.ipcb.car.pooling.vehicles.modules.models.entities.ModelEntity;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.contracts.request.CreateVehicleRequest;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.contracts.response.VehicleResponse;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.entities.VehicleEntity;
@@ -12,9 +11,9 @@ public class VehicleMapper {
     public VehicleResponse toResponse(VehicleEntity entity) {
         return VehicleResponse.builder()
                 .id(entity.getId())
-                .modelId(entity.getModel().getId())
-                .modelName(entity.getModel().getName())
-                .brandName(entity.getModel().getBrand().getName())
+                .model(entity.getModel())
+                .brandId(entity.getBrand().getId())
+                .brandName(entity.getBrand().getName())
                 .licensePlate(entity.getLicensePlate())
                 .year(entity.getYear())
                 .color(entity.getColor())
@@ -24,9 +23,11 @@ public class VehicleMapper {
                 .build();
     }
 
-    public VehicleEntity toEntity(CreateVehicleRequest request, ModelEntity model, java.util.UUID userId) {
+    public VehicleEntity toEntity(CreateVehicleRequest request,
+            pt.ipcb.car.pooling.vehicles.modules.brands.entities.BrandEntity brand, java.util.UUID userId) {
         return VehicleEntity.builder()
-                .model(model)
+                .model(request.getModel())
+                .brand(brand)
                 .licensePlate(request.getLicensePlate())
                 .year(request.getYear())
                 .color(request.getColor())

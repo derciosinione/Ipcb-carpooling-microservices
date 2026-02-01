@@ -15,8 +15,11 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateVehicleRequest {
 
-    @NotNull(message = "Model ID cannot be null")
-    private UUID modelId;
+    @NotBlank(message = "Model cannot be empty")
+    private String model;
+
+    @NotNull(message = "Brand ID cannot be null")
+    private UUID brandId;
 
     @NotBlank(message = "License plate cannot be empty")
     private String licensePlate;

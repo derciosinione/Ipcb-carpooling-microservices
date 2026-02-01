@@ -14,8 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class VehicleResponse {
     private UUID id;
-    private UUID modelId;
-    private String modelName;
+    private String model;
+    private UUID brandId;
     private String brandName;
     private String licensePlate;
     private Integer year;

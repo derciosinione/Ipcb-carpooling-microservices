@@ -13,7 +13,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import pt.ipcb.car.pooling.vehicles.modules.models.entities.ModelEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -29,9 +28,12 @@ public class VehicleEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotBlank(message = "Model cannot be empty")
+    private String model;
+
     @ManyToOne
-    @JoinColumn(name = "model_id", nullable = false)
-    private ModelEntity model;
+    @JoinColumn(name = "brand_id", nullable = false)
+    private pt.ipcb.car.pooling.vehicles.modules.brands.entities.BrandEntity brand;
 
     @NotBlank(message = "License plate cannot be empty")
     private String licensePlate;

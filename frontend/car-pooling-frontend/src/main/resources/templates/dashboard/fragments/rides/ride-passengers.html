@@ -1,0 +1,57 @@
+<!-- Fragment: Passengers List -->
+<div th:fragment="ridePassengers">
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="font-semibold leading-none tracking-tight text-lg">Passageiros</h3>
+                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80" th:text="${(trip.confirmedSeats != null ? trip.confirmedSeats : 0) + '/' + (totalSeats != null ? totalSeats : 0) + ' lugares'}">0/0 lugares</div>
+            </div>
+        </div>
+        <div class="p-6 pt-0 space-y-4">
+            <div th:if="${#lists.isEmpty(confirmedBookings)}" class="text-sm text-muted-foreground">
+                Sem passageiros confirmados.
+            </div>
+
+            <div th:each="booking : ${confirmedBookings}" class="flex items-center justify-between">
+                <div class="flex items-center gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded-lg -ml-2 transition-colors flex-1">
+                    <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                        <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" />
+                    </span>
+                    <div>
+                        <div class="flex items-center gap-1">
+                            <p class="font-medium text-sm" th:text="${'Utilizador ' + #strings.substring(booking.passengerId, 0, 6)}">Utilizador</p>
+                            <i data-lucide="shield" class="h-3 w-3 text-green-500"></i>
+                        </div>
+                        <p class="text-xs text-muted-foreground flex items-center gap-1" th:text="${booking.seats + ' lugar(es)'}">1 lugar</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <template x-if="!isCompleted">
+                        <div class="flex gap-1">
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8">
+                                <i data-lucide="message-square" class="h-4 w-4"></i>
+                            </button>
+                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8">
+                                <i data-lucide="phone" class="h-4 w-4"></i>
+                            </button>
+                        </div>
+                    </template>
+                    <template x-if="isCompleted">
+                        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-2 gap-1">
+                            <i data-lucide="star" class="h-3 w-3"></i> Avaliar
+                        </button>
+                    </template>
+                </div>
+            </div>
+            
+             <div class="border-t pt-4">
+                <div class="flex items-center gap-3 text-muted-foreground">
+                    <div class="h-10 w-10 rounded-full border-2 border-dashed flex items-center justify-center">
+                        <i data-lucide="users" class="h-4 w-4"></i>
+                    </div>
+                    <span class="text-sm italic">Lugar disponível</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

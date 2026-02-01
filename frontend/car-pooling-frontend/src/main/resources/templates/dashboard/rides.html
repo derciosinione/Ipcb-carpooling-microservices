@@ -50,26 +50,30 @@
             </div>
 
             <div x-show="currentTab === 'upcoming'" class="space-y-4 mt-6">
-                <!-- Mock Ride Card 1 -->
-                <div class="rounded-lg border bg-card text-card-foreground shadow-sm mb-4 hover:shadow-md transition-shadow cursor-pointer">
+                <div x-show="isDriver">
+                    <div th:if="${#lists.isEmpty(driverUpcomingTrips)}" class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 text-sm text-muted-foreground">
+                        Ainda não publicou nenhuma viagem.
+                    </div>
+
+                    <div th:each="trip : ${driverUpcomingTrips}" class="rounded-lg border bg-card text-card-foreground shadow-sm mb-4 hover:shadow-md transition-shadow cursor-pointer">
                     <div class="p-6">
                         <div class="flex flex-col md:flex-row justify-between gap-4">
                             <div class="flex-1 space-y-4">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
                                         <div class="flex flex-col items-center justify-center border rounded-lg p-2 w-16 h-16 bg-muted/20 shrink-0">
-                                            <span class="text-[10px] font-bold uppercase text-muted-foreground">OUT</span>
-                                            <span class="text-xl font-bold">Hoje</span>
+                                            <span class="text-[10px] font-bold uppercase text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'MMM')}">MES</span>
+                                            <span class="text-xl font-bold" th:text="${#temporals.format(trip.departureTime, 'dd')}">00</span>
                                         </div>
                                         <div class="flex flex-col">
                                             <div class="flex items-center gap-2 text-sm text-foreground font-semibold">
                                                 <i data-lucide="clock" class="h-4 w-4 text-muted-foreground"></i>
-                                                <span>17:30</span>
+                                                <span th:text="${#temporals.format(trip.departureTime, 'HH:mm')}">00:00</span>
                                             </div>
-                                            <span class="text-xs text-muted-foreground capitalize">Hoje</span>
+                                            <span class="text-xs text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'dd/MM/yyyy')}">data</span>
                                         </div>
                                     </div>
-                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 hover:bg-green-600 text-white">Confirmado</div>
+                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 hover:bg-green-600 text-white" th:text="${trip.status}">OPEN</div>
                                 </div>
 
                                 <div class="flex items-center gap-4 pl-1">
@@ -79,29 +83,90 @@
                                         <div class="w-2.5 h-2.5 rounded-full bg-foreground"></div>
                                     </div>
                                     <div class="flex flex-col justify-between h-14">
-                                        <span class="font-semibold">Lisboa</span>
-                                        <span class="font-semibold">Faro</span>
+                                        <span class="font-semibold" th:text="${trip.origin}">Origem</span>
+                                        <span class="font-semibold" th:text="${trip.destination}">Destino</span>
                                     </div>
                                 </div>
 
                                 <div class="flex items-center gap-4 text-sm">
                                     <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 font-normal">Condutor</div>
-                                    <span class="text-muted-foreground">3 passageiros</span>
+                                    <span class="text-muted-foreground" th:text="${(trip.confirmedSeats != null ? trip.confirmedSeats : 0) + ' passageiros'}">0 passageiros</span>
                                 </div>
                             </div>
 
                             <div class="flex md:flex-col justify-between items-end border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6 gap-2">
                                 <div class="text-right">
                                     <p class="text-xs text-muted-foreground">Valor total</p>
-                                    <p class="text-xl font-bold text-primary">14,00 €</p>
+                                    <p class="text-xl font-bold text-primary" th:text="${trip.totalCost != null ? #numbers.formatDecimal(trip.totalCost, 1, 2) : '0,00'} + ' €'">0,00 €</p>
                                 </div>
                                 <div class="flex gap-2">
-                                    <a href="/dashboard/ride/1?openExpenses=true" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
+                                    <a th:href="@{'/dashboard/ride/' + ${trip.id} + '?openExpenses=true'}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
                                         <i data-lucide="calculator" class="h-4 w-4"></i> Gastos
                                     </a>
-                                    <a href="/dashboard/ride/1" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
+                                    <a th:href="@{'/dashboard/ride/' + ${trip.id}}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
                                         Detalhes <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                     </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <div x-show="!isDriver" style="display: none;">
+                    <div th:if="${#lists.isEmpty(passengerUpcomingTrips)}" class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 text-sm text-muted-foreground">
+                        Ainda não tem viagens como passageiro.
+                    </div>
+
+                    <div th:each="trip : ${passengerUpcomingTrips}" class="rounded-lg border bg-card text-card-foreground shadow-sm mb-4 hover:shadow-md transition-shadow cursor-pointer">
+                        <div class="p-6">
+                            <div class="flex flex-col md:flex-row justify-between gap-4">
+                                <div class="flex-1 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex flex-col items-center justify-center border rounded-lg p-2 w-16 h-16 bg-muted/20 shrink-0">
+                                                <span class="text-[10px] font-bold uppercase text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'MMM')}">MES</span>
+                                                <span class="text-xl font-bold" th:text="${#temporals.format(trip.departureTime, 'dd')}">00</span>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <div class="flex items-center gap-2 text-sm text-foreground font-semibold">
+                                                    <i data-lucide="clock" class="h-4 w-4 text-muted-foreground"></i>
+                                                    <span th:text="${#temporals.format(trip.departureTime, 'HH:mm')}">00:00</span>
+                                                </div>
+                                                <span class="text-xs text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'dd/MM/yyyy')}">data</span>
+                                            </div>
+                                        </div>
+                                        <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 hover:bg-green-600 text-white" th:text="${trip.status}">OPEN</div>
+                                    </div>
+
+                                    <div class="flex items-center gap-4 pl-1">
+                                        <div class="flex flex-col items-center gap-1">
+                                            <div class="w-2.5 h-2.5 rounded-full bg-background border-2 border-foreground"></div>
+                                            <div class="w-0.5 h-8 bg-muted"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-foreground"></div>
+                                        </div>
+                                        <div class="flex flex-col justify-between h-14">
+                                            <span class="font-semibold" th:text="${trip.origin}">Origem</span>
+                                            <span class="font-semibold" th:text="${trip.destination}">Destino</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-4 text-sm">
+                                        <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 font-normal">Passageiro</div>
+                                        <span class="text-muted-foreground" th:text="${(trip.confirmedSeats != null ? trip.confirmedSeats : 0) + ' passageiros'}">0 passageiros</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex md:flex-col justify-between items-end border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6 gap-2">
+                                    <div class="text-right">
+                                        <p class="text-xs text-muted-foreground">Valor total</p>
+                                        <p class="text-xl font-bold text-primary" th:text="${trip.totalCost != null ? #numbers.formatDecimal(trip.totalCost, 1, 2) : '0,00'} + ' €'">0,00 €</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <a th:href="@{'/dashboard/ride/' + ${trip.id}}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
+                                            Detalhes <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -110,50 +175,103 @@
             </div>
 
             <div x-show="currentTab === 'history'" class="space-y-4 mt-6" style="display: none;">
-                 <!-- Mock History Card -->
-                 <div class="rounded-lg border bg-card text-card-foreground shadow-sm mb-4 hover:shadow-md transition-shadow cursor-pointer opacity-80">
-                    <div class="p-6">
-                        <div class="flex flex-col md:flex-row justify-between gap-4">
-                            <div class="flex-1 space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex flex-col items-center justify-center border rounded-lg p-2 w-16 h-16 bg-muted/20 shrink-0">
-                                            <span class="text-[10px] font-bold uppercase text-muted-foreground">OUT</span>
-                                            <span class="text-xl font-bold">20</span>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <div class="flex items-center gap-2 text-sm text-foreground font-semibold">
-                                                <i data-lucide="clock" class="h-4 w-4 text-muted-foreground"></i>
-                                                <span>08:00</span>
-                                            </div>
-                                            <span class="text-xs text-muted-foreground capitalize">20 Out</span>
-                                        </div>
-                                    </div>
-                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground">Concluído</div>
-                                </div>
+                <div x-show="isDriver">
+                    <div th:if="${#lists.isEmpty(driverHistoryTrips)}" class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 text-sm text-muted-foreground">
+                        Histórico ainda não disponível.
+                    </div>
 
-                                <div class="flex items-center gap-4 pl-1">
-                                    <div class="flex flex-col items-center gap-1">
-                                        <div class="w-2.5 h-2.5 rounded-full bg-background border-2 border-foreground"></div>
-                                        <div class="w-0.5 h-8 bg-muted"></div>
-                                        <div class="w-2.5 h-2.5 rounded-full bg-foreground"></div>
+                    <div th:each="trip : ${driverHistoryTrips}" class="rounded-lg border bg-card text-card-foreground shadow-sm mb-4 hover:shadow-md transition-shadow cursor-pointer opacity-80">
+                        <div class="p-6">
+                            <div class="flex flex-col md:flex-row justify-between gap-4">
+                                <div class="flex-1 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex flex-col items-center justify-center border rounded-lg p-2 w-16 h-16 bg-muted/20 shrink-0">
+                                                <span class="text-[10px] font-bold uppercase text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'MMM')}">MES</span>
+                                                <span class="text-xl font-bold" th:text="${#temporals.format(trip.departureTime, 'dd')}">00</span>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <div class="flex items-center gap-2 text-sm text-foreground font-semibold">
+                                                    <i data-lucide="clock" class="h-4 w-4 text-muted-foreground"></i>
+                                                    <span th:text="${#temporals.format(trip.departureTime, 'HH:mm')}">00:00</span>
+                                                </div>
+                                                <span class="text-xs text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'dd/MM/yyyy')}">data</span>
+                                            </div>
+                                        </div>
+                                        <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground" th:text="${trip.status}">Concluído</div>
                                     </div>
-                                    <div class="flex flex-col justify-between h-14">
-                                        <span class="font-semibold">Porto</span>
-                                        <span class="font-semibold">Lisboa</span>
+
+                                    <div class="flex items-center gap-4 pl-1">
+                                        <div class="flex flex-col items-center gap-1">
+                                            <div class="w-2.5 h-2.5 rounded-full bg-background border-2 border-foreground"></div>
+                                            <div class="w-0.5 h-8 bg-muted"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-foreground"></div>
+                                        </div>
+                                        <div class="flex flex-col justify-between h-14">
+                                            <span class="font-semibold" th:text="${trip.origin}">Origem</span>
+                                            <span class="font-semibold" th:text="${trip.destination}">Destino</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
                                 <div class="flex gap-2">
-                                    <a href="/dashboard/ride/1?status=completed" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
+                                    <a th:href="@{'/dashboard/ride/' + ${trip.id} + '?status=completed'}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
                                         Detalhes <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                 </div>
+                </div>
+
+                <div x-show="!isDriver" style="display: none;">
+                    <div th:if="${#lists.isEmpty(passengerHistoryTrips)}" class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 text-sm text-muted-foreground">
+                        Histórico ainda não disponível.
+                    </div>
+
+                    <div th:each="trip : ${passengerHistoryTrips}" class="rounded-lg border bg-card text-card-foreground shadow-sm mb-4 hover:shadow-md transition-shadow cursor-pointer opacity-80">
+                        <div class="p-6">
+                            <div class="flex flex-col md:flex-row justify-between gap-4">
+                                <div class="flex-1 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex flex-col items-center justify-center border rounded-lg p-2 w-16 h-16 bg-muted/20 shrink-0">
+                                                <span class="text-[10px] font-bold uppercase text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'MMM')}">MES</span>
+                                                <span class="text-xl font-bold" th:text="${#temporals.format(trip.departureTime, 'dd')}">00</span>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <div class="flex items-center gap-2 text-sm text-foreground font-semibold">
+                                                    <i data-lucide="clock" class="h-4 w-4 text-muted-foreground"></i>
+                                                    <span th:text="${#temporals.format(trip.departureTime, 'HH:mm')}">00:00</span>
+                                                </div>
+                                                <span class="text-xs text-muted-foreground" th:text="${#temporals.format(trip.departureTime, 'dd/MM/yyyy')}">data</span>
+                                            </div>
+                                        </div>
+                                        <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground" th:text="${trip.status}">Concluído</div>
+                                    </div>
+
+                                    <div class="flex items-center gap-4 pl-1">
+                                        <div class="flex flex-col items-center gap-1">
+                                            <div class="w-2.5 h-2.5 rounded-full bg-background border-2 border-foreground"></div>
+                                            <div class="w-0.5 h-8 bg-muted"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-foreground"></div>
+                                        </div>
+                                        <div class="flex flex-col justify-between h-14">
+                                            <span class="font-semibold" th:text="${trip.origin}">Origem</span>
+                                            <span class="font-semibold" th:text="${trip.destination}">Destino</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <a th:href="@{'/dashboard/ride/' + ${trip.id} + '?status=completed'}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-1">
+                                        Detalhes <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

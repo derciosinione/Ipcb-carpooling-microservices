@@ -1,0 +1,20 @@
+<!-- Fragment: Home Header (title + driver/passenger toggle + subtitle) -->
+<div th:fragment="homeHeader" x-data="{ isDriver: true }">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <div class="flex items-center space-x-2 bg-muted p-1 rounded-lg">
+            <button @click="isDriver = false" 
+                    :class="!isDriver ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                    class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">
+                Passageiro
+            </button>
+            <button @click="isDriver = true"
+                    :class="isDriver ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                    class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">
+                Condutor
+            </button>
+        </div>
+    </div>
+
+    <p class="text-muted-foreground mb-8" x-text="isDriver ? 'Bem-vindo de volta, Ricardo! Aqui está o resumo da sua atividade como condutor.' : 'Bem-vindo de volta, Ricardo! Aqui está o resumo das suas viagens como passageiro.'"></p>
+</div>

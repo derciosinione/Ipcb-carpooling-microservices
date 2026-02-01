@@ -1,0 +1,56 @@
+<!-- Fragment: Step 2 - Details -->
+<div th:fragment="stepDetails">
+    <div x-show="step === 2" style="display: none;" class="transition-opacity duration-200">
+        <div class="flex flex-col space-y-1.5 p-6">
+            <h3 class="font-semibold leading-none tracking-tight">Quando e como?</h3>
+            <p class="text-sm text-muted-foreground">Defina a data, hora e detalhes do veículo.</p>
+        </div>
+        <div class="p-6 pt-0 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Data</label>
+                    <div class="relative">
+                        <i data-lucide="calendar" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                        <input type="date" name="date" x-model="formData.date" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Hora</label>
+                    <div class="relative">
+                        <i data-lucide="clock" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                        <input type="time" name="time" x-model="formData.time" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lugares disponíveis</label>
+                    <div class="relative">
+                        <i data-lucide="users" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                        <input type="number" name="seats" x-model="formData.seats" min="1" max="8" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Veículo</label>
+                    <select name="vehicleId" x-model="formData.vehicleId" @change="formData.vehicleLabel = $event.target.options[$event.target.selectedIndex].text" class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9 relative">
+                        <option value="" disabled selected>Selecione o veículo</option>
+                        <option th:each="vehicle : ${vehicles}" th:value="${vehicle.id}" th:text="${vehicle.brandName + ' ' + vehicle.model + ' (' + vehicle.licensePlate + ')'}"></option>
+                    </select>
+                     <i data-lucide="car" class="absolute left-9 bottom-[125px] h-4 w-4 text-muted-foreground" style="transform: translateY(2px);"></i>
+                </div>
+            </div>
+            <div class="flex items-start gap-2 p-3 bg-amber-50 text-amber-900 rounded-md text-sm border border-amber-100">
+                <i data-lucide="info" class="h-4 w-4 shrink-0 mt-0.5"></i>
+                <p>O custo final da viagem é calculado com as despesas registadas e dividido automaticamente por todos os viajantes.</p>
+            </div>
+            <div class="space-y-2">
+                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Informações adicionais (opcional)</label>
+                <input name="description" x-model="formData.description" placeholder="Ex: Bagageira grande, não aceito animais..." class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            </div>
+        </div>
+        <div class="flex items-center p-6 pt-0 justify-between">
+            <button type="button" @click="step--" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Voltar</button>
+            <button type="button" @click="step++" :disabled="!formData.date || !formData.time || !formData.seats || !formData.vehicleId" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'opacity-100': formData.date && formData.time && formData.seats && formData.vehicleId }">Seguinte</button>
+        </div>
+    </div>
+</div>

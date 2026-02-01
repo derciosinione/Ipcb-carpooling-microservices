@@ -1,0 +1,32 @@
+<!-- Fragment: Step 1 - Itinerary -->
+<div th:fragment="stepItinerary">
+    <div x-show="step === 1" class="transition-opacity duration-200">
+        <div class="flex flex-col space-y-1.5 p-6">
+            <h3 class="font-semibold leading-none tracking-tight">Para onde vai?</h3>
+            <p class="text-sm text-muted-foreground">Defina o trajeto da sua viagem.</p>
+        </div>
+        <div class="p-6 pt-0 space-y-4">
+            <div class="space-y-2">
+                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Origem</label>
+                <div class="relative">
+                    <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                    <input x-model="formData.origin" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Ex: Lisboa" />
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Destino</label>
+                <div class="relative">
+                    <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                    <input x-model="formData.destination" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Ex: Porto" />
+                </div>
+            </div>
+            <div class="flex items-center gap-2 p-3 bg-blue-50 text-blue-800 rounded-md text-sm mt-4 border border-blue-100">
+                <i data-lucide="info" class="h-4 w-4 shrink-0"></i>
+                <p>Adicione cidades de passagem populares para conseguir mais passageiros.</p>
+            </div>
+        </div>
+        <div class="flex items-center p-6 pt-0 justify-end">
+            <button @click="step++" :disabled="!formData.origin || !formData.destination" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'opacity-100': formData.origin && formData.destination }">Seguinte</button>
+        </div>
+    </div>
+</div>

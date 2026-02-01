@@ -7,58 +7,28 @@
     <title>Procurar Boleia - Dashboard</title>
 </head>
 <body>
-    <div layout:fragment="content" class="max-w-4xl mx-auto space-y-8" x-data="{ 
-        hasSearched: false,
-        results: [],
-        handleSearch() {
-            this.hasSearched = true;
-            this.results = [
-                {
-                    id: 101,
-                    driver: { name: 'Maria Oliveira', rating: 4.9, image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100' },
-                    origin: 'Lisboa',
-                    destination: 'Porto',
-                    time: '09:00',
-                    duration: '3h 10m',
-                    price: 18.50,
-                    seats: 2,
-                    features: ['Não fumador', 'Música']
-                },
-                {
-                    id: 102,
-                    driver: { name: 'João Santos', rating: 4.7, image: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=100' },
-                    origin: 'Lisboa',
-                    destination: 'Porto',
-                    time: '10:30',
-                    duration: '3h 00m',
-                    price: 20.00,
-                    seats: 3,
-                    features: ['Bagagem grande', 'Animais aceites']
-                }
-            ];
-        }
-    }">
+    <div layout:fragment="content" class="max-w-4xl mx-auto space-y-8">
         <div>
             <h1 class="text-3xl font-bold tracking-tight">Procurar Boleia</h1>
             <p class="text-muted-foreground mt-2">Encontre a viagem perfeita para o seu destino.</p>
         </div>
 
         <!-- Search Form -->
-        <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <form class="rounded-lg border bg-card text-card-foreground shadow-sm" method="get" th:action="@{/dashboard/search}">
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                     <div class="md:col-span-4 space-y-2">
                         <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">De onde sai?</label>
                         <div class="relative">
                             <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
-                            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Origem" value="Lisboa">
+                            <input name="origin" th:value="${origin}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Origem">
                         </div>
                     </div>
                     <div class="md:col-span-4 space-y-2">
                         <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Para onde vai?</label>
                         <div class="relative">
                             <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
-                            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Destino" value="Porto">
+                            <input name="destination" th:value="${destination}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Destino">
                         </div>
                     </div>
                     <div class="md:col-span-2 space-y-2">
@@ -69,7 +39,7 @@
                         </div>
                     </div>
                     <div class="md:col-span-2">
-                        <button @click="handleSearch()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
+                        <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
                             <i data-lucide="search" class="h-4 w-4 mr-2"></i>
                             Pesquisar
                         </button>
@@ -79,10 +49,10 @@
                 <div class="mt-4 flex flex-wrap gap-4 items-center">
                     <div class="flex items-center gap-2">
                         <i data-lucide="users" class="h-4 w-4 text-muted-foreground"></i>
-                        <select class="flex h-9 w-[100px] items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
-                            <option value="1">1 Pessoa</option>
-                            <option value="2">2 Pessoas</option>
-                            <option value="3">3 Pessoas</option>
+                        <select name="seats" class="flex h-9 w-[100px] items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
+                            <option value="1" th:selected="${seats == 1}">1 Pessoa</option>
+                            <option value="2" th:selected="${seats == 2}">2 Pessoas</option>
+                            <option value="3" th:selected="${seats == 3}">3 Pessoas</option>
                         </select>
                     </div>
                     <div data-orientation="vertical" role="none" class="shrink-0 bg-border w-[1px] h-6 hidden sm:block"></div>
@@ -91,15 +61,14 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </form>
 
         <!-- Results -->
-        <div x-show="hasSearched" style="display: none;" class="space-y-4">
-            <h2 class="text-xl font-semibold">Resultados disponíveis (<span x-text="results.length"></span>)</h2>
+        <div th:if="${!#lists.isEmpty(results)}" class="space-y-4">
+            <h2 class="text-xl font-semibold">Resultados disponíveis (<span th:text="${results.size()}">0</span>)</h2>
             
             <div class="grid gap-4">
-                <template x-for="ride in results" :key="ride.id">
-                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm group hover:border-primary/50 transition-all cursor-pointer" @click="window.location.href='/ride/' + ride.id">
+                <div th:each="ride : ${results}" class="rounded-lg border bg-card text-card-foreground shadow-sm group hover:border-primary/50 transition-all cursor-pointer" th:onclick="|window.location.href='/dashboard/ride/${ride.id}'|">
                         <div class="p-6">
                             <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
                                 
@@ -107,19 +76,19 @@
                                 <div class="flex-1 space-y-4">
                                     <div class="flex items-center gap-8 relative">
                                         <div class="space-y-1 text-center w-16 shrink-0">
-                                            <p class="font-bold text-lg" x-text="ride.time"></p>
-                                            <p class="text-xs text-muted-foreground" x-text="ride.origin"></p>
+                                            <p class="font-bold text-lg" th:text="${#temporals.format(ride.departureTime, 'HH:mm')}">00:00</p>
+                                            <p class="text-xs text-muted-foreground" th:text="${ride.origin}">Origem</p>
                                         </div>
                                         
                                         <div class="flex-1 flex flex-col items-center px-4 relative">
                                             <div class="w-full h-[2px] bg-muted group-hover:bg-primary/20 transition-colors"></div>
-                                            <p class="text-xs text-muted-foreground mt-1" x-text="ride.duration"></p>
+                                            <p class="text-xs text-muted-foreground mt-1">Viagem direta</p>
                                             <i data-lucide="arrow-right" class="absolute -right-1 -top-2 h-4 w-4 text-muted-foreground"></i>
                                         </div>
 
                                         <div class="space-y-1 text-center w-16 shrink-0">
-                                            <p class="font-bold text-lg text-muted-foreground">13:40</p>
-                                            <p class="text-xs text-muted-foreground" x-text="ride.destination"></p>
+                                            <p class="font-bold text-lg text-muted-foreground">—</p>
+                                            <p class="text-xs text-muted-foreground" th:text="${ride.destination}">Destino</p>
                                         </div>
                                     </div>
                                 </div>
@@ -130,35 +99,32 @@
                                 <div class="flex items-center justify-between w-full md:w-auto gap-8">
                                     <div class="flex items-center gap-3">
                                         <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                                            <img class="aspect-square h-full w-full" :src="ride.driver.image" />
+                                            <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100" />
                                         </span>
                                         <div>
-                                            <p class="font-medium text-sm" x-text="ride.driver.name"></p>
+                                            <p class="font-medium text-sm" th:text="${'Condutor ' + #strings.substring(ride.driverId, 0, 6)}">Condutor</p>
                                             <div class="flex items-center gap-1 text-xs text-muted-foreground">
-                                                <span>★ <span x-text="ride.driver.rating"></span></span>
+                                                <span>★ 5.0</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="text-right">
-                                        <p class="text-xl font-bold text-primary">€<span x-text="ride.price.toFixed(2)"></span></p>
-                                        <p class="text-xs text-muted-foreground">por lugar</p>
+                                        <p class="text-xl font-bold text-primary">€<span th:text="${ride.costPerSeat != null ? #numbers.formatDecimal(ride.costPerSeat, 1, 2) : '0,00'}">0,00</span></p>
+                                        <p class="text-xs text-muted-foreground">por pessoa</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="p-6 pt-0 bg-muted/30 px-6 py-3 flex justify-between items-center text-xs text-muted-foreground rounded-b-lg">
                             <div class="flex gap-2">
-                                <template x-for="feature in ride.features">
-                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 font-normal bg-background/50" x-text="feature"></div>
-                                </template>
+                                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 font-normal bg-background/50">Viagem direta</div>
                             </div>
                             <span class="flex items-center gap-1">
-                                <i data-lucide="users" class="h-3 w-3"></i> <span x-text="ride.seats"></span> lugares disponíveis
+                                <i data-lucide="users" class="h-3 w-3"></i> <span th:text="${ride.availableSeats}">0</span> lugares disponíveis
                             </span>
                         </div>
                     </div>
-                </template>
             </div>
         </div>
     </div>

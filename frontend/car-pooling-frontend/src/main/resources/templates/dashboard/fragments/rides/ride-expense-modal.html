@@ -1,0 +1,114 @@
+<!-- Fragment: Expense Manager Modal -->
+<div th:fragment="rideExpenseModal">
+    <div x-show="isModalOpen" style="display: none;" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div @click.outside="isModalOpen = false" class="bg-background rounded-lg shadow-lg max-w-[600px] w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex flex-col space-y-1.5 p-6">
+                <h3 class="font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <i data-lucide="calculator" class="h-5 w-5 text-primary"></i>
+                    Calculadora de Gastos da Viagem
+                </h3>
+                <p class="text-sm text-muted-foreground">Gerencie os gastos da viagem e calcule a divisão de custos.</p>
+            </div>
+            
+            <div class="p-6 pt-0 space-y-6">
+                 <!-- Info Cards -->
+                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="space-y-1">
+                      <span class="text-xs text-muted-foreground">Preço Base</span>
+                      <div class="font-semibold flex items-center">
+                        <i data-lucide="euro" class="h-4 w-4 mr-1 text-muted-foreground"></i>
+                        <span th:text="${trip != null && trip.costPerSeat != null ? #numbers.formatDecimal(trip.costPerSeat, 1, 2) : '0,00'}">0,00</span>
+                      </div>
+                    </div>
+                     <div class="space-y-1">
+                      <span class="text-xs text-muted-foreground">Passageiros</span>
+                      <div class="font-semibold flex items-center">
+                        <i data-lucide="users" class="h-4 w-4 mr-1 text-muted-foreground"></i>
+                        <span th:text="${trip != null && trip.confirmedSeats != null ? trip.confirmedSeats : 0}">0</span>
+                      </div>
+                    </div>
+                    <div class="space-y-1">
+                      <span class="text-xs text-muted-foreground">Total Pessoas</span>
+                      <div class="font-semibold flex items-center">
+                        <i data-lucide="car" class="h-4 w-4 mr-1 text-muted-foreground"></i>
+                        <span th:text="${trip != null && trip.totalTravelers != null ? trip.totalTravelers : 1}">1</span>
+                      </div>
+                    </div>
+                    <div class="space-y-1">
+                      <span class="text-xs text-muted-foreground">Total Gastos</span>
+                      <div class="font-semibold text-red-500 flex items-center">
+                        <i data-lucide="euro" class="h-4 w-4 mr-1"></i>
+                        <span th:text="${totalExpenses != null ? #numbers.formatDecimal(totalExpenses, 1, 2) : '0,00'}">0,00</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div data-orientation="horizontal" role="none" class="shrink-0 bg-border h-[1px] w-full"></div>
+
+                  <!-- Expenses List -->
+                  <div class="space-y-4">
+                    <h4 class="text-sm font-medium leading-none">Lista de Despesas</h4>
+                    <form th:action="@{'/dashboard/ride/' + ${trip.id} + '/expenses'}" method="post" class="flex gap-2 items-end">
+                      <div class="grid gap-2 flex-1">
+                        <input name="description" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Ex: Café, Estacionamento..." />
+                      </div>
+                      <div class="grid gap-2 w-24">
+                        <input name="amount" type="number" step="0.01" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="€" />
+                      </div>
+                      <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-10 shrink-0">
+                        <i data-lucide="plus" class="h-4 w-4"></i>
+                      </button>
+                    </form>
+
+                    <div class="h-[150px] w-full rounded-md border p-4 overflow-y-auto">
+                        <div th:each="expense : ${expenses}" class="flex items-center justify-between group mb-2 last:mb-0">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-medium" th:text="${expense.description}">Descrição</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-sm" th:text="${'€' + #numbers.formatDecimal(expense.amount, 1, 2)}">€0,00</span>
+                                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 text-destructive" disabled>
+                                    <i data-lucide="trash-2" class="h-4 w-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                         <div th:if="${#lists.isEmpty(expenses)}" class="text-center text-sm text-muted-foreground py-8">
+                            Nenhuma despesa registada.
+                         </div>
+                    </div>
+                  </div>
+
+                  <!-- Final Calculation -->
+                  <div class="rounded-lg border text-card-foreground shadow-sm bg-primary/5 border-primary/20">
+                    <div class="p-6">
+                      <div class="space-y-4">
+                        <div class="flex items-center justify-between text-sm">
+                          <span class="text-muted-foreground">Divisão dos Gastos (por pessoa):</span>
+                          <span class="font-mono">€<span th:text="${totalExpenses != null ? #numbers.formatDecimal(totalExpenses, 1, 2) : '0,00'}">0,00</span> ÷ <span th:text="${trip != null && trip.totalTravelers != null ? trip.totalTravelers : 1}">1</span> = <strong>€<span th:text="${trip != null && trip.costPerSeat != null ? #numbers.formatDecimal(trip.costPerSeat, 1, 2) : '0,00'}">0,00</span></strong></span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                          <span class="text-muted-foreground">Preço Base (Boleia):</span>
+                          <span class="font-mono">€<span th:text="${trip != null && trip.costPerSeat != null ? #numbers.formatDecimal(trip.costPerSeat, 1, 2) : '0,00'}">0,00</span></span>
+                        </div>
+                        <div data-orientation="horizontal" role="none" class="shrink-0 bg-border h-[1px] w-full bg-primary/20"></div>
+                        <div class="flex items-center justify-between">
+                          <span class="font-semibold text-lg">Total a Receber (por Passageiro)</span>
+                          <div class="flex items-center gap-2 text-xl font-bold text-primary">
+                            <i data-lucide="coins" class="h-5 w-5"></i>
+                            €<span th:text="${trip != null && trip.costPerSeat != null ? #numbers.formatDecimal(trip.costPerSeat, 1, 2) : '0,00'}">0,00</span>
+                          </div>
+                        </div>
+                        <p class="text-[10px] text-muted-foreground text-right">
+                          *Inclui o preço base + a quota-parte das despesas
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="flex items-center p-6 pt-0 justify-end gap-2">
+                <button @click="isModalOpen = false" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Fechar</button>
+                <button @click="isModalOpen = false" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Guardar Alterações</button>
+            </div>
+        </div>
+    </div>
+</div>

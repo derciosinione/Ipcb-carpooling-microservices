@@ -1,0 +1,55 @@
+<!-- Fragment: Stats Grid (4 overview cards) -->
+<div th:fragment="statsGrid">
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div class="rounded-xl border bg-card text-card-foreground shadow-sm">
+            <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+                <h3 class="tracking-tight text-sm font-medium" x-text="isDriver ? 'Total de Viagens' : 'Viagens Realizadas'"></h3>
+                <i data-lucide="map" class="h-4 w-4 text-muted-foreground"></i>
+            </div>
+            <div class="p-6 pt-0">
+                <div class="text-2xl font-bold" x-text="isDriver ? '342' : '48'"></div>
+                <p class="text-xs text-muted-foreground flex items-center gap-1">
+                    <span class="text-green-500 flex items-center" x-text="isDriver ? '+12%' : '+4%'"></span>
+                    desde o mês passado
+                </p>
+            </div>
+        </div>
+        
+         <div class="rounded-xl border bg-card text-card-foreground shadow-sm">
+            <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+                <h3 class="tracking-tight text-sm font-medium" x-text="isDriver ? 'Ganhos Totais' : 'Poupança Estimada'"></h3>
+                <i x-show="isDriver" data-lucide="wallet" class="h-4 w-4 text-muted-foreground"></i>
+                <i x-show="!isDriver" data-lucide="piggy-bank" class="h-4 w-4 text-muted-foreground"></i>
+            </div>
+            <div class="p-6 pt-0">
+                <div class="text-2xl font-bold" x-text="isDriver ? '€1,240.50' : '€320.00'"></div>
+                <p class="text-xs text-muted-foreground flex items-center gap-1">
+                    <span class="text-green-500 flex items-center" x-text="isDriver ? '+4.5%' : '+8.2%'"></span>
+                    desde o mês passado
+                </p>
+            </div>
+        </div>
+
+         <div class="rounded-xl border bg-card text-card-foreground shadow-sm">
+            <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+                <h3 class="tracking-tight text-sm font-medium">Avaliação Média</h3>
+                <i data-lucide="star" class="h-4 w-4 text-muted-foreground"></i>
+            </div>
+            <div class="p-6 pt-0">
+                <div class="text-2xl font-bold" x-text="isDriver ? '4.9/5.0' : '5.0/5.0'"></div>
+                <p class="text-xs text-muted-foreground" x-text="isDriver ? 'Baseado em 124 avaliações' : 'Baseado em 42 avaliações'"></p>
+            </div>
+        </div>
+        
+         <div class="rounded-xl border bg-card text-card-foreground shadow-sm">
+            <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+                <h3 class="tracking-tight text-sm font-medium" x-text="isDriver ? 'Km Percorridos' : 'Km Viajados'"></h3>
+                <i data-lucide="map-pin" class="h-4 w-4 text-muted-foreground"></i>
+            </div>
+            <div class="p-6 pt-0">
+                <div class="text-2xl font-bold" x-text="isDriver ? '12,450 km' : '3,200 km'"></div>
+                <p class="text-xs text-muted-foreground">Total acumulado</p>
+            </div>
+        </div>
+    </div>
+</div>

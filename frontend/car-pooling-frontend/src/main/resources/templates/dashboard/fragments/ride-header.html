@@ -1,0 +1,56 @@
+<!-- Fragment: Ride Header -->
+<div th:fragment="rideHeader">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <a href="/dashboard/rides" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 pl-0 hover:bg-transparent text-muted-foreground mb-2">
+                ← Voltar às viagens
+            </a>
+            <h1 class="text-3xl font-bold tracking-tight flex items-center gap-2">
+                Lisboa <span class="text-muted-foreground">→</span> Faro
+            </h1>
+            <div class="flex items-center gap-2 mt-2">
+                <div x-show="!isCompleted" class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 hover:bg-green-600 text-white">Confirmado</div>
+                <div x-show="isCompleted" style="display: none;" class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-muted text-muted-foreground">Concluído</div>
+                <span class="text-muted-foreground">•</span>
+                <span class="text-muted-foreground">Hoje, 24 Out</span>
+            </div>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+            <div class="flex items-center space-x-2 bg-muted p-1 rounded-lg mb-2 md:mb-0">
+                <button @click="isDriver = false" 
+                        :class="!isDriver ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                        class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">
+                    Passageiro
+                </button>
+                <button @click="isDriver = true"
+                        :class="isDriver ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                        class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">
+                    Condutor
+                </button>
+            </div>
+            <div class="flex gap-2 items-center">
+                <button x-show="isDriver" @click="isModalOpen = true" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-2">
+                    <i data-lucide="calculator" class="h-4 w-4"></i>
+                    Gerir Gastos
+                </button>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" @click.outside="open = false" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10">
+                        <i data-lucide="more-vertical" class="h-4 w-4"></i>
+                    </button>
+                    <div x-show="open" style="display: none;" class="absolute right-0 top-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2">
+                        <div x-show="!isCompleted" class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-red-600">
+                            <span x-text="isDriver ? 'Cancelar Viagem' : 'Cancelar Reserva'"></span>
+                        </div>
+                         <div x-show="isCompleted" class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                            Arquivar Viagem
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>

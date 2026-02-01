@@ -1,0 +1,39 @@
+<!-- Fragment: Quick Actions (right column) -->
+<div th:fragment="quickActions">
+    <div class="col-span-3 rounded-xl border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6">
+            <h3 class="font-semibold leading-none tracking-tight">Ações Rápidas</h3>
+            <p class="text-sm text-muted-foreground">Gerencie sua atividade</p>
+        </div>
+         <div class="p-6 pt-0 flex flex-col gap-4">
+            <template x-if="isDriver">
+                <div class="flex flex-col gap-4">
+                    <a href="/dashboard/publish-ride" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
+                        <i data-lucide="plus-circle" class="h-4 w-4 mr-2"></i>
+                        Publicar nova boleia
+                    </a>
+                    <a href="/search" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full">
+                        <i data-lucide="map-pin" class="h-4 w-4 mr-2"></i>
+                        Procurar boleia (Passageiro)
+                    </a>
+                </div>
+            </template>
+            <template x-if="!isDriver">
+                <div class="flex flex-col gap-4">
+                    <a href="/search" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full">
+                        <i data-lucide="search" class="h-4 w-4 mr-2"></i>
+                        Procurar boleia
+                    </a>
+                    <a href="/dashboard/publish-ride" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full">
+                        <i data-lucide="car" class="h-4 w-4 mr-2"></i>
+                        Publicar viagem (Condutor)
+                    </a>
+                </div>
+            </template>
+            <button @click="$dispatch('open-invite-modal')" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full">
+                <i data-lucide="users" class="h-4 w-4 mr-2"></i>
+                Convidar Amigos
+            </button>
+         </div>
+    </div>
+</div>

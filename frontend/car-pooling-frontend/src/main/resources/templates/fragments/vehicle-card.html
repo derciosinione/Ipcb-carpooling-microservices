@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- ==========================================
+         VEHICLE CARD FRAGMENT
+         ========================================== -->
+    <div th:fragment="vehicle-card(vehicle)" class="rounded-lg border bg-card text-card-foreground shadow-sm group overflow-hidden hover:border-primary/50 transition-colors">
+        <div class="h-48 bg-muted relative overflow-hidden">
+            <img th:src="@{'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80&w=800'}" 
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute top-2 right-2">
+                <div th:if="${vehicle.verified}" class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-500 hover:bg-green-600 text-white gap-1">
+                    <i data-lucide="check-circle-2" class="h-3 w-3"></i> Verificado
+                </div>
+                <div th:unless="${vehicle.verified}" class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-amber-500 hover:bg-amber-600 text-white gap-1">
+                    <i data-lucide="clock" class="h-3 w-3"></i> Pendente
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-1.5 p-6">
+            <h3 class="font-semibold leading-none tracking-tight" th:text="${vehicle.brandName + ' ' + vehicle.model}">Volkswagen Golf</h3>
+            <p class="text-sm text-muted-foreground" th:text="${vehicle.color + ' • ' + vehicle.year}">Cinza Prata • 2020</p>
+        </div>
+        <div class="p-6 pt-0">
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="bg-muted/30 p-2 rounded-md">
+                    <p class="text-xs text-muted-foreground uppercase font-semibold">Matrícula</p>
+                    <p class="font-medium font-mono" th:text="${vehicle.licensePlate}">AA-00-AA</p>
+                </div>
+                <div class="bg-muted/30 p-2 rounded-md">
+                    <p class="text-xs text-muted-foreground uppercase font-semibold">Lugares</p>
+                    <p class="font-medium" th:text="${vehicle.seats}">5</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center p-6 pt-0 bg-muted/30 p-4 flex gap-2">
+            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input h-9 px-3 flex-1 gap-2 hover:bg-background hover:text-primary">
+                <i data-lucide="edit-2" class="h-4 w-4"></i> Editar
+            </button>
+            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background h-9 px-3 flex-1 gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 hover:border-red-200">
+                <i data-lucide="trash-2" class="h-4 w-4"></i> Remover
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

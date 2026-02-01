@@ -44,7 +44,6 @@ public class DashboardController {
             List<VehicleDto.VehicleResponse> vehicles = vehicleClient.getVehiclesByOwner(user.getId());
             model.addAttribute("vehicles", vehicles);
             model.addAttribute("brands", vehicleClient.getAllBrands());
-            model.addAttribute("models", vehicleClient.getAllModels());
         } catch (Exception e) {
             model.addAttribute("error", "Erro ao carregar veículos.");
             model.addAttribute("vehicles", List.of());

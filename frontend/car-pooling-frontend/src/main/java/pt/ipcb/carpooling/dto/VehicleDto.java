@@ -12,7 +12,7 @@ public class VehicleDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class VehicleRequest {
-        private String brand;
+        private String brandId;
         private String model;
         private String licensePlate;
         private Integer year;
@@ -26,7 +26,7 @@ public class VehicleDto {
     @NoArgsConstructor
     public static class VehicleResponse {
         private String id;
-        private String brand;
+        private String brandName;
         private String model;
         private String licensePlate;
         private Integer year;
@@ -42,14 +42,5 @@ public class VehicleDto {
     public static class BrandResponse {
         private String id;
         private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ModelResponse {
-        private String id;
-        private String name;
-        private String brandId;
     }
 }

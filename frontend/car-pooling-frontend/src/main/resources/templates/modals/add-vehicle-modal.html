@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- ==========================================
+         ADD VEHICLE MODAL
+         ========================================== -->
+    <div th:fragment="add-vehicle-modal" x-show="isModalOpen" style="display: none;" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+         <div @click.outside="isModalOpen = false" class="bg-background rounded-lg shadow-lg max-w-[650px] w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
+            <div class="space-y-1.5 text-center sm:text-left">
+                <h2 class="text-lg font-semibold leading-none tracking-tight">Adicionar Novo Veículo</h2>
+                <p class="text-sm text-muted-foreground">Preencha os dados e envie os documentos para verificação.</p>
+            </div>
+
+            <form th:action="@{/dashboard/vehicles}" method="POST" class="space-y-6">
+                <!-- Tabs -->
+                <div class="w-full mt-4">
+                     <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full grid-cols-2">
+                        <button type="button" @click="activeTab = 'details'" :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'details' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Detalhes do Carro</button>
+                        <button type="button" @click="activeTab = 'documents'" :class="{ 'bg-background text-foreground shadow-sm': activeTab === 'documents' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative">Documentação</button>
+                    </div>
+
+                    <div x-show="activeTab === 'details'" class="space-y-4 py-4">
+                         <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none">Marca <span class="text-red-500">*</span></label>
+                                <select name="brandId" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                                    <option value="">Selecione...</option>
+                                    <th:block th:each="brand : ${brands}">
+                                        <option th:value="${brand.id}" th:text="${brand.name}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none">Modelo <span class="text-red-500">*</span></label>
+                                <input name="model" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="Ex: Golf" />
+                            </div>
+                        </div>
+                         <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none">Matrícula <span class="text-red-500">*</span></label>
+                                <input name="licensePlate" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="AA-00-AA" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none">Ano</label>
+                                <input name="year" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" value="2024" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none">Lugares <span class="text-red-500">*</span></label>
+                                <input name="seats" type="number" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" value="5" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none">Cor</label>
+                                <input name="color" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="Ex: Preto" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="activeTab === 'documents'" class="space-y-6 py-4" style="display: none;">
+                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex gap-3 text-blue-800 text-sm">
+                            <i data-lucide="shield-check" class="h-5 w-5 shrink-0"></i>
+                            <p>Para sua segurança e a dos passageiros, precisamos de validar a legalidade do veículo.</p>
+                        </div>
+                         <div class="border rounded-lg p-4 space-y-3">
+                            <label class="text-base font-semibold">Foto do Veículo</label>
+                            <p class="text-xs text-muted-foreground">Funcionalidade de upload de fotos será implementada em breve. Por agora, será atribuída uma imagem padrão.</p>
+                         </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-6">
+                    <button type="button" @click="isModalOpen = false" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors border border-input bg-background hover:bg-accent h-10 px-4 py-2">Cancelar</button>
+                    <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 gap-2">
+                        <i data-lucide="save" class="h-4 w-4"></i> Submeter
+                    </button>
+                </div>
+            </form>
+         </div>
+    </div>
+
+</body>
+</html>

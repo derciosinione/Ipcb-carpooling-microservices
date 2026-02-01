@@ -23,7 +23,4 @@ public interface VehicleClient {
 
     @GetMapping("/vehicles/api/v1/brands")
     List<VehicleDto.BrandResponse> getAllBrands();
-
-    @GetMapping("/vehicles/api/v1/models")
-    List<VehicleDto.ModelResponse> getAllModels();
 }

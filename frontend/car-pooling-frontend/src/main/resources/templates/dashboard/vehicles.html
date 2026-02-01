@@ -33,7 +33,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Real Vehicles List -->
             <th:block th:each="vehicle : ${vehicles}">
-                <div th:replace="~{fragments/dashboard-fragments :: vehicle-card(${vehicle})}"></div>
+                <div th:replace="~{fragments/vehicle-card :: vehicle-card(${vehicle})}"></div>
             </th:block>
 
              <!-- Add New Card Button -->
@@ -49,7 +49,7 @@
         </div>
 
         <!-- Add Vehicle Modal Fragment -->
-        <div th:replace="~{fragments/dashboard-fragments :: add-vehicle-modal}"></div>
+        <div th:replace="~{modals/add-vehicle-modal :: add-vehicle-modal}"></div>
     </div>
 </body>
 </html>

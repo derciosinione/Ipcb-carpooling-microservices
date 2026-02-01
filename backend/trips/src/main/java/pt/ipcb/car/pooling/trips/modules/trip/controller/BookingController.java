@@ -30,20 +30,20 @@ public class BookingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PatchMapping("/{id}/accept")
-    public ResponseEntity<BookingResponse> accept(@PathVariable UUID id, HttpServletRequest httpRequest) {
+    @PostMapping("/{id}/accept")
+    public ResponseEntity<BookingResponse> acceptPost(@PathVariable UUID id, HttpServletRequest httpRequest) {
         UUID userId = requireUserId(httpRequest);
         return ResponseEntity.ok(bookingService.acceptBooking(id, userId));
     }
 
-    @PatchMapping("/{id}/reject")
-    public ResponseEntity<BookingResponse> reject(@PathVariable UUID id, HttpServletRequest httpRequest) {
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<BookingResponse> rejectPost(@PathVariable UUID id, HttpServletRequest httpRequest) {
         UUID userId = requireUserId(httpRequest);
         return ResponseEntity.ok(bookingService.rejectBooking(id, userId));
     }
 
-    @PatchMapping("/{id}/cancel")
-    public ResponseEntity<BookingResponse> cancel(@PathVariable UUID id, HttpServletRequest httpRequest) {
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<BookingResponse> cancelPost(@PathVariable UUID id, HttpServletRequest httpRequest) {
         UUID userId = requireUserId(httpRequest);
         return ResponseEntity.ok(bookingService.cancelBooking(id, userId));
     }

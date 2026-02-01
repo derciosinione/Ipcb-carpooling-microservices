@@ -50,12 +50,12 @@
                     
                     <!-- Premium Tabs Selection -->
                     <div class="grid grid-cols-2 p-1.5 mb-5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-inner">
-                        <a th:href="@{/auth(tab='login')}" 
+                        <a th:href="@{/auth(tab='login',redirect=${redirect})}" 
                                 th:classappend="${tab == 'login' ? 'bg-white dark:bg-slate-700 text-primary shadow-md' : 'text-slate-500 hover:text-slate-700'}"
                                 class="flex items-center justify-center py-2 text-xs font-bold rounded-lg transition-all duration-300">
                             Entrar
                         </a>
-                        <a th:href="@{/auth(tab='register')}" 
+                        <a th:href="@{/auth(tab='register',redirect=${redirect})}" 
                                 th:classappend="${tab == 'register' ? 'bg-white dark:bg-slate-700 text-primary shadow-md' : 'text-slate-500 hover:text-slate-700'}"
                                 class="flex items-center justify-center py-2 text-xs font-bold rounded-lg transition-all duration-300">
                             Registar

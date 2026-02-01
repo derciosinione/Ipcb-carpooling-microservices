@@ -27,6 +27,9 @@ public class AuthUseCase {
     @Value("${security.token.issuer}")
     private String tokenIssuer;
 
+    @Value("${security.token.expiration-hours:4}")
+    private long tokenExpirationHours;
+
     public AuthResponse execute(AuthRequest request) {
 
         var user = userRepository.findByEmail(request.email())
@@ -44,7 +47,7 @@ public class AuthUseCase {
 
         var algorithm = Algorithm.HMAC256(secretKey);
         var token = JWT.create().withIssuer(tokenIssuer)
-                .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
+                .withExpiresAt(Instant.now().plus(Duration.ofHours(tokenExpirationHours)))
                 .withSubject(user.getId().toString())
                 .withClaim("roles", roles)
                 .sign(algorithm);

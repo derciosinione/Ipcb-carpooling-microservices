@@ -13,6 +13,8 @@ import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.RegisterForm;
 
 import jakarta.servlet.http.HttpSession;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,6 +27,7 @@ public class AuthController {
 
     @GetMapping("/auth")
     public String auth(@RequestParam(name = "tab", defaultValue = "login") String tab,
+            @RequestParam(name = "redirect", required = false) String redirect,
             Model model,
             HttpSession session) {
 
@@ -38,6 +41,9 @@ public class AuthController {
         }
 
         model.addAttribute("tab", tab);
+        if (redirect != null && !redirect.isBlank()) {
+            model.addAttribute("redirect", redirect);
+        }
         model.addAttribute("gatewayUrl", gatewayUrl);
         return "auth";
     }
@@ -45,6 +51,7 @@ public class AuthController {
     @PostMapping("/auth/login")
     public String login(@RequestParam String email,
             @RequestParam String password,
+            @RequestParam(name = "redirect", required = false) String redirect,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
         try {
@@ -71,9 +78,15 @@ public class AuthController {
             session.setAttribute("userInitials", initials.toUpperCase());
             session.setAttribute("userName", response.getName());
 
-            return "redirect:/dashboard";
+            String safeRedirect = sanitizeRedirect(redirect);
+            return "redirect:" + (safeRedirect != null ? safeRedirect : "/dashboard");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Erro ao iniciar sessão. Verifique os seus dados.");
+            String safeRedirect = sanitizeRedirect(redirect);
+            if (safeRedirect != null) {
+                String encodedRedirect = URLEncoder.encode(safeRedirect, StandardCharsets.UTF_8);
+                return "redirect:/auth?tab=login&redirect=" + encodedRedirect;
+            }
             return "redirect:/auth?tab=login";
         }
     }
@@ -123,5 +136,18 @@ public class AuthController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/auth";
+    }
+
+    private String sanitizeRedirect(String redirect) {
+        if (redirect == null || redirect.isBlank()) {
+            return null;
+        }
+        if (!redirect.startsWith("/") || redirect.startsWith("//")) {
+            return null;
+        }
+        if (redirect.startsWith("/auth") || redirect.startsWith("/logout")) {
+            return null;
+        }
+        return redirect;
     }
 }

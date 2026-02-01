@@ -27,14 +27,12 @@ public class TripCostService {
                 .orElseThrow(() -> new NotFoundException("Trip not found with id: " + tripId));
 
         Integer confirmedSeats = bookingRepository.sumConfirmedSeatsByTripId(tripId);
-        int totalTravelers = confirmedSeats != null ? confirmedSeats : 0;
+        int totalTravelers = (confirmedSeats != null ? confirmedSeats : 0) + 1;
 
         BigDecimal totalCost = trip.getTotalCost() == null ? BigDecimal.ZERO : trip.getTotalCost();
         BigDecimal costPerTraveler = BigDecimal.ZERO;
-        if (totalTravelers > 0) {
-            costPerTraveler = totalCost
-                    .divide(BigDecimal.valueOf(totalTravelers), 2, RoundingMode.HALF_UP);
-        }
+        costPerTraveler = totalCost
+                .divide(BigDecimal.valueOf(totalTravelers), 2, RoundingMode.HALF_UP);
 
         List<BookingEntity> bookings = bookingRepository.findByTripId(tripId);
         for (BookingEntity booking : bookings) {

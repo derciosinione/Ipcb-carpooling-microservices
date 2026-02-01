@@ -19,9 +19,15 @@ public class AuthInterceptor implements HandlerInterceptor {
             throws Exception {
         HttpSession session = request.getSession();
         if (session.getAttribute("token") == null) {
-            String errorMessage = URLEncoder.encode("Sessão expirada ou acesso restrito. Por favor, faça login.",
+            String errorMessage = URLEncoder.encode("Sessão expirada. Por favor, faça login.",
                     StandardCharsets.UTF_8);
-            response.sendRedirect("/auth?error=" + errorMessage);
+            String redirectTarget = request.getRequestURI();
+            String query = request.getQueryString();
+            if (query != null && !query.isBlank()) {
+                redirectTarget += "?" + query;
+            }
+            String encodedRedirect = URLEncoder.encode(redirectTarget, StandardCharsets.UTF_8);
+            response.sendRedirect("/auth?tab=login&error=" + errorMessage + "&redirect=" + encodedRedirect);
             return false;
         }
         return true;

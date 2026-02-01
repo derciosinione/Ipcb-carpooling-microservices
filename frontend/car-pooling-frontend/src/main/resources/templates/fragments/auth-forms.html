@@ -7,6 +7,7 @@
          ========================================== -->
     <div th:fragment="login-form" class="mt-1 animate-in fade-in zoom-in-95 duration-500">
         <form class="space-y-4" th:action="@{/auth/login}" method="POST">
+            <input type="hidden" name="redirect" th:if="${redirect}" th:value="${redirect}" />
             <div class="space-y-1.5">
                 <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 ml-1" for="email">Endereço de Email</label>
                 <div class="relative group">

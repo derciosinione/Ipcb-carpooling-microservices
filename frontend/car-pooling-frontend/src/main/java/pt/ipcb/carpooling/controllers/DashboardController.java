@@ -17,6 +17,7 @@ import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.ExpenseDto;
 import pt.ipcb.carpooling.dto.MetricsDto;
+import pt.ipcb.carpooling.dto.PassengerTripDto;
 import pt.ipcb.carpooling.dto.PublishRideForm;
 import pt.ipcb.carpooling.dto.TripDto;
 import pt.ipcb.carpooling.dto.UserDto;
@@ -26,12 +27,13 @@ import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 
 @Controller
@@ -110,9 +112,10 @@ public class DashboardController {
         }
 
         try {
-            List<TripDto.TripResponse> passengerTrips = tripsClient.getTripsByPassenger(user.getId());
-            model.addAttribute("passengerUpcomingTrips", filterUpcoming(passengerTrips));
-            model.addAttribute("passengerHistoryTrips", filterHistory(passengerTrips));
+            List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByPassenger(user.getId());
+            List<PassengerTripDto> passengerTrips = buildPassengerTrips(bookings);
+            model.addAttribute("passengerUpcomingTrips", filterUpcomingPassengerTrips(passengerTrips));
+            model.addAttribute("passengerHistoryTrips", filterHistoryPassengerTrips(passengerTrips));
         } catch (Exception e) {
             log.error("Error loading passenger trips for user {}: {}", user.getId(), e.getMessage());
             model.addAttribute("passengerUpcomingTrips", List.of());
@@ -395,7 +398,7 @@ public class DashboardController {
             request.setSeats(seats);
             request.setPassengerId(user.getId());
             tripsClient.createBooking(request);
-            redirectAttributes.addFlashAttribute("success", "Pedido de reserva enviado!");
+            redirectAttributes.addFlashAttribute("success", "Reserva efetuada com sucesso!");
         } catch (Exception e) {
             log.error("Error creating booking for trip {}: {}", tripId, e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Erro ao solicitar reserva.");
@@ -445,6 +448,55 @@ public class DashboardController {
         UserDto.BatchUsersRequest request = new UserDto.BatchUsersRequest(ids);
         return identityClient.getUsersByIds(request).stream()
                 .collect(Collectors.toMap(UserDto.UserResponse::getId, u -> u));
+    }
+
+    private List<PassengerTripDto> buildPassengerTrips(List<BookingDto.BookingResponse> bookings) {
+        if (bookings == null || bookings.isEmpty()) {
+            return List.of();
+        }
+
+        Map<String, TripDto.TripResponse> tripsById = new HashMap<>();
+        List<PassengerTripDto> result = new ArrayList<>();
+        for (BookingDto.BookingResponse booking : bookings) {
+            if (booking == null || booking.getTripId() == null) {
+                continue;
+            }
+            TripDto.TripResponse trip = tripsById.get(booking.getTripId());
+            if (trip == null) {
+                try {
+                    trip = tripsClient.getTripById(booking.getTripId());
+                    tripsById.put(booking.getTripId(), trip);
+                } catch (Exception e) {
+                    log.error("Error loading trip {} for booking {}: {}", booking.getTripId(), booking.getId(),
+                            e.getMessage());
+                    continue;
+                }
+            }
+            result.add(new PassengerTripDto(trip, booking));
+        }
+        return result;
+    }
+
+    private List<PassengerTripDto> filterUpcomingPassengerTrips(List<PassengerTripDto> trips) {
+        if (trips == null) {
+            return Collections.emptyList();
+        }
+        return trips.stream()
+                .filter(trip -> trip.getTrip() != null)
+                .filter(trip -> !"FINISHED".equalsIgnoreCase(trip.getTrip().getStatus())
+                        && !"CANCELED".equalsIgnoreCase(trip.getTrip().getStatus()))
+                .collect(Collectors.toList());
+    }
+
+    private List<PassengerTripDto> filterHistoryPassengerTrips(List<PassengerTripDto> trips) {
+        if (trips == null) {
+            return Collections.emptyList();
+        }
+        return trips.stream()
+                .filter(trip -> trip.getTrip() != null)
+                .filter(trip -> "FINISHED".equalsIgnoreCase(trip.getTrip().getStatus())
+                        || "CANCELED".equalsIgnoreCase(trip.getTrip().getStatus()))
+                .collect(Collectors.toList());
     }
 
     private String safeName(UserDto.UserResponse user) {

@@ -9,6 +9,14 @@
 <body>
     <div layout:fragment="content" class="space-y-6 pb-12 p-4 md:p-8 pt-6" th:attr="x-data=|{ isModalOpen: new URLSearchParams(window.location.search).get('openExpenses') === 'true', isCompleted: ${isCompleted}, isDriver: ${isDriver} }|">
         <div th:replace="dashboard/fragments/rides/ride-header :: rideHeader"></div>
+        <div th:if="${success}" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+            <i data-lucide="check-circle" class="h-4 w-4"></i>
+            <span th:text="${success}">Reserva efetuada com sucesso!</span>
+        </div>
+        <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+            <i data-lucide="alert-circle" class="h-4 w-4"></i>
+            <span th:text="${error}">Ocorreu um erro ao processar o seu pedido.</span>
+        </div>
         <div x-show="!isDriver" class="rounded-lg border bg-card text-card-foreground shadow-sm p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div class="text-sm text-muted-foreground">Quer reservar esta viagem?</div>
             <form th:if="${currentUserId != null && currentUserId != trip.driverId}" th:action="@{'/dashboard/ride/' + ${trip.id} + '/book'}" method="post" class="flex items-center gap-2">
@@ -41,7 +49,7 @@
             </div>
         </div>
     <!-- Expense Manager Modal -->
-    <div th:replace="dashboard/fragments/rides/ride-expense-modal :: rideExpenseModal"></div>
+    <div th:replace="~{dashboard/fragments/rides/ride-expense-modal :: rideExpenseModal}"></div>
     <!-- Expense Manager Modal -->
     <!-- (Existing Expense Manager Modal Logic...) -->
     <!-- (Assuming it stays as is or can be refactored, but sticking to existing for now, just appending others) -->

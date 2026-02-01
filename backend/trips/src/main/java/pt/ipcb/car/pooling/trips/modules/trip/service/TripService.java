@@ -107,16 +107,15 @@ public class TripService {
 
         Integer confirmedSeats = bookingRepository.sumConfirmedSeatsByTripId(trip.getId());
         int confirmed = confirmedSeats != null ? confirmedSeats : 0;
+        int totalTravelers = confirmed + 1;
 
         BigDecimal totalCost = trip.getTotalCost() == null ? BigDecimal.ZERO : trip.getTotalCost();
         BigDecimal costPerSeat = BigDecimal.ZERO;
-        if (confirmed > 0) {
-            costPerSeat = totalCost
-                    .divide(BigDecimal.valueOf(confirmed), 2, RoundingMode.HALF_UP);
-        }
+        costPerSeat = totalCost
+                .divide(BigDecimal.valueOf(totalTravelers), 2, RoundingMode.HALF_UP);
 
         response.setConfirmedSeats(confirmed);
-        response.setTotalTravelers(confirmed);
+        response.setTotalTravelers(totalTravelers);
         response.setCostPerSeat(costPerSeat);
         return response;
     }

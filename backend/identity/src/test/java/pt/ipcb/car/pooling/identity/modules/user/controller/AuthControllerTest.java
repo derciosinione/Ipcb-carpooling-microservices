@@ -51,7 +51,8 @@ class AuthControllerTest {
     @Test
     void auth_ShouldReturnToken_WhenCredentialsValid() throws Exception {
         AuthRequest request = new AuthRequest("me@test.com", "pass");
-        AuthResponse response = new AuthResponse("me@test.com", "token123");
+        AuthResponse response = new AuthResponse(UUID.randomUUID(), "me@test.com", "token123",
+                java.util.List.of("USER"));
 
         when(authUseCase.execute(request)).thenReturn(response);
 

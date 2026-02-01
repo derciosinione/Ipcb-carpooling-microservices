@@ -30,20 +30,25 @@ public class AuthUseCase {
     public AuthResponse execute(AuthRequest request) {
 
         var user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new BadCredentialsException(String.format("User with email %s not found", request.email())));
+                .orElseThrow(() -> new BadCredentialsException(
+                        String.format("User with email %s not found", request.email())));
 
-        var passwordMatches = passwordEncoder.matches(request.password(), user.getPassword());
+        boolean passwordMatches = passwordEncoder.matches(request.password(), user.getPassword());
 
         if (!passwordMatches) {
             throw new BadCredentialsException();
         }
 
+        var roles = user.getProfiles().stream()
+                .map(pt.ipcb.car.pooling.identity.modules.profile.entities.ProfileEntity::getName).toList();
+
         var algorithm = Algorithm.HMAC256(secretKey);
         var token = JWT.create().withIssuer(tokenIssuer)
                 .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
                 .withSubject(user.getId().toString())
+                .withClaim("roles", roles)
                 .sign(algorithm);
 
-        return new AuthResponse(request.email(), token);
+        return new AuthResponse(user.getId(), request.email(), token, roles);
     }
 }

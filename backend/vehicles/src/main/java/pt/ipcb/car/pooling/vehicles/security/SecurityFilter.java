@@ -21,11 +21,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/auth/sign-in")
-                || request.getServletPath().startsWith("/auth/register")
-                || request.getServletPath().startsWith("/public");
+        return request.getServletPath().startsWith("/swagger-ui")
+                || request.getServletPath().startsWith("/v3/api-docs");
     }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

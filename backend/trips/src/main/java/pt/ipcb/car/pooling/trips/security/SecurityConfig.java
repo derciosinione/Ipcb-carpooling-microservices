@@ -1,4 +1,4 @@
-package pt.ipcb.car.pooling.vehicles.security;
+package pt.ipcb.car.pooling.trips.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

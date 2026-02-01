@@ -1,4 +1,4 @@
-package pt.ipcb.car.pooling.identity.security;
+package pt.ipcb.car.pooling.payments.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,8 +21,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/api/v1/auth")
-                || request.getServletPath().startsWith("/swagger-ui")
+        return request.getServletPath().startsWith("/swagger-ui")
                 || request.getServletPath().startsWith("/v3/api-docs");
     }
 

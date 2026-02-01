@@ -8,6 +8,6 @@ public class SearchController {
 
     @GetMapping("/search")
     public String search() {
-        return "search";
+        return "redirect:/dashboard/search";
     }
 }

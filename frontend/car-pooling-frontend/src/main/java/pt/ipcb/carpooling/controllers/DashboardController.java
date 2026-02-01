@@ -15,6 +15,7 @@ import pt.ipcb.carpooling.clients.VehicleClient;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.ExpenseDto;
+import pt.ipcb.carpooling.dto.MetricsDto;
 import pt.ipcb.carpooling.dto.PublishRideForm;
 import pt.ipcb.carpooling.dto.TripDto;
 import pt.ipcb.carpooling.dto.VehicleDto;
@@ -38,7 +39,49 @@ public class DashboardController {
     private final TripsClient tripsClient;
 
     @GetMapping
-    public String dashboardHome() {
+    public String dashboardHome(Model model, HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+
+        List<TripDto.TripResponse> driverTrips = List.of();
+        List<TripDto.TripResponse> passengerTrips = List.of();
+
+        try {
+            driverTrips = tripsClient.getTripsByDriver(user.getId());
+        } catch (Exception e) {
+            log.error("Error loading driver trips for dashboard: {}", e.getMessage());
+        }
+
+        try {
+            passengerTrips = tripsClient.getTripsByPassenger(user.getId());
+        } catch (Exception e) {
+            log.error("Error loading passenger trips for dashboard: {}", e.getMessage());
+        }
+
+        MetricsDto.MetricsResponse driverMetrics = null;
+        MetricsDto.MetricsResponse passengerMetrics = null;
+        try {
+            driverMetrics = tripsClient.getMetrics("DRIVER");
+        } catch (Exception e) {
+            log.error("Error loading driver metrics: {}", e.getMessage());
+        }
+        try {
+            passengerMetrics = tripsClient.getMetrics("PASSENGER");
+        } catch (Exception e) {
+            log.error("Error loading passenger metrics: {}", e.getMessage());
+        }
+
+        model.addAttribute("driverTotalTrips", driverMetrics != null ? driverMetrics.getTotalTrips() : driverTrips.size());
+        model.addAttribute("passengerTotalTrips", passengerMetrics != null ? passengerMetrics.getTotalTrips() : passengerTrips.size());
+        model.addAttribute("driverUpcomingTrips", filterUpcoming(driverTrips));
+        model.addAttribute("passengerUpcomingTrips", filterUpcoming(passengerTrips));
+
+        model.addAttribute("driverTotalEarnings", driverMetrics != null ? driverMetrics.getTotalEarnings() : sumTotalCost(driverTrips));
+        model.addAttribute("passengerTotalSpend", passengerMetrics != null ? passengerMetrics.getTotalSpend() : sumCostPerSeat(passengerTrips));
+        model.addAttribute("driverTotalKm", driverMetrics != null ? driverMetrics.getTotalKm() : java.math.BigDecimal.ZERO);
+        model.addAttribute("passengerTotalKm", passengerMetrics != null ? passengerMetrics.getTotalKm() : java.math.BigDecimal.ZERO);
         return "dashboard/home";
     }
 
@@ -333,5 +376,25 @@ public class DashboardController {
                 .filter(trip -> "FINISHED".equalsIgnoreCase(trip.getStatus())
                         || "CANCELED".equalsIgnoreCase(trip.getStatus()))
                 .collect(Collectors.toList());
+    }
+
+    private java.math.BigDecimal sumTotalCost(List<TripDto.TripResponse> trips) {
+        if (trips == null) {
+            return java.math.BigDecimal.ZERO;
+        }
+        return trips.stream()
+                .map(TripDto.TripResponse::getTotalCost)
+                .filter(Objects::nonNull)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+    }
+
+    private java.math.BigDecimal sumCostPerSeat(List<TripDto.TripResponse> trips) {
+        if (trips == null) {
+            return java.math.BigDecimal.ZERO;
+        }
+        return trips.stream()
+                .map(TripDto.TripResponse::getCostPerSeat)
+                .filter(Objects::nonNull)
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
     }
 }

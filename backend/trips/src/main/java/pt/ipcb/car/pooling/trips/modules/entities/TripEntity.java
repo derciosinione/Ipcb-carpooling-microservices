@@ -47,6 +47,8 @@ public class TripEntity {
 
     private BigDecimal totalCost = BigDecimal.ZERO;
 
+    private BigDecimal distanceKm = BigDecimal.ZERO;
+
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private TripStatusEntity status;

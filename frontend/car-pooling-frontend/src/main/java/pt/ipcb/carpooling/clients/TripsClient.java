@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.ExpenseDto;
+import pt.ipcb.carpooling.dto.MetricsDto;
 import pt.ipcb.carpooling.dto.TripDto;
 
 import java.util.List;
@@ -53,4 +54,7 @@ public interface TripsClient {
 
     @PostMapping("/trips/api/v1/expenses")
     ExpenseDto.ExpenseResponse createExpense(@RequestBody ExpenseDto.CreateExpenseRequest request);
+
+    @GetMapping("/trips/api/v1/metrics")
+    MetricsDto.MetricsResponse getMetrics(@RequestParam("role") String role);
 }

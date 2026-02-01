@@ -1,47 +1,69 @@
 <!-- Fragment: Upcoming Rides (left column) -->
 <div th:fragment="upcomingRides">
-    <div class="col-span-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+    <div class="w-full lg:flex-[2] rounded-xl border bg-card text-card-foreground shadow-sm">
         <div class="flex flex-col space-y-1.5 p-6">
             <h3 class="font-semibold leading-none tracking-tight">Próximas Viagens</h3>
             <p class="text-sm text-muted-foreground">As suas viagens agendadas.</p>
         </div>
         <div class="p-6 pt-0">
             <div class="space-y-6">
-                <!-- Ride Items Wrapper -->
-                <div x-data="{ rides: [
-                    { date: 'Hoje', time: '17:30', from: 'Lisboa', to: 'Faro', status: 'Confirmado', role: 'Condutor', passengers: 3, price: '€25.00', id: 1 },
-                    { date: 'Amanhã', time: '09:00', from: 'Faro', to: 'Lisboa', status: 'Pendente', role: 'Condutor', passengers: 1, price: '€25.00', id: 2 },
-                    { date: 'Sexta', time: '18:00', from: 'Lisboa', to: 'Porto', status: 'Confirmado', role: 'Passageiro', driver: 'Ana S.', price: '€18.50', id: 3 }
-                ]}">
-                    <template x-for="ride in rides.filter(r => isDriver ? r.role === 'Condutor' : r.role === 'Passageiro')" :key="ride.id">
-                        <a :href="'/dashboard/ride/' + ride.id" class="flex items-center justify-between border-b last:border-0 pb-6 last:pb-0 hover:bg-muted/50 p-2 rounded-lg transition-colors cursor-pointer block">
-                            <div class="flex items-center gap-4">
+                <div x-show="isDriver">
+                    <div th:if="${#lists.isEmpty(driverUpcomingTrips)}" class="text-center py-8 text-muted-foreground text-sm">
+                        Nenhuma viagem encontrada para este perfil.
+                    </div>
+                    <div th:each="ride, iter : ${driverUpcomingTrips}">
+                        <a th:if="${iter.index < 3}" th:href="@{'/dashboard/ride/' + ${ride.id}}" class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b last:border-0 pb-6 last:pb-0 hover:bg-muted/50 p-2 rounded-lg transition-colors cursor-pointer block gap-3 min-w-0">
+                            <div class="flex items-center gap-4 min-w-0">
                                 <div class="h-14 w-16 rounded-xl bg-muted/50 border flex flex-col items-center justify-center shrink-0">
                                     <i data-lucide="calendar" class="h-4 w-4 text-muted-foreground mb-1"></i>
-                                    <span class="font-bold text-sm text-foreground" x-text="ride.date"></span>
+                                    <span class="font-bold text-sm text-foreground" th:text="${#temporals.format(ride.departureTime, 'dd MMM')}">Data</span>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-base flex items-center gap-2">
-                                        <span x-text="ride.from"></span>
-                                        <span class="text-muted-foreground">→</span> 
-                                        <span x-text="ride.to"></span>
+                                <div class="min-w-0">
+                                    <h4 class="font-bold text-base flex items-center gap-2 flex-wrap">
+                                        <span th:text="${ride.origin}" class="break-words">Origem</span>
+                                        <span class="text-muted-foreground">→</span>
+                                        <span th:text="${ride.destination}" class="break-words">Destino</span>
                                     </h4>
                                     <p class="text-sm text-muted-foreground mt-1">
-                                        <span x-text="ride.time"></span> • <span x-text="ride.role"></span>
+                                        <span th:text="${#temporals.format(ride.departureTime, 'HH:mm')}">Hora</span> • <span>Condutor</span>
                                     </p>
                                 </div>
                             </div>
-                            <div class="flex flex-col items-end gap-1.5">
-                                <div class="font-medium px-2.5 py-0.5 rounded-full text-xs"
-                                     :class="ride.status === 'Confirmado' ? 'bg-green-100 text-green-700' : 'bg-muted text-foreground'">
-                                    <span x-text="ride.status"></span>
-                                </div>
-                                <span class="text-xs text-muted-foreground" x-text="ride.role === 'Condutor' ? ride.passengers + ' passageiros' : 'Condutor: ' + ride.driver"></span>
+                            <div class="flex flex-col items-end gap-1.5 shrink-0">
+                                <div class="font-medium px-2.5 py-0.5 rounded-full text-xs bg-green-100 text-green-700" th:text="${ride.status}">OPEN</div>
+                                <span class="text-xs text-muted-foreground" th:text="${(ride.confirmedSeats != null ? ride.confirmedSeats : 0) + ' passageiros'}">0 passageiros</span>
                             </div>
                         </a>
-                    </template>
-                     <div x-show="rides.filter(r => isDriver ? r.role === 'Condutor' : r.role === 'Passageiro').length === 0" class="text-center py-8 text-muted-foreground text-sm">
+                    </div>
+                </div>
+
+                <div x-show="!isDriver" style="display: none;">
+                    <div th:if="${#lists.isEmpty(passengerUpcomingTrips)}" class="text-center py-8 text-muted-foreground text-sm">
                         Nenhuma viagem encontrada para este perfil.
+                    </div>
+                    <div th:each="ride, iter : ${passengerUpcomingTrips}">
+                        <a th:if="${iter.index < 3}" th:href="@{'/dashboard/ride/' + ${ride.id}}" class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b last:border-0 pb-6 last:pb-0 hover:bg-muted/50 p-2 rounded-lg transition-colors cursor-pointer block gap-3 min-w-0">
+                            <div class="flex items-center gap-4 min-w-0">
+                                <div class="h-14 w-16 rounded-xl bg-muted/50 border flex flex-col items-center justify-center shrink-0">
+                                    <i data-lucide="calendar" class="h-4 w-4 text-muted-foreground mb-1"></i>
+                                    <span class="font-bold text-sm text-foreground" th:text="${#temporals.format(ride.departureTime, 'dd MMM')}">Data</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="font-bold text-base flex items-center gap-2 flex-wrap">
+                                        <span th:text="${ride.origin}" class="break-words">Origem</span>
+                                        <span class="text-muted-foreground">→</span>
+                                        <span th:text="${ride.destination}" class="break-words">Destino</span>
+                                    </h4>
+                                    <p class="text-sm text-muted-foreground mt-1">
+                                        <span th:text="${#temporals.format(ride.departureTime, 'HH:mm')}">Hora</span> • <span>Passageiro</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end gap-1.5 shrink-0">
+                                <div class="font-medium px-2.5 py-0.5 rounded-full text-xs bg-green-100 text-green-700" th:text="${ride.status}">OPEN</div>
+                                <span class="text-xs text-muted-foreground" th:text="${'Condutor ' + #strings.substring(ride.driverId, 0, 6)}">Condutor</span>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>

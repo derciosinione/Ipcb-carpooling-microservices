@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -33,4 +34,6 @@ public class CreateTripRequest {
 
     @Min(value = 1, message = "At least 1 seat must be available")
     private Integer availableSeats;
+
+    private BigDecimal distanceKm;
 }

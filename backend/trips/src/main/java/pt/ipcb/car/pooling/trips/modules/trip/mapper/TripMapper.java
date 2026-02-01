@@ -17,6 +17,9 @@ public class TripMapper {
         entity.setDescription(request.getDescription());
         entity.setDepartureTime(request.getDepartureTime());
         entity.setAvailableSeats(request.getAvailableSeats());
+        if (request.getDistanceKm() != null) {
+            entity.setDistanceKm(request.getDistanceKm());
+        }
         return entity;
     }
 
@@ -31,6 +34,7 @@ public class TripMapper {
         response.setDepartureTime(entity.getDepartureTime());
         response.setAvailableSeats(entity.getAvailableSeats());
         response.setTotalCost(entity.getTotalCost());
+        response.setDistanceKm(entity.getDistanceKm());
         response.setCreatedAt(entity.getCreatedAt());
 
         if (entity.getStatus() != null){

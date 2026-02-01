@@ -7,7 +7,10 @@
                 <i data-lucide="map" class="h-4 w-4 text-muted-foreground"></i>
             </div>
             <div class="p-6 pt-0">
-                <div class="text-2xl font-bold" x-text="isDriver ? '342' : '48'"></div>
+                <div class="text-2xl font-bold">
+                    <span x-show="isDriver" th:text="${driverTotalTrips}">0</span>
+                    <span x-show="!isDriver" th:text="${passengerTotalTrips}">0</span>
+                </div>
                 <p class="text-xs text-muted-foreground flex items-center gap-1">
                     <span class="text-green-500 flex items-center" x-text="isDriver ? '+12%' : '+4%'"></span>
                     desde o mês passado
@@ -17,12 +20,15 @@
         
          <div class="rounded-xl border bg-card text-card-foreground shadow-sm">
             <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-                <h3 class="tracking-tight text-sm font-medium" x-text="isDriver ? 'Ganhos Totais' : 'Poupança Estimada'"></h3>
+                <h3 class="tracking-tight text-sm font-medium" x-text="isDriver ? 'Ganhos Totais' : 'Gastos Totais'"></h3>
                 <i x-show="isDriver" data-lucide="wallet" class="h-4 w-4 text-muted-foreground"></i>
                 <i x-show="!isDriver" data-lucide="piggy-bank" class="h-4 w-4 text-muted-foreground"></i>
             </div>
             <div class="p-6 pt-0">
-                <div class="text-2xl font-bold" x-text="isDriver ? '€1,240.50' : '€320.00'"></div>
+                <div class="text-2xl font-bold">
+                    <span x-show="isDriver" th:text="${'€' + #numbers.formatDecimal(driverTotalEarnings, 1, 2)}">€0,00</span>
+                    <span x-show="!isDriver" th:text="${'€' + #numbers.formatDecimal(passengerTotalSpend, 1, 2)}">€0,00</span>
+                </div>
                 <p class="text-xs text-muted-foreground flex items-center gap-1">
                     <span class="text-green-500 flex items-center" x-text="isDriver ? '+4.5%' : '+8.2%'"></span>
                     desde o mês passado
@@ -36,8 +42,8 @@
                 <i data-lucide="star" class="h-4 w-4 text-muted-foreground"></i>
             </div>
             <div class="p-6 pt-0">
-                <div class="text-2xl font-bold" x-text="isDriver ? '4.9/5.0' : '5.0/5.0'"></div>
-                <p class="text-xs text-muted-foreground" x-text="isDriver ? 'Baseado em 124 avaliações' : 'Baseado em 42 avaliações'"></p>
+                <div class="text-2xl font-bold">—</div>
+                <p class="text-xs text-muted-foreground">Sem avaliações suficientes</p>
             </div>
         </div>
         
@@ -47,7 +53,10 @@
                 <i data-lucide="map-pin" class="h-4 w-4 text-muted-foreground"></i>
             </div>
             <div class="p-6 pt-0">
-                <div class="text-2xl font-bold" x-text="isDriver ? '12,450 km' : '3,200 km'"></div>
+                <div class="text-2xl font-bold">
+                    <span x-show="isDriver" th:text="${driverTotalKm != null ? #numbers.formatDecimal(driverTotalKm, 1, 0) : '0'} + ' km'">0 km</span>
+                    <span x-show="!isDriver" th:text="${passengerTotalKm != null ? #numbers.formatDecimal(passengerTotalKm, 1, 0) : '0'} + ' km'">0 km</span>
+                </div>
                 <p class="text-xs text-muted-foreground">Total acumulado</p>
             </div>
         </div>

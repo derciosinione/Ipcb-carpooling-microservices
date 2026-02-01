@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pt.ipcb.car.pooling.trips.modules.entities.TripEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,4 +23,12 @@ public interface TripRepository extends JpaRepository<TripEntity, UUID> {
         "t.departureTime > CURRENT_TIMESTAMP  AND " +
         "t.availableSeats >= :seatsNeeded")
     List<TripEntity> searchTrips(String origin, String destination, Integer seatsNeeded);
+
+    long countByDriverId(UUID driverId);
+
+    @Query("SELECT COALESCE(SUM(t.totalCost), 0) FROM TripEntity t WHERE t.driverId = :driverId")
+    BigDecimal sumTotalCostByDriverId(UUID driverId);
+
+    @Query("SELECT COALESCE(SUM(t.distanceKm), 0) FROM TripEntity t WHERE t.driverId = :driverId")
+    BigDecimal sumDistanceByDriverId(UUID driverId);
 }

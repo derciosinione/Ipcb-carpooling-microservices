@@ -20,6 +20,7 @@ public class TripResponse {
     private Integer totalTravelers;
     private BigDecimal totalCost;
     private BigDecimal costPerSeat;
+    private BigDecimal distanceKm;
     private String status; // Aqui devolvemos apenas o nome (Ex: "OPEN")
     private LocalDateTime createdAt;
 }

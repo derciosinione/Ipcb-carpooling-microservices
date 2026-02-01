@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,9 @@ public class CreateTripRequest {
 
     @NotBlank(message = "Destination cannot be empty")
     private String destination;
+
+    @Size(max = 500, message = "Description cannot exceed 500 characters")
+    private String description;
 
     @NotNull(message = "Departure time is mandatory")
     @Future(message = "Departure time must be in the future")

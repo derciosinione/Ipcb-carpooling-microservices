@@ -14,6 +14,7 @@ public class TripMapper {
         entity.setVehicleId(request.getVehicleId());
         entity.setOrigin(request.getOrigin());
         entity.setDestination(request.getDestination());
+        entity.setDescription(request.getDescription());
         entity.setDepartureTime(request.getDepartureTime());
         entity.setAvailableSeats(request.getAvailableSeats());
         return entity;
@@ -23,8 +24,10 @@ public class TripMapper {
         TripResponse response = new TripResponse();
         response.setId(entity.getId());
         response.setDriverId(entity.getDriverId());
+        response.setVehicleId(entity.getVehicleId());
         response.setOrigin(entity.getOrigin());
         response.setDestination(entity.getDestination());
+        response.setDescription(entity.getDescription());
         response.setDepartureTime(entity.getDepartureTime());
         response.setAvailableSeats(entity.getAvailableSeats());
         response.setTotalCost(entity.getTotalCost());

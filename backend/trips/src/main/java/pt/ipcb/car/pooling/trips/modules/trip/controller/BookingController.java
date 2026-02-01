@@ -9,6 +9,10 @@ import pt.ipcb.car.pooling.trips.modules.trip.contracts.BookingResponse;
 import pt.ipcb.car.pooling.trips.modules.trip.contracts.CreateBookingRequest;
 import pt.ipcb.car.pooling.trips.modules.trip.service.BookingService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import pt.ipcb.car.pooling.trips.exceptions.ForbiddenException;
+
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,18 +23,51 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<BookingResponse> create(@Valid @RequestBody CreateBookingRequest request) {
-        BookingResponse response = bookingService.createBooking(request);
+    public ResponseEntity<BookingResponse> create(@Valid @RequestBody CreateBookingRequest request,
+            HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        BookingResponse response = bookingService.createBooking(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{id}/accept")
-    public ResponseEntity<BookingResponse> accept(@PathVariable UUID id) {
-        return ResponseEntity.ok(bookingService.acceptBooking(id));
+    public ResponseEntity<BookingResponse> accept(@PathVariable UUID id, HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        return ResponseEntity.ok(bookingService.acceptBooking(id, userId));
     }
 
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<BookingResponse> reject(@PathVariable UUID id) {
-        return ResponseEntity.ok(bookingService.rejectBooking(id));
+    public ResponseEntity<BookingResponse> reject(@PathVariable UUID id, HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        return ResponseEntity.ok(bookingService.rejectBooking(id, userId));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<BookingResponse> cancel(@PathVariable UUID id, HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        return ResponseEntity.ok(bookingService.cancelBooking(id, userId));
+    }
+
+    @GetMapping("/trip/{tripId}")
+    public ResponseEntity<List<BookingResponse>> listByTrip(@PathVariable UUID tripId) {
+        return ResponseEntity.ok(bookingService.listBookingsByTrip(tripId));
+    }
+
+    @GetMapping("/passenger/{passengerId}")
+    public ResponseEntity<List<BookingResponse>> listByPassenger(@PathVariable UUID passengerId,
+            HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        if (!passengerId.equals(userId)) {
+            throw new ForbiddenException("Passenger ID does not match the authenticated user");
+        }
+        return ResponseEntity.ok(bookingService.listBookingsByPassenger(passengerId));
+    }
+
+    private UUID requireUserId(HttpServletRequest request) {
+        Object userId = request.getAttribute("userId");
+        if (userId == null) {
+            throw new ForbiddenException("Unauthorized");
+        }
+        return UUID.fromString(userId.toString());
     }
 }

@@ -35,6 +35,9 @@ public class TripEntity {
     @NotBlank
     private String destination;
 
+    @Column(length = 500)
+    private String description;
+
     @NotNull
     @Future
     private LocalDateTime departureTime;

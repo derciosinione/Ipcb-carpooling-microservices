@@ -3,6 +3,7 @@ package pt.ipcb.car.pooling.trips.modules.trip.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ipcb.car.pooling.trips.exceptions.NotFoundException;
 import pt.ipcb.car.pooling.trips.modules.entities.ExpenseEntity;
 import pt.ipcb.car.pooling.trips.modules.entities.TripEntity;
 import pt.ipcb.car.pooling.trips.modules.repositories.ExpenseRepository;
@@ -12,6 +13,7 @@ import pt.ipcb.car.pooling.trips.modules.trip.contracts.ExpenseResponse;
 import pt.ipcb.car.pooling.trips.modules.trip.mapper.ExpenseMapper;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +22,13 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final TripRepository tripRepository;
     private final ExpenseMapper expenseMapper;
+    private final TripCostService tripCostService;
 
     @Transactional
     public ExpenseResponse createExpense(CreateExpenseRequest request){
 
         TripEntity trip = tripRepository.findById(request.getTripId())
-                .orElseThrow(() -> new RuntimeException("Trip not found with id: " + request.getTripId()));
+                .orElseThrow(() -> new NotFoundException("Trip not found with id: " + request.getTripId()));
 
         ExpenseEntity expense = expenseMapper.toEntity(request);
 
@@ -38,8 +41,15 @@ public class ExpenseService {
         tripRepository.save(trip);
 
         ExpenseEntity savedExpense = expenseRepository.save(expense);
+        tripCostService.recalculateCosts(trip.getId());
 
         return expenseMapper.toResponse(savedExpense);
+    }
+
+    public java.util.List<ExpenseResponse> listExpensesByTrip(UUID tripId) {
+        return expenseRepository.findByTripId(tripId).stream()
+                .map(expenseMapper::toResponse)
+                .toList();
     }
 
 }

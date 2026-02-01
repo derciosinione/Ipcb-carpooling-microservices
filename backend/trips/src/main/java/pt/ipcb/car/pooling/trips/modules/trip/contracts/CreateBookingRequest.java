@@ -11,7 +11,6 @@ public class CreateBookingRequest {
     @NotNull(message = "Trip ID is mandatory")
     private UUID tripId;
 
-    @NotNull(message = "Passenger ID is mandatory")
     private UUID passengerId;
 
     @NotNull(message = "Number of Seat is mandatory")

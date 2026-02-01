@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Publicar Boleia</title>
+</head>
+<body>
+    <div layout:fragment="content" class="max-w-2xl mx-auto space-y-8 p-4 md:p-8 pt-6" x-data="{ step: 1, formData: { origin: '', destination: '', date: '', time: '', price: '', seats: 3, vehicle: '', description: '' } }">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Publicar Boleia</h1>
+            <p class="text-muted-foreground mt-2">Partilhe a sua viagem e comece a poupar nos custos de deslocação.</p>
+        </div>
+
+        <div class="flex items-center justify-between mb-8">
+            <template x-for="s in [1, 2, 3]">
+                <div class="flex flex-col items-center gap-2 flex-1 relative">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors z-10"
+                         :class="step >= s ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'"
+                         x-text="s">
+                    </div>
+                    <span class="text-xs" :class="step >= s ? 'font-medium' : 'text-muted-foreground'"
+                          x-text="s === 1 ? 'Itinerário' : s === 2 ? 'Detalhes' : 'Revisão'"></span>
+                    <div x-show="s < 3" class="absolute top-4 left-1/2 w-full h-[2px] -z-0"
+                         :class="step > s ? 'bg-primary' : 'bg-muted'"></div>
+                </div>
+            </template>
+        </div>
+
+        <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+            <!-- Step 1: Itinerary -->
+            <div x-show="step === 1" class="transition-opacity duration-200">
+                <div class="flex flex-col space-y-1.5 p-6">
+                    <h3 class="font-semibold leading-none tracking-tight">Para onde vai?</h3>
+                    <p class="text-sm text-muted-foreground">Defina o trajeto da sua viagem.</p>
+                </div>
+                <div class="p-6 pt-0 space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Origem</label>
+                        <div class="relative">
+                            <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                            <input x-model="formData.origin" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Ex: Lisboa" />
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Destino</label>
+                        <div class="relative">
+                            <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                            <input x-model="formData.destination" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Ex: Porto" />
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 p-3 bg-blue-50 text-blue-800 rounded-md text-sm mt-4 border border-blue-100">
+                        <i data-lucide="info" class="h-4 w-4 shrink-0"></i>
+                        <p>Adicione cidades de passagem populares para conseguir mais passageiros.</p>
+                    </div>
+                </div>
+                <div class="flex items-center p-6 pt-0 justify-end">
+                    <button @click="step++" :disabled="!formData.origin || !formData.destination" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'opacity-100': formData.origin && formData.destination }">Seguinte</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Details -->
+            <div x-show="step === 2" style="display: none;" class="transition-opacity duration-200">
+                <div class="flex flex-col space-y-1.5 p-6">
+                    <h3 class="font-semibold leading-none tracking-tight">Quando e como?</h3>
+                    <p class="text-sm text-muted-foreground">Defina a data, hora e detalhes do veículo.</p>
+                </div>
+                <div class="p-6 pt-0 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Data</label>
+                            <div class="relative">
+                                <i data-lucide="calendar" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                                <input type="date" x-model="formData.date" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Hora</label>
+                            <div class="relative">
+                                <i data-lucide="clock" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                                <input type="time" x-model="formData.time" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Preço por lugar</label>
+                            <div class="relative">
+                                <i data-lucide="euro" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                                <input type="number" x-model="formData.price" placeholder="15.00" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lugares disponíveis</label>
+                            <div class="relative">
+                                <i data-lucide="users" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
+                                <input type="number" x-model="formData.seats" min="1" max="8" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Veículo</label>
+                        <select x-model="formData.vehicle" class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9 relative">
+                            <option value="" disabled selected>Selecione o veículo</option>
+                            <option value="golf">Volkswagen Golf (AA-00-AA)</option>
+                            <option value="peugeot">Peugeot 208 (BB-11-BB)</option>
+                        </select>
+                         <i data-lucide="car" class="absolute left-9 bottom-[125px] h-4 w-4 text-muted-foreground" style="transform: translateY(2px);"></i>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Informações adicionais (opcional)</label>
+                        <input x-model="formData.description" placeholder="Ex: Bagageira grande, não aceito animais..." class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                    </div>
+                </div>
+                <div class="flex items-center p-6 pt-0 justify-between">
+                    <button @click="step--" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Voltar</button>
+                    <button @click="step++" :disabled="!formData.date || !formData.time || !formData.price || !formData.seats || !formData.vehicle" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'opacity-100': formData.date && formData.time && formData.price && formData.seats && formData.vehicle }">Seguinte</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Review -->
+             <div x-show="step === 3" style="display: none;" class="transition-opacity duration-200">
+                <div class="flex flex-col space-y-1.5 p-6">
+                    <h3 class="font-semibold leading-none tracking-tight">Rever e Publicar</h3>
+                    <p class="text-sm text-muted-foreground">Confirme os detalhes da sua viagem antes de publicar.</p>
+                </div>
+                <div class="p-6 pt-0 space-y-6">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div class="space-y-4">
+                            <div>
+                                <h3 class="text-sm font-medium text-muted-foreground">Itinerário</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <i data-lucide="map-pin" class="h-4 w-4"></i>
+                                    <span class="font-semibold" x-text="formData.origin + ' → ' + formData.destination"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-muted-foreground">Data e Hora</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <i data-lucide="calendar" class="h-4 w-4"></i>
+                                    <span x-text="formData.date + ' às ' + formData.time"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="text-sm font-medium text-muted-foreground">Veículo e Lugares</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <i data-lucide="car" class="h-4 w-4"></i>
+                                    <span x-text="(formData.vehicle === 'golf' ? 'Volkswagen Golf' : 'Peugeot 208') + ' • ' + formData.seats + ' lugares'"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-muted-foreground">Preço por passageiro</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <i data-lucide="euro" class="h-4 w-4"></i>
+                                    <span class="font-bold text-lg text-primary" x-text="'€' + parseFloat(formData.price || 0).toFixed(2)"></span>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                     
+                     <div x-show="formData.description" class="mt-4 p-4 bg-muted/30 rounded-lg">
+                        <h3 class="text-sm font-medium text-muted-foreground mb-1">Notas do condutor</h3>
+                        <p class="text-sm" x-text="formData.description"></p>
+                    </div>
+                </div>
+                <div class="flex items-center p-6 pt-0 justify-between">
+                    <button @click="step--" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Voltar</button>
+                    <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-600 hover:bg-green-700 text-white h-10 px-4 py-2">Publicar Boleia</button>
+                </div>
+             </div>
+        </div>
+    </div>
+</body>
+</html>

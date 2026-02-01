@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -16,7 +19,9 @@ public class AuthInterceptor implements HandlerInterceptor {
             throws Exception {
         HttpSession session = request.getSession();
         if (session.getAttribute("token") == null) {
-            response.sendRedirect("/auth?error=Sessão expirada ou acesso restrito. Por favor, faça login.");
+            String errorMessage = URLEncoder.encode("Sessão expirada ou acesso restrito. Por favor, faça login.",
+                    StandardCharsets.UTF_8);
+            response.sendRedirect("/auth?error=" + errorMessage);
             return false;
         }
         return true;

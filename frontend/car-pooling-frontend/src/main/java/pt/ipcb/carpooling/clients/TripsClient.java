@@ -30,8 +30,18 @@ public interface TripsClient {
             @RequestParam("destination") String destination,
             @RequestParam("seats") Integer seats);
 
+    @GetMapping("/trips/api/v1/trips/nearby")
+    List<TripDto.TripResponse> nearbyTrips(@RequestParam("lat") Double lat,
+            @RequestParam("lon") Double lon,
+            @RequestParam("radiusKm") java.math.BigDecimal radiusKm,
+            @RequestParam("limit") Integer limit);
+
     @PostMapping("/trips/api/v1/trips")
     TripDto.TripResponse createTrip(@RequestBody TripDto.CreateTripRequest request);
+
+    @PostMapping("/trips/api/v1/trips/{tripId}/status")
+    TripDto.TripResponse updateTripStatus(@PathVariable("tripId") String tripId,
+            @RequestBody TripDto.UpdateTripStatusRequest request);
 
     @PostMapping("/trips/api/v1/bookings")
     BookingDto.BookingResponse createBooking(@RequestBody BookingDto.CreateBookingRequest request);
@@ -50,6 +60,9 @@ public interface TripsClient {
 
     @PostMapping("/trips/api/v1/bookings/{bookingId}/cancel")
     BookingDto.BookingResponse cancelBooking(@PathVariable("bookingId") String bookingId);
+
+    @PostMapping("/trips/api/v1/bookings/{bookingId}/pay")
+    BookingDto.BookingResponse payBooking(@PathVariable("bookingId") String bookingId);
 
     @GetMapping("/trips/api/v1/expenses/trip/{tripId}")
     List<ExpenseDto.ExpenseResponse> getExpensesByTrip(@PathVariable("tripId") String tripId);

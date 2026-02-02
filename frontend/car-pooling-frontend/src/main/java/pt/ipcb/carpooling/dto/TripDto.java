@@ -50,6 +50,14 @@ public class TripDto {
         private BigDecimal totalCost;
         private BigDecimal costPerSeat;
         private BigDecimal distanceKm;
+        private BigDecimal distanceFromUserKm;
+        private String status;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UpdateTripStatusRequest {
         private String status;
     }
 }

@@ -87,6 +87,8 @@
 							<artifactId>lombok</artifactId>
 						</path>
 					</annotationProcessorPaths>
+					<!-- Workaround for Lombok javac compatibility issues -->
+					<forceLegacyJavacApi>true</forceLegacyJavacApi>
 				</configuration>
 			</plugin>
 			<plugin>

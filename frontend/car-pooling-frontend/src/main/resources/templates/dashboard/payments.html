@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Pagamentos</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6" x-data="{ isDriver: true }">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Pagamentos</h1>
+            <p class="text-muted-foreground mt-2">Acompanhe valores recebidos e pendentes.</p>
+        </div>
+        <div class="flex items-center space-x-2 bg-muted p-1 rounded-lg">
+            <button @click="isDriver = false"
+                    :class="!isDriver ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                    class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">Passageiro</button>
+            <button @click="isDriver = true"
+                    :class="isDriver ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                    class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">Condutor</button>
+        </div>
+    </div>
+
+    <form method="get" th:action="@{/dashboard/payments}" class="rounded-lg border bg-card p-4 flex flex-wrap items-center gap-3">
+        <label class="text-sm text-muted-foreground">Período:</label>
+        <select name="period" class="flex h-9 rounded-md border border-input bg-background px-3 py-2 text-sm">
+            <option value="today" th:selected="${period == 'today'}">Hoje</option>
+            <option value="month" th:selected="${period == 'month'}">Este mês</option>
+            <option value="year" th:selected="${period == 'year'}">Este ano</option>
+            <option value="all" th:selected="${period == 'all'}">Tudo</option>
+        </select>
+        <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground h-9 px-3">Aplicar</button>
+    </form>
+
+    <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm" th:text="${error}">
+        Erro ao carregar pagamentos.
+    </div>
+
+    <div x-show="isDriver" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-lg border bg-card p-4">
+                <p class="text-sm text-muted-foreground">Total Recebido</p>
+                <p class="text-2xl font-bold text-emerald-700" th:text="${'€' + #numbers.formatDecimal(driverCollectedTotal, 1, 2)}">€0,00</p>
+            </div>
+            <div class="rounded-lg border bg-card p-4">
+                <p class="text-sm text-muted-foreground">Total Pendente</p>
+                <p class="text-2xl font-bold text-amber-700" th:text="${'€' + #numbers.formatDecimal(driverPendingTotal, 1, 2)}">€0,00</p>
+            </div>
+        </div>
+        <a th:href="@{/dashboard/payments/export(role='driver',period=${period})}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-9 px-3 w-fit">
+            Exportar CSV (Condutor)
+        </a>
+
+        <div class="rounded-lg border bg-card shadow-sm overflow-hidden">
+            <div class="p-4 border-b font-semibold">Recebimentos por Reserva</div>
+            <div th:if="${#lists.isEmpty(driverPayments)}" class="p-4 text-sm text-muted-foreground">Sem pagamentos para mostrar.</div>
+            <div th:if="${!#lists.isEmpty(driverPayments)}" class="divide-y">
+                <div th:each="payment : ${driverPayments}" class="p-4 flex items-center justify-between gap-4">
+                    <div>
+                        <p class="font-medium" th:text="${payment.tripRoute}">Origem -> Destino</p>
+                        <p class="text-xs text-muted-foreground" th:text="${payment.passengerName + ' • ' + (payment.seats != null ? payment.seats : 0) + ' lugar(es)'}">Passageiro</p>
+                        <p class="text-xs text-muted-foreground" th:text="${payment.departureTime != null ? #temporals.format(payment.departureTime, 'dd/MM/yyyy HH:mm') : ''}">Data</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold" th:text="${'€' + #numbers.formatDecimal(payment.amount != null ? payment.amount : 0, 1, 2)}">€0,00</p>
+                        <span th:if="${payment.paid}" class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold border-emerald-200 bg-emerald-50 text-emerald-700">Pago</span>
+                        <span th:if="${!payment.paid}" class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold border-amber-200 bg-amber-50 text-amber-700">Pendente</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div x-show="!isDriver" class="space-y-4" style="display: none;">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-lg border bg-card p-4">
+                <p class="text-sm text-muted-foreground">Total Pago</p>
+                <p class="text-2xl font-bold text-emerald-700" th:text="${'€' + #numbers.formatDecimal(passengerPaidTotal, 1, 2)}">€0,00</p>
+            </div>
+            <div class="rounded-lg border bg-card p-4">
+                <p class="text-sm text-muted-foreground">Total por Pagar</p>
+                <p class="text-2xl font-bold text-amber-700" th:text="${'€' + #numbers.formatDecimal(passengerPendingTotal, 1, 2)}">€0,00</p>
+            </div>
+        </div>
+        <a th:href="@{/dashboard/payments/export(role='passenger',period=${period})}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-9 px-3 w-fit">
+            Exportar CSV (Passageiro)
+        </a>
+
+        <div class="rounded-lg border bg-card shadow-sm overflow-hidden">
+            <div class="p-4 border-b font-semibold">Minhas Reservas</div>
+            <div th:if="${#lists.isEmpty(passengerPayments)}" class="p-4 text-sm text-muted-foreground">Sem pagamentos para mostrar.</div>
+            <div th:if="${!#lists.isEmpty(passengerPayments)}" class="divide-y">
+                <div th:each="payment : ${passengerPayments}" class="p-4 flex items-center justify-between gap-4">
+                    <div>
+                        <p class="font-medium" th:text="${payment.tripRoute}">Origem -> Destino</p>
+                        <p class="text-xs text-muted-foreground" th:text="${payment.departureTime != null ? #temporals.format(payment.departureTime, 'dd/MM/yyyy HH:mm') : ''}">Data</p>
+                        <p class="text-xs text-muted-foreground" th:text="${'Estado da reserva: ' + payment.bookingStatus}">CONFIRMED</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold" th:text="${'€' + #numbers.formatDecimal(payment.amount != null ? payment.amount : 0, 1, 2)}">€0,00</p>
+                        <span th:if="${payment.paid}" class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold border-emerald-200 bg-emerald-50 text-emerald-700">Pago</span>
+                        <span th:if="${!payment.paid && payment.bookingStatus == 'CONFIRMED'}" class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold border-amber-200 bg-amber-50 text-amber-700">Pendente</span>
+                        <span th:if="${payment.bookingStatus != 'CONFIRMED'}" class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold border-slate-200 bg-slate-50 text-slate-700" th:text="${payment.bookingStatus}">PENDING</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

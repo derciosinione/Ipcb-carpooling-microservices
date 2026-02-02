@@ -2,8 +2,10 @@ version: '3.8'
 
 services:
   car-pooling-frontend:
-    build: .
-    image: car-pooling/frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: car-pooling/frontend:${FRONTEND_IMAGE_TAG:-latest}
     ports:
       - "3002:3002"
     environment:

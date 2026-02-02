@@ -26,6 +26,9 @@ public class BookingDto {
         private String passengerId;
         private Integer seats;
         private BigDecimal priceToPay;
+        private Boolean paid;
+        private java.time.LocalDateTime paidAt;
+        private String paymentReference;
         private String status;
     }
 }

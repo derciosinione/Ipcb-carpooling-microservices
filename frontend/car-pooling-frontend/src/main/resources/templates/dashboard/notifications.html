@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt" 
+<html lang="pt"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{dashboard/layout}">
@@ -7,114 +7,65 @@
     <title>Notificações</title>
 </head>
 <body>
-    <div layout:fragment="content" class="space-y-6 p-4 md:p-8 pt-6" x-data="{ filter: 'all' }">
-        <div class="flex items-center justify-between">
-            <div>
-              <h1 class="text-3xl font-bold tracking-tight">Notificações</h1>
-              <p class="text-muted-foreground mt-2">Fique a par de todas as atualizações das suas viagens e conta.</p>
-            </div>
-            <div class="flex gap-2">
-              <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-2">
-                <i data-lucide="check" class="h-4 w-4"></i> Marcar todas como lidas
-              </button>
-            </div>
+<div layout:fragment="content" class="space-y-6 p-4 md:p-8 pt-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Notificações</h1>
+            <p class="text-muted-foreground mt-2">Fique a par de todas as atualizações das suas viagens e conta.</p>
         </div>
-
-        <div class="w-full">
-            <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full max-w-md grid-cols-2">
-                <button @click="filter = 'all'" :class="{ 'bg-background text-foreground shadow-sm': filter === 'all' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Todas</button>
-                <button @click="filter = 'unread'" :class="{ 'bg-background text-foreground shadow-sm': filter === 'unread' }" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">Não Lidas</button>
-            </div>
-
-            <!-- All Notifications -->
-            <div x-show="filter === 'all'" class="mt-6 space-y-4">
-                <div class="rounded-lg border bg-card text-card-foreground shadow-sm transition-all border-l-4 border-l-primary">
-                    <div class="p-6">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 p-2 rounded-full bg-muted">
-                                <i data-lucide="check-circle-2" class="h-5 w-5 text-green-500"></i>
-                            </div>
-                            <div class="flex-1 space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="font-semibold text-primary">Reserva Confirmada</h4>
-                                    <span class="text-xs text-muted-foreground">Hoje, 14:30</span>
-                                </div>
-                                <p class="text-sm text-muted-foreground">O João Silva confirmou a reserva para a viagem Lisboa - Porto. O pagamento foi processado.</p>
-                                <div class="flex items-center gap-4 pt-2">
-                                    <span class="text-xs text-muted-foreground flex items-center gap-1">
-                                        <i data-lucide="clock" class="h-3 w-3"></i> Há 5 min
-                                    </span>
-                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[10px] h-5">Nova</div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 text-muted-foreground hover:text-red-500">
-                                    <i data-lucide="trash-2" class="h-4 w-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                 <div class="rounded-lg border bg-card text-card-foreground shadow-sm transition-all">
-                    <div class="p-6">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 p-2 rounded-full bg-muted">
-                                <i data-lucide="check-circle-2" class="h-5 w-5 text-green-500"></i>
-                            </div>
-                            <div class="flex-1 space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="font-semibold">Pagamento Recebido</h4>
-                                    <span class="text-xs text-muted-foreground">Hoje, 11:15</span>
-                                </div>
-                                <p class="text-sm text-muted-foreground">Recebeu €15,00 da viagem de ontem (Lisboa - Coimbra). O valor já está disponível na sua carteira.</p>
-                                <div class="flex items-center gap-4 pt-2">
-                                    <span class="text-xs text-muted-foreground flex items-center gap-1">
-                                        <i data-lucide="clock" class="h-3 w-3"></i> Há 3 horas
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 text-muted-foreground hover:text-red-500">
-                                    <i data-lucide="trash-2" class="h-4 w-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Unread Notifications -->
-             <div x-show="filter === 'unread'" class="mt-6 space-y-4" style="display: none;">
-                <div class="rounded-lg border bg-card text-card-foreground shadow-sm transition-all border-l-4 border-l-primary">
-                    <div class="p-6">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 p-2 rounded-full bg-muted">
-                                <i data-lucide="check-circle-2" class="h-5 w-5 text-green-500"></i>
-                            </div>
-                            <div class="flex-1 space-y-1">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="font-semibold text-primary">Reserva Confirmada</h4>
-                                    <span class="text-xs text-muted-foreground">Hoje, 14:30</span>
-                                </div>
-                                <p class="text-sm text-muted-foreground">O João Silva confirmou a reserva para a viagem Lisboa - Porto. O pagamento foi processado.</p>
-                                <div class="flex items-center gap-4 pt-2">
-                                    <span class="text-xs text-muted-foreground flex items-center gap-1">
-                                        <i data-lucide="clock" class="h-3 w-3"></i> Há 5 min
-                                    </span>
-                                    <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-[10px] h-5">Nova</div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 text-muted-foreground hover:text-red-500">
-                                    <i data-lucide="trash-2" class="h-4 w-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             </div>
+        <div class="flex gap-2">
+            <form th:action="@{/dashboard/notifications/read-all}" method="post">
+                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-9 px-3 gap-2">
+                    <i data-lucide="check" class="h-4 w-4"></i> Marcar todas como lidas
+                </button>
+            </form>
         </div>
     </div>
+
+    <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm" th:text="${error}">Erro</div>
+
+    <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full max-w-md grid-cols-2">
+        <a th:href="@{/dashboard/notifications(filter='all')}" th:classappend="${filter == 'all'} ? ' bg-background text-foreground shadow-sm' : ''" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all">Todas</a>
+        <a th:href="@{/dashboard/notifications(filter='unread')}" th:classappend="${filter == 'unread'} ? ' bg-background text-foreground shadow-sm' : ''" class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all">Não Lidas</a>
+    </div>
+
+    <div class="space-y-4">
+        <div th:if="${#lists.isEmpty(notifications)}" class="rounded-lg border bg-card p-6 text-sm text-muted-foreground">Sem notificações.</div>
+        <div th:each="notification : ${notifications}"
+             class="rounded-lg border bg-card shadow-sm transition-all"
+             th:classappend="${!notification.read} ? ' border-l-4 border-l-primary' : ''">
+            <div class="p-6">
+                <div class="flex items-start gap-4">
+                    <div class="mt-1 p-2 rounded-full bg-muted">
+                        <i data-lucide="bell" class="h-5 w-5 text-blue-500"></i>
+                    </div>
+                    <div class="flex-1 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-semibold" th:classappend="${!notification.read} ? ' text-primary' : ''" th:text="${notification.title}">Título</h4>
+                            <span class="text-xs text-muted-foreground" th:text="${notification.createdAt != null ? #temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm') : ''}">agora</span>
+                        </div>
+                        <p class="text-sm text-muted-foreground" th:text="${notification.message}">Mensagem</p>
+                        <div class="flex items-center gap-4 pt-2">
+                            <span th:if="${!notification.read}" class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold border-blue-200 bg-blue-50 text-blue-700">Nova</span>
+                            <span th:if="${notification.read}" class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold border-slate-200 bg-slate-50 text-slate-700">Lida</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <form th:if="${!notification.read}" th:action="@{'/dashboard/notifications/' + ${notification.id} + '/read'}" method="post">
+                            <button type="submit" class="inline-flex items-center justify-center rounded-md h-8 w-8 hover:bg-accent text-muted-foreground" title="Marcar como lida">
+                                <i data-lucide="check" class="h-4 w-4"></i>
+                            </button>
+                        </form>
+                        <form th:action="@{'/dashboard/notifications/' + ${notification.id} + '/delete'}" method="post">
+                            <button type="submit" class="inline-flex items-center justify-center rounded-md h-8 w-8 hover:bg-accent text-muted-foreground hover:text-red-600" title="Eliminar">
+                                <i data-lucide="trash-2" class="h-4 w-4"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

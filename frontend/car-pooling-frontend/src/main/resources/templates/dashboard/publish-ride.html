@@ -152,15 +152,15 @@
         </div>
 
         <!-- Step Navigation -->
-        <div th:replace="dashboard/fragments/trips/publish-ride-step-nav :: stepNavigation"></div>
+        <div th:replace="~{dashboard/fragments/trips/publish-ride-step-nav :: stepNavigation}"></div>
 
         <!-- Step 1: Itinerary -->
         <form method="post" th:action="@{/dashboard/publish-ride}" class="rounded-lg border bg-card text-card-foreground shadow-sm">
-            <div th:replace="dashboard/fragments/trips/publish-ride-step1 :: stepItinerary"></div>
+            <div th:replace="~{dashboard/fragments/trips/publish-ride-step1 :: stepItinerary}"></div>
 
-            <div th:replace="dashboard/fragments/trips/publish-ride-step2 :: stepDetails"></div>
+            <div th:replace="~{dashboard/fragments/trips/publish-ride-step2 :: stepDetails}"></div>
 
-            <div th:replace="dashboard/fragments/trips/publish-ride-step3 :: stepReview"></div>
+            <div th:replace="~{dashboard/fragments/trips/publish-ride-step3 :: stepReview}"></div>
         </form>
     </div>
 </body>

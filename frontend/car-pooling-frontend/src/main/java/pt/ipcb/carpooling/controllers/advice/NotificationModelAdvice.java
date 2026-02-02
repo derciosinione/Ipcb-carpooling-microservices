@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers;
+package pt.ipcb.carpooling.controllers.advice;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

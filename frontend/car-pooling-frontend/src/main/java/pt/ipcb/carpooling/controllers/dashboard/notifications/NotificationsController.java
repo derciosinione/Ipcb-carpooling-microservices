@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers.dashboard;
+package pt.ipcb.carpooling.controllers.dashboard.notifications;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

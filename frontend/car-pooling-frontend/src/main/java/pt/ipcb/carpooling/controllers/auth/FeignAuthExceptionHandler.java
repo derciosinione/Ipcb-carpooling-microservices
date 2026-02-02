@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers;
+package pt.ipcb.carpooling.controllers.auth;
 
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;

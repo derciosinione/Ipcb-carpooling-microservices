@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers.dashboard;
+package pt.ipcb.carpooling.controllers.dashboard.rides;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,15 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pt.ipcb.carpooling.clients.RatingsClient;
 import pt.ipcb.carpooling.clients.TripsClient;
 import pt.ipcb.carpooling.clients.VehicleClient;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.ExpenseDto;
+import pt.ipcb.carpooling.dto.RatingDto;
 import pt.ipcb.carpooling.dto.TripDto;
 import pt.ipcb.carpooling.dto.UserDto;
 import pt.ipcb.carpooling.dto.VehicleDto;
-import pt.ipcb.carpooling.services.DashboardService;
+import pt.ipcb.carpooling.services.identity.IdentityDashboardService;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -34,7 +36,8 @@ import java.util.stream.Collectors;
 public class RideController {
     private final TripsClient tripsClient;
     private final VehicleClient vehicleClient;
-    private final DashboardService dashboardService;
+    private final IdentityDashboardService identityDashboardService;
+    private final RatingsClient ratingsClient;
 
     @GetMapping("/ride/{id}")
     public String rideDetails(@PathVariable String id, Model model, HttpSession session) {
@@ -93,11 +96,11 @@ public class RideController {
             userIds.add(trip.getDriverId());
         }
         if (!userIds.isEmpty()) {
-            Map<String, UserDto.UserResponse> users = dashboardService.fetchUsersByIds(userIds.stream().toList());
+            Map<String, UserDto.UserResponse> users = identityDashboardService.fetchUsersByIds(userIds.stream().toList());
             model.addAttribute("userNames", users.entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, e -> dashboardService.safeName(e.getValue()))));
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.safeName(e.getValue()))));
             model.addAttribute("userInitials", users.entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, e -> dashboardService.initials(e.getValue()))));
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
         }
 
         try {
@@ -206,6 +209,72 @@ public class RideController {
             log.error("Error starting trip {}: {}", tripId, e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Nao foi possivel iniciar a viagem.");
         }
+        return "redirect:/dashboard/ride/" + tripId;
+    }
+
+    @PostMapping("/ride/{tripId}/rate-user")
+    public String rateUser(@PathVariable String tripId,
+            @RequestParam String targetUserId,
+            @RequestParam String role,
+            @RequestParam Integer stars,
+            @RequestParam(required = false) String comment,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+
+        try {
+            TripDto.TripResponse trip = tripsClient.getTripById(tripId);
+            if (!"FINISHED".equalsIgnoreCase(trip.getStatus())) {
+                redirectAttributes.addFlashAttribute("error", "A viagem ainda não foi concluída.");
+                return "redirect:/dashboard/ride/" + tripId;
+            }
+
+            if ("driver".equalsIgnoreCase(role)) {
+                // passenger rating driver
+                if (!targetUserId.equals(trip.getDriverId())) {
+                    redirectAttributes.addFlashAttribute("error", "Condutor inválido para avaliação.");
+                    return "redirect:/dashboard/ride/" + tripId;
+                }
+                List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(tripId);
+                boolean isConfirmedPassenger = bookings.stream()
+                        .anyMatch(b -> user.getId().equals(b.getPassengerId())
+                                && "CONFIRMED".equalsIgnoreCase(b.getStatus()));
+                if (!isConfirmedPassenger) {
+                    redirectAttributes.addFlashAttribute("error", "Apenas passageiros confirmados podem avaliar o condutor.");
+                    return "redirect:/dashboard/ride/" + tripId;
+                }
+            } else {
+                // driver rating passenger
+                if (!user.getId().equals(trip.getDriverId())) {
+                    redirectAttributes.addFlashAttribute("error", "Apenas o condutor pode avaliar passageiros.");
+                    return "redirect:/dashboard/ride/" + tripId;
+                }
+                List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(tripId);
+                boolean passengerConfirmed = bookings.stream()
+                        .anyMatch(b -> targetUserId.equals(b.getPassengerId())
+                                && "CONFIRMED".equalsIgnoreCase(b.getStatus()));
+                if (!passengerConfirmed) {
+                    redirectAttributes.addFlashAttribute("error", "Passageiro inválido para avaliação.");
+                    return "redirect:/dashboard/ride/" + tripId;
+                }
+            }
+
+            RatingDto.CreateRatingRequest request = new RatingDto.CreateRatingRequest();
+            request.setRaterId(user.getId());
+            request.setRatedUserId(targetUserId);
+            request.setStars(stars);
+            request.setComment(comment);
+            ratingsClient.create(request);
+
+            redirectAttributes.addFlashAttribute("success", "Avaliação enviada com sucesso.");
+        } catch (Exception e) {
+            log.error("Error rating user on trip {}: {}", tripId, e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Não foi possível enviar a avaliação.");
+        }
+
         return "redirect:/dashboard/ride/" + tripId;
     }
 

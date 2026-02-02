@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers.dashboard;
+package pt.ipcb.carpooling.controllers.dashboard.publish;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import pt.ipcb.carpooling.clients.VehicleClient;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.PublishRideForm;
 import pt.ipcb.carpooling.dto.TripDto;
-import pt.ipcb.carpooling.services.DashboardService;
+import pt.ipcb.carpooling.services.gps.GpsDashboardService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ import java.util.List;
 public class PublishRideController {
     private final VehicleClient vehicleClient;
     private final TripsClient tripsClient;
-    private final DashboardService dashboardService;
+    private final GpsDashboardService gpsDashboardService;
 
     @GetMapping("/publish-ride")
     public String publishRide(Model model, HttpSession session) {
@@ -77,8 +77,8 @@ public class PublishRideController {
                     .build();
 
             tripsClient.createTrip(request);
-            dashboardService.saveUserLocation(user.getId(), form.getOrigin(), form.getOriginLat(), form.getOriginLon());
-            dashboardService.saveUserLocation(user.getId(), form.getDestination(), form.getDestinationLat(),
+            gpsDashboardService.saveUserLocation(user.getId(), form.getOrigin(), form.getOriginLat(), form.getOriginLon());
+            gpsDashboardService.saveUserLocation(user.getId(), form.getDestination(), form.getDestinationLat(),
                     form.getDestinationLon());
             redirectAttributes.addFlashAttribute("success", "Boleia publicada com sucesso!");
             return "redirect:/dashboard/rides";

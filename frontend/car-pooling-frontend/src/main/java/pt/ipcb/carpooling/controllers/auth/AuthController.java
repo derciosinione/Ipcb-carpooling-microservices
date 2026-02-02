@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers;
+package pt.ipcb.carpooling.controllers.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

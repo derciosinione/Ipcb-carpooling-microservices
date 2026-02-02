@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers;
+package pt.ipcb.carpooling.controllers.site;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

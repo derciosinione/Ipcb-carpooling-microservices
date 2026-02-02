@@ -28,35 +28,85 @@
                         <h3 class="font-semibold leading-none tracking-tight">Perfil Público</h3>
                         <p class="text-sm text-muted-foreground">Esta informação será visível para outros utilizadores.</p>
                     </div>
-                    <div class="p-6 pt-0 space-y-6">
-                        <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
-                            <div class="flex flex-col items-center gap-2 relative">
-                                <span class="relative flex h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-background shadow-sm">
-                                    <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1588976612067-d015cbbdb38b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkcml2ZXIlMjBwb3J0cmFpdCUyMG1hbGUlMjBzbWlsaW5nfGVufDF8fHx8MTc2NzUxMzAyOXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" />
-                                </span>
-                                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 mt-2">Alterar Foto</button>
-                            </div>
-                            
-                            <div class="flex-1 space-y-4 w-full">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="space-y-2">
-                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nome</label>
-                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value="Ricardo" />
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Apelido</label>
-                                        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value="Sousa" />
-                                    </div>
+                    <div class="p-6 pt-0">
+                        <form th:action="@{/dashboard/settings/profile}" method="post" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nome completo</label>
+                                    <input name="name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" th:value="${profileName}" />
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Biografia</label>
-                                    <textarea class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">Olá! Sou o Ricardo, tenho 35 anos e faço viagens regulares entre Lisboa e Porto a trabalho.</textarea>
+                                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Telefone</label>
+                                    <input name="phone" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" th:value="${profilePhone}" placeholder="+351..." />
                                 </div>
                             </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Biografia</label>
+                                <textarea name="description" class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" th:text="${profileDescription}"></textarea>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Guardar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                 </div>
+
+                 <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div class="flex flex-col space-y-1.5 p-6">
+                        <h3 class="font-semibold leading-none tracking-tight">Perfis e Papéis</h3>
+                        <p class="text-sm text-muted-foreground">Adicione o papel de condutor ou passageiro à sua conta.</p>
+                    </div>
+                    <div class="p-6 pt-0 space-y-4">
+                        <div th:if="${hasDriverRole}" class="flex items-center justify-between rounded-md border p-4">
+                            <div>
+                                <p class="font-medium">Condutor</p>
+                                <p class="text-sm text-muted-foreground">Perfil ativo na sua conta.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-emerald-200 bg-emerald-50 text-emerald-700">Ativo</span>
+                                <form th:if="${hasPassengerRole}" th:action="@{/dashboard/settings/roles/remove}" method="post">
+                                    <input type="hidden" name="role" value="driver" />
+                                    <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-2">
+                                        Remover
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div th:if="${!hasDriverRole}" class="flex items-center justify-between rounded-md border p-4">
+                            <div>
+                                <p class="font-medium">Condutor</p>
+                                <p class="text-sm text-muted-foreground">Permite publicar boleias e gerir viagens.</p>
+                            </div>
+                            <form th:action="@{/dashboard/settings/roles/add}" method="post">
+                                <input type="hidden" name="role" value="driver" />
+                                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3">Adicionar</button>
+                            </form>
                         </div>
 
-                         <div class="flex justify-end">
-                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Guardar Alterações</button>
+                        <div th:if="${hasPassengerRole}" class="flex items-center justify-between rounded-md border p-4">
+                            <div>
+                                <p class="font-medium">Passageiro</p>
+                                <p class="text-sm text-muted-foreground">Perfil ativo na sua conta.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-emerald-200 bg-emerald-50 text-emerald-700">Ativo</span>
+                                <form th:if="${hasDriverRole}" th:action="@{/dashboard/settings/roles/remove}" method="post">
+                                    <input type="hidden" name="role" value="passenger" />
+                                    <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-2">
+                                        Remover
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div th:if="${!hasPassengerRole}" class="flex items-center justify-between rounded-md border p-4">
+                            <div>
+                                <p class="font-medium">Passageiro</p>
+                                <p class="text-sm text-muted-foreground">Permite reservar boleias e ver históricos.</p>
+                            </div>
+                            <form th:action="@{/dashboard/settings/roles/add}" method="post">
+                                <input type="hidden" name="role" value="passenger" />
+                                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3">Adicionar</button>
+                            </form>
                         </div>
                     </div>
                  </div>

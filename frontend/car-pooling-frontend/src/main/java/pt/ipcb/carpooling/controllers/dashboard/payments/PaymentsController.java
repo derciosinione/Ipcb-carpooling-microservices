@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers.dashboard;
+package pt.ipcb.carpooling.controllers.dashboard.payments;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.DriverPaymentDto;
 import pt.ipcb.carpooling.dto.PassengerPaymentDto;
-import pt.ipcb.carpooling.services.DashboardService;
+import pt.ipcb.carpooling.services.payments.PaymentsDashboardService;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentsController {
-    private final DashboardService dashboardService;
+    private final PaymentsDashboardService paymentsDashboardService;
 
     @GetMapping("/payments")
     public String payments(@RequestParam(name = "period", defaultValue = "month") String period,
@@ -37,16 +37,16 @@ public class PaymentsController {
         List<PassengerPaymentDto> passengerPayments = List.of();
 
         try {
-            driverPayments = dashboardService.buildDriverPayments(user.getId());
-            driverPayments = dashboardService.filterDriverPaymentsByPeriod(driverPayments, period);
+            driverPayments = paymentsDashboardService.buildDriverPayments(user.getId());
+            driverPayments = paymentsDashboardService.filterDriverPaymentsByPeriod(driverPayments, period);
         } catch (Exception e) {
             log.error("Error loading driver payments for user {}: {}", user.getId(), e.getMessage());
             model.addAttribute("error", "Erro ao carregar pagamentos do condutor.");
         }
 
         try {
-            passengerPayments = dashboardService.buildPassengerPayments(user.getId());
-            passengerPayments = dashboardService.filterPassengerPaymentsByPeriod(passengerPayments, period);
+            passengerPayments = paymentsDashboardService.buildPassengerPayments(user.getId());
+            passengerPayments = paymentsDashboardService.filterPassengerPaymentsByPeriod(passengerPayments, period);
         } catch (Exception e) {
             log.error("Error loading passenger payments for user {}: {}", user.getId(), e.getMessage());
             if (!model.containsAttribute("error")) {
@@ -54,13 +54,13 @@ public class PaymentsController {
             }
         }
 
-        model.addAttribute("period", dashboardService.normalizePeriod(period));
+        model.addAttribute("period", paymentsDashboardService.normalizePeriod(period));
         model.addAttribute("driverPayments", driverPayments);
         model.addAttribute("passengerPayments", passengerPayments);
-        model.addAttribute("driverCollectedTotal", dashboardService.sumDriverCollected(driverPayments));
-        model.addAttribute("driverPendingTotal", dashboardService.sumDriverPending(driverPayments));
-        model.addAttribute("passengerPaidTotal", dashboardService.sumPassengerPaid(passengerPayments));
-        model.addAttribute("passengerPendingTotal", dashboardService.sumPassengerPending(passengerPayments));
+        model.addAttribute("driverCollectedTotal", paymentsDashboardService.sumDriverCollected(driverPayments));
+        model.addAttribute("driverPendingTotal", paymentsDashboardService.sumDriverPending(driverPayments));
+        model.addAttribute("passengerPaidTotal", paymentsDashboardService.sumPassengerPaid(passengerPayments));
+        model.addAttribute("passengerPendingTotal", paymentsDashboardService.sumPassengerPending(passengerPayments));
         return "dashboard/payments";
     }
 
@@ -75,19 +75,19 @@ public class PaymentsController {
         }
 
         String normalizedRole = "driver".equalsIgnoreCase(role) ? "driver" : "passenger";
-        String normalizedPeriod = dashboardService.normalizePeriod(period);
+        String normalizedPeriod = paymentsDashboardService.normalizePeriod(period);
         String csv;
 
         if ("driver".equals(normalizedRole)) {
-            List<DriverPaymentDto> items = dashboardService.filterDriverPaymentsByPeriod(
-                    dashboardService.buildDriverPayments(user.getId()),
+            List<DriverPaymentDto> items = paymentsDashboardService.filterDriverPaymentsByPeriod(
+                    paymentsDashboardService.buildDriverPayments(user.getId()),
                     normalizedPeriod);
-            csv = dashboardService.buildDriverCsv(items);
+            csv = paymentsDashboardService.buildDriverCsv(items);
         } else {
-            List<PassengerPaymentDto> items = dashboardService.filterPassengerPaymentsByPeriod(
-                    dashboardService.buildPassengerPayments(user.getId()),
+            List<PassengerPaymentDto> items = paymentsDashboardService.filterPassengerPaymentsByPeriod(
+                    paymentsDashboardService.buildPassengerPayments(user.getId()),
                     normalizedPeriod);
-            csv = dashboardService.buildPassengerCsv(items);
+            csv = paymentsDashboardService.buildPassengerCsv(items);
         }
 
         String fileName = "pagamentos-" + normalizedRole + "-" + normalizedPeriod + ".csv";

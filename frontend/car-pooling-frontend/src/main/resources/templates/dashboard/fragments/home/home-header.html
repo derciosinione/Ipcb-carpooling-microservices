@@ -2,8 +2,8 @@
 <div th:fragment="homeHeader">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <div class="flex items-center space-x-2 bg-muted p-1 rounded-lg">
-            <button @click="isDriver = false" 
+        <div th:if="${hasBothRoles}" class="flex items-center space-x-2 bg-muted p-1 rounded-lg">
+            <button @click="isDriver = false"
                     :class="!isDriver ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
                     class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">
                 Passageiro
@@ -13,6 +13,10 @@
                     class="px-3 py-1.5 text-sm font-medium rounded-md transition-all">
                 Condutor
             </button>
+        </div>
+        <div th:if="${!hasBothRoles}" class="flex items-center space-x-2 bg-muted p-1 rounded-lg">
+            <span class="px-3 py-1.5 text-sm font-medium rounded-md bg-background shadow-sm text-foreground"
+                  th:text="${defaultIsDriver ? 'Condutor' : 'Passageiro'}">Condutor</span>
         </div>
     </div>
 

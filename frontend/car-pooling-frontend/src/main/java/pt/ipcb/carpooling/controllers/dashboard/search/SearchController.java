@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers.dashboard;
+package pt.ipcb.carpooling.controllers.dashboard.search;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import pt.ipcb.carpooling.clients.GpsClient;
 import pt.ipcb.carpooling.clients.TripsClient;
 import pt.ipcb.carpooling.dto.LocationDto;
 import pt.ipcb.carpooling.dto.TripDto;
-import pt.ipcb.carpooling.services.DashboardService;
+import pt.ipcb.carpooling.services.identity.IdentityDashboardService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class SearchController {
     private final TripsClient tripsClient;
     private final GpsClient gpsClient;
-    private final DashboardService dashboardService;
+    private final IdentityDashboardService identityDashboardService;
 
     @GetMapping("/search")
     public String search(@RequestParam(required = false) String origin,
@@ -47,15 +47,15 @@ public class SearchController {
             try {
                 List<TripDto.TripResponse> results = tripsClient.searchTrips(origin, destination, seats);
                 model.addAttribute("results", results);
-                Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = dashboardService
+                Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = identityDashboardService
                         .fetchUsersByIds(results.stream()
                                 .map(TripDto.TripResponse::getDriverId)
                                 .filter(Objects::nonNull)
                                 .toList());
                 model.addAttribute("userNames", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> dashboardService.safeName(e.getValue()))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.safeName(e.getValue()))));
                 model.addAttribute("userInitials", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> dashboardService.initials(e.getValue()))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
             } catch (Exception e) {
                 log.error("Error searching trips: {}", e.getMessage());
                 model.addAttribute("results", List.of());
@@ -70,15 +70,15 @@ public class SearchController {
                 List<TripDto.TripResponse> nearbyResults = tripsClient.nearbyTrips(nearbyLat, nearbyLon, nearbyRadiusKm,
                         10);
                 model.addAttribute("nearbyResults", nearbyResults);
-                Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = dashboardService
+                Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = identityDashboardService
                         .fetchUsersByIds(nearbyResults.stream()
                                 .map(TripDto.TripResponse::getDriverId)
                                 .filter(Objects::nonNull)
                                 .toList());
                 model.addAttribute("nearbyUserNames", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> dashboardService.safeName(e.getValue()))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.safeName(e.getValue()))));
                 model.addAttribute("nearbyUserInitials", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> dashboardService.initials(e.getValue()))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
             } catch (Exception e) {
                 log.error("Error searching nearby trips: {}", e.getMessage());
                 model.addAttribute("nearbyResults", List.of());

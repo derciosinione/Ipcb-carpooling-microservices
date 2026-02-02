@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers.dashboard;
+package pt.ipcb.carpooling.controllers.dashboard.home;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.MetricsDto;
 import pt.ipcb.carpooling.dto.TripDto;
-import pt.ipcb.carpooling.services.DashboardService;
+import pt.ipcb.carpooling.services.trips.TripsDashboardService;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class HomeController {
-    private final DashboardService dashboardService;
+    private final TripsDashboardService tripsDashboardService;
 
     @GetMapping
     public String dashboardHome(Model model, HttpSession session) {
@@ -28,23 +28,23 @@ public class HomeController {
             return "redirect:/auth";
         }
 
-        List<TripDto.TripResponse> driverTrips = dashboardService.safeGetTripsByDriver(user.getId());
-        List<TripDto.TripResponse> passengerTrips = dashboardService.safeGetTripsByPassenger(user.getId());
+        List<TripDto.TripResponse> driverTrips = tripsDashboardService.safeGetTripsByDriver(user.getId());
+        List<TripDto.TripResponse> passengerTrips = tripsDashboardService.safeGetTripsByPassenger(user.getId());
 
-        MetricsDto.MetricsResponse driverMetrics = dashboardService.safeGetMetrics("DRIVER");
-        MetricsDto.MetricsResponse passengerMetrics = dashboardService.safeGetMetrics("PASSENGER");
+        MetricsDto.MetricsResponse driverMetrics = tripsDashboardService.safeGetMetrics("DRIVER");
+        MetricsDto.MetricsResponse passengerMetrics = tripsDashboardService.safeGetMetrics("PASSENGER");
 
         model.addAttribute("driverTotalTrips",
                 driverMetrics != null ? driverMetrics.getTotalTrips() : driverTrips.size());
         model.addAttribute("passengerTotalTrips",
                 passengerMetrics != null ? passengerMetrics.getTotalTrips() : passengerTrips.size());
-        model.addAttribute("driverUpcomingTrips", dashboardService.filterUpcoming(driverTrips));
-        model.addAttribute("passengerUpcomingTrips", dashboardService.filterUpcoming(passengerTrips));
+        model.addAttribute("driverUpcomingTrips", tripsDashboardService.filterUpcoming(driverTrips));
+        model.addAttribute("passengerUpcomingTrips", tripsDashboardService.filterUpcoming(passengerTrips));
 
         model.addAttribute("driverTotalEarnings",
-                driverMetrics != null ? driverMetrics.getTotalEarnings() : dashboardService.sumTotalCost(driverTrips));
+                driverMetrics != null ? driverMetrics.getTotalEarnings() : tripsDashboardService.sumTotalCost(driverTrips));
         model.addAttribute("passengerTotalSpend", passengerMetrics != null ? passengerMetrics.getTotalSpend()
-                : dashboardService.sumCostPerSeat(passengerTrips));
+                : tripsDashboardService.sumCostPerSeat(passengerTrips));
         model.addAttribute("driverTotalKm",
                 driverMetrics != null ? driverMetrics.getTotalKm() : java.math.BigDecimal.ZERO);
         model.addAttribute("passengerTotalKm",

@@ -1,4 +1,4 @@
-package pt.ipcb.carpooling.controllers.dashboard;
+package pt.ipcb.carpooling.controllers.dashboard.rides;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.PassengerTripDto;
 import pt.ipcb.carpooling.dto.TripDto;
-import pt.ipcb.carpooling.services.DashboardService;
+import pt.ipcb.carpooling.services.trips.TripsDashboardService;
 import pt.ipcb.carpooling.clients.TripsClient;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class RidesController {
-    private final DashboardService dashboardService;
+    private final TripsDashboardService tripsDashboardService;
     private final TripsClient tripsClient;
 
     @GetMapping("/rides")
@@ -35,8 +35,8 @@ public class RidesController {
 
         try {
             List<TripDto.TripResponse> trips = tripsClient.getTripsByDriver(user.getId());
-            model.addAttribute("driverUpcomingTrips", dashboardService.filterUpcoming(trips));
-            model.addAttribute("driverHistoryTrips", dashboardService.filterHistory(trips));
+            model.addAttribute("driverUpcomingTrips", tripsDashboardService.filterUpcoming(trips));
+            model.addAttribute("driverHistoryTrips", tripsDashboardService.filterHistory(trips));
         } catch (Exception e) {
             log.error("Error loading trips for user {}: {}", user.getId(), e.getMessage());
             model.addAttribute("driverUpcomingTrips", List.of());
@@ -46,9 +46,9 @@ public class RidesController {
 
         try {
             List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByPassenger(user.getId());
-            List<PassengerTripDto> passengerTrips = dashboardService.buildPassengerTrips(bookings);
-            model.addAttribute("passengerUpcomingTrips", dashboardService.filterUpcomingPassengerTrips(passengerTrips));
-            model.addAttribute("passengerHistoryTrips", dashboardService.filterHistoryPassengerTrips(passengerTrips));
+            List<PassengerTripDto> passengerTrips = tripsDashboardService.buildPassengerTrips(bookings);
+            model.addAttribute("passengerUpcomingTrips", tripsDashboardService.filterUpcomingPassengerTrips(passengerTrips));
+            model.addAttribute("passengerHistoryTrips", tripsDashboardService.filterHistoryPassengerTrips(passengerTrips));
         } catch (Exception e) {
             log.error("Error loading passenger trips for user {}: {}", user.getId(), e.getMessage());
             model.addAttribute("passengerUpcomingTrips", List.of());

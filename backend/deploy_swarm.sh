@@ -78,7 +78,7 @@ export FRONTEND_IMAGE_TAG
 echo "Frontend image tag for this deploy: ${FRONTEND_IMAGE_TAG}"
 
 echo "Building Frontend Service..."
-docker compose -f ../frontend/car-pooling-frontend/docker-compose.yml build --no-cache
+docker compose -f ../frontend/car-pooling-frontend/docker-compose.yml build
 
 
 # 3. Deploy Stack

@@ -23,7 +23,7 @@ services:
   identity-service:
     image: car-pooling/identity:latest
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: any
     ports:
@@ -47,7 +47,7 @@ services:
   vehicles-service:
     image: car-pooling/vehicles:latest
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: any
     ports:
@@ -71,7 +71,7 @@ services:
   trips-service:
     image: car-pooling/trips:latest
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: any
     ports:
@@ -95,7 +95,7 @@ services:
   payments-service:
     image: car-pooling/payments:latest
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: any
     ports:
@@ -119,7 +119,7 @@ services:
   gps-service:
     image: car-pooling/gps:latest
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: any
     ports:
@@ -143,7 +143,7 @@ services:
   notifications-service:
     image: car-pooling/notifications:latest
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: any
     ports:
@@ -189,7 +189,7 @@ services:
   web-service:
     image: car-pooling/frontend:${FRONTEND_IMAGE_TAG:-latest}
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: any
     ports:

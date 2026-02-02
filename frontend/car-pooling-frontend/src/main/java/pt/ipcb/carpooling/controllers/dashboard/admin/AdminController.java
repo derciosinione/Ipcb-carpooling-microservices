@@ -14,18 +14,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pt.ipcb.carpooling.clients.IdentityClient;
 import pt.ipcb.carpooling.clients.TripsClient;
 import pt.ipcb.carpooling.clients.VehicleClient;
+import pt.ipcb.carpooling.dto.AdminPaymentDto;
 import pt.ipcb.carpooling.dto.AuthDto;
+import pt.ipcb.carpooling.dto.BookingDto;
 import pt.ipcb.carpooling.dto.TripDto;
 import pt.ipcb.carpooling.dto.UserDto;
 import pt.ipcb.carpooling.dto.VehicleDto;
+import pt.ipcb.carpooling.services.identity.IdentityDashboardService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Controller
@@ -38,6 +44,7 @@ public class AdminController {
     private final IdentityClient identityClient;
     private final TripsClient tripsClient;
     private final VehicleClient vehicleClient;
+    private final IdentityDashboardService identityDashboardService;
 
     @GetMapping("/admin")
     public String admin(Model model, HttpSession session) {
@@ -51,7 +58,6 @@ public class AdminController {
 
         List<UserDto.UserResponse> users = identityClient.getAllUsersForAdmin();
         List<TripDto.TripResponse> trips = tripsClient.getAllTrips();
-        List<VehicleDto.VehicleResponse> vehicles = vehicleClient.getAllVehicles();
 
         long totalUsers = users.size();
         long activeUsers = users.stream().filter(u -> Boolean.TRUE.equals(u.getActive())).count();
@@ -74,9 +80,92 @@ public class AdminController {
         model.addAttribute("activeUsers", activeUsers);
         model.addAttribute("totalTrips", totalTrips);
         model.addAttribute("co2SavedKg", co2SavedKg);
-        model.addAttribute("users", users);
-        model.addAttribute("vehicles", vehicles);
         return "dashboard/admin";
+    }
+
+    @GetMapping("/admin/users")
+    public String users(Model model, HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+        if (!hasAdminRole(user)) {
+            return "redirect:/dashboard";
+        }
+
+        List<UserDto.UserResponse> users = identityClient.getAllUsersForAdmin();
+        model.addAttribute("users", users);
+        return "dashboard/admin-users";
+    }
+
+    @GetMapping("/admin/trips")
+    public String trips(Model model, HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+        if (!hasAdminRole(user)) {
+            return "redirect:/dashboard";
+        }
+
+        List<TripDto.TripResponse> trips = tripsClient.getAllTrips();
+        model.addAttribute("trips", trips);
+        return "dashboard/admin-trips";
+    }
+
+    @GetMapping("/admin/payments")
+    public String payments(Model model, HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+        if (!hasAdminRole(user)) {
+            return "redirect:/dashboard";
+        }
+
+        List<TripDto.TripResponse> trips = tripsClient.getAllTrips();
+        List<AdminPaymentDto> payments = buildAdminPayments(trips);
+        model.addAttribute("payments", payments);
+        return "dashboard/admin-payments";
+    }
+
+    @GetMapping("/admin/vehicles")
+    public String vehicles(Model model, HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+        if (!hasAdminRole(user)) {
+            return "redirect:/dashboard";
+        }
+
+        List<VehicleDto.VehicleResponse> vehicles = vehicleClient.getAllVehicles();
+        model.addAttribute("vehicles", vehicles);
+        return "dashboard/admin-vehicles";
+    }
+
+    @GetMapping("/admin/reports")
+    public String reports(HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+        if (!hasAdminRole(user)) {
+            return "redirect:/dashboard";
+        }
+        return "dashboard/admin-reports";
+    }
+
+    @GetMapping("/admin/monitoring")
+    public String monitoring(HttpSession session) {
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/auth";
+        }
+        if (!hasAdminRole(user)) {
+            return "redirect:/dashboard";
+        }
+        return "dashboard/admin-monitoring";
     }
 
     @PostMapping("/admin/users/status")
@@ -94,7 +183,7 @@ public class AdminController {
 
         identityClient.updateUserStatus(userId, new UserDto.AdminStatusRequest(active));
         redirectAttributes.addFlashAttribute("success", "Estado do utilizador atualizado.");
-        return "redirect:/dashboard/admin";
+        return "redirect:/dashboard/admin/users";
     }
 
     @PostMapping("/admin/users/profiles/add")
@@ -112,7 +201,7 @@ public class AdminController {
 
         identityClient.addProfileToUser(userId, profileName);
         redirectAttributes.addFlashAttribute("success", "Perfil adicionado com sucesso.");
-        return "redirect:/dashboard/admin";
+        return "redirect:/dashboard/admin/users";
     }
 
     @PostMapping("/admin/users/profiles/remove")
@@ -130,7 +219,7 @@ public class AdminController {
 
         identityClient.removeProfileFromUser(userId, profileName);
         redirectAttributes.addFlashAttribute("success", "Perfil removido com sucesso.");
-        return "redirect:/dashboard/admin";
+        return "redirect:/dashboard/admin/users";
     }
 
     @PostMapping("/admin/users/create-admin")
@@ -156,7 +245,7 @@ public class AdminController {
                 .build();
         identityClient.createAdmin(request);
         redirectAttributes.addFlashAttribute("success", "Administrador criado com sucesso.");
-        return "redirect:/dashboard/admin";
+        return "redirect:/dashboard/admin/users";
     }
 
     @GetMapping("/admin/reports/export")
@@ -212,7 +301,7 @@ public class AdminController {
 
         vehicleClient.deleteVehicle(vehicleId);
         redirectAttributes.addFlashAttribute("success", "Veículo removido com sucesso.");
-        return "redirect:/dashboard/admin";
+        return "redirect:/dashboard/admin/vehicles";
     }
 
     private LocalDate parseDate(String value) {
@@ -296,5 +385,65 @@ public class AdminController {
     private boolean hasAdminRole(AuthDto.LoginResponse user) {
         return user.getRoles() != null
                 && user.getRoles().stream().anyMatch(r -> Objects.equals(r, "Admin") || Objects.equals(r, "ADMIN"));
+    }
+
+    private List<AdminPaymentDto> buildAdminPayments(List<TripDto.TripResponse> trips) {
+        if (trips == null || trips.isEmpty()) {
+            return List.of();
+        }
+
+        List<AdminPaymentDto> result = new ArrayList<>();
+        Set<String> passengerIds = new HashSet<>();
+        for (TripDto.TripResponse trip : trips) {
+            if (trip == null || trip.getId() == null) {
+                continue;
+            }
+            List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(trip.getId());
+            if (bookings == null) {
+                continue;
+            }
+            for (BookingDto.BookingResponse booking : bookings) {
+                String passengerId = booking.getPassengerId();
+                if (passengerId != null && !passengerId.isBlank()) {
+                    passengerIds.add(passengerId);
+                }
+                result.add(new AdminPaymentDto(
+                        trip.getId(),
+                        trip.getOrigin() + " -> " + trip.getDestination(),
+                        trip.getDepartureTime(),
+                        passengerId,
+                        passengerId,
+                        booking.getSeats(),
+                        booking.getPriceToPay(),
+                        booking.getPaid(),
+                        booking.getPaymentReference(),
+                        booking.getStatus()));
+            }
+        }
+
+        if (!passengerIds.isEmpty()) {
+            var users = identityDashboardService.fetchUsersByIds(new ArrayList<>(passengerIds));
+            result.forEach(payment -> {
+                UserDto.UserResponse user = users.get(payment.getPassengerId());
+                payment.setPassengerName(identityDashboardService.safeName(user));
+            });
+        }
+
+        return result.stream()
+                .sorted((a, b) -> {
+                    LocalDateTime ta = a.getDepartureTime();
+                    LocalDateTime tb = b.getDepartureTime();
+                    if (ta == null && tb == null) {
+                        return 0;
+                    }
+                    if (ta == null) {
+                        return 1;
+                    }
+                    if (tb == null) {
+                        return -1;
+                    }
+                    return tb.compareTo(ta);
+                })
+                .toList();
     }
 }

@@ -8,7 +8,7 @@
             </a>
         </div>
         
-        <div class="flex-1 px-4 space-y-2">
+        <div class="flex-1 px-4 space-y-2" th:if="${!hasAdminRole}">
             <a th:href="@{/dashboard}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 w-full justify-start gap-3 bg-primary/10 text-primary hover:bg-primary/20">
                  <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
                 Dashboard
@@ -40,6 +40,37 @@
             <a th:href="@{/dashboard/settings}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start gap-3 text-muted-foreground">
                  <i data-lucide="settings" class="h-5 w-5"></i>
                 Preferências
+            </a>
+        </div>
+
+        <div class="flex-1 px-4 space-y-2" th:if="${hasAdminRole}">
+            <a th:href="@{/dashboard/admin}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 w-full justify-start gap-3 bg-primary/10 text-primary hover:bg-primary/20">
+                <i data-lucide="shield-check" class="h-5 w-5"></i>
+                Administração
+            </a>
+            <a th:href="@{/dashboard/admin/users}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start gap-3 text-muted-foreground">
+                <i data-lucide="users" class="h-5 w-5"></i>
+                Utilizadores
+            </a>
+            <a th:href="@{/dashboard/admin/trips}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start gap-3 text-muted-foreground">
+                <i data-lucide="map" class="h-5 w-5"></i>
+                Viagens
+            </a>
+            <a th:href="@{/dashboard/admin/payments}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start gap-3 text-muted-foreground">
+                <i data-lucide="wallet" class="h-5 w-5"></i>
+                Pagamentos
+            </a>
+            <a th:href="@{/dashboard/admin/reports}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start gap-3 text-muted-foreground">
+                <i data-lucide="file-text" class="h-5 w-5"></i>
+                Relatórios
+            </a>
+            <a th:href="@{/dashboard/admin/vehicles}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start gap-3 text-muted-foreground">
+                <i data-lucide="car" class="h-5 w-5"></i>
+                Veículos
+            </a>
+            <a th:href="@{/dashboard/admin/monitoring}" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start gap-3 text-muted-foreground">
+                <i data-lucide="activity" class="h-5 w-5"></i>
+                Monitorização
             </a>
         </div>
 

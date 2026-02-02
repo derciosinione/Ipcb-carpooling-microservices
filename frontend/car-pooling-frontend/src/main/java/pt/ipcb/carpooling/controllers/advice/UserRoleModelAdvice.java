@@ -12,11 +12,17 @@ public class UserRoleModelAdvice {
 
     @ModelAttribute("hasDriverRole")
     public boolean hasDriverRole(HttpSession session) {
+        if (isAdmin(session)) {
+            return true;
+        }
         return hasRole(session, "Condutor", "DRIVER");
     }
 
     @ModelAttribute("hasPassengerRole")
     public boolean hasPassengerRole(HttpSession session) {
+        if (isAdmin(session)) {
+            return true;
+        }
         return hasRole(session, "Passageiro", "PASSENGER");
     }
 
@@ -27,7 +33,7 @@ public class UserRoleModelAdvice {
 
     @ModelAttribute("hasAdminRole")
     public boolean hasAdminRole(HttpSession session) {
-        return hasRole(session, "Admin", "ADMIN");
+        return isAdmin(session);
     }
 
     @ModelAttribute("defaultIsDriver")
@@ -51,5 +57,9 @@ public class UserRoleModelAdvice {
             }
         }
         return false;
+    }
+
+    private boolean isAdmin(HttpSession session) {
+        return hasRole(session, "Admin", "ADMIN");
     }
 }

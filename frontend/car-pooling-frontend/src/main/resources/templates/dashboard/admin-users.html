@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Administração - Utilizadores</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight">Utilizadores</h1>
+        <p class="text-muted-foreground mt-2">Gestão de contas, perfis e estado dos utilizadores.</p>
+    </div>
+
+    <div th:if="${success}" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg text-sm" th:text="${success}">OK</div>
+    <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm" th:text="${error}">Erro</div>
+
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="p-6 pb-4">
+            <h3 class="font-semibold leading-none tracking-tight">Criar Administrador</h3>
+            <p class="text-sm text-muted-foreground mt-1">Registe um novo utilizador com papel de administrador.</p>
+        </div>
+        <div class="p-6 pt-0">
+            <form th:action="@{/dashboard/admin/users/create-admin}" method="post" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <input name="name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Nome completo" required />
+                <input name="username" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Username" required />
+                <input name="email" type="email" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Email" required />
+                <input name="password" type="password" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Password" required />
+                <div class="md:col-span-4 flex justify-end">
+                    <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                        Criar Administrador
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="p-6 pb-4">
+            <h3 class="font-semibold leading-none tracking-tight">Lista de Utilizadores</h3>
+        </div>
+        <div class="p-6 pt-0 overflow-x-auto">
+            <table class="w-full text-sm" x-data="{ openUserId: null }">
+                <thead class="text-muted-foreground">
+                <tr>
+                    <th class="text-left py-2">Nome</th>
+                    <th class="text-left py-2">Email</th>
+                    <th class="text-left py-2">Perfis</th>
+                    <th class="text-left py-2">Estado</th>
+                    <th class="text-right py-2">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${users}"
+                    th:with="profileNames=${u.profiles != null ? u.profiles.![name] : T(java.util.Collections).emptyList()}"
+                    th:attr="data-user-id=${u.id}"
+                    x-data="{ id: null }"
+                    x-init="id = $el.dataset.userId"
+                    class="border-t">
+                    <td class="py-2" th:text="${u.name}">Nome</td>
+                    <td class="py-2" th:text="${u.email}">email</td>
+                    <td class="py-2" th:text="${u.profiles != null ? #strings.listJoin(profileNames, ', ') : ''}">Perfis</td>
+                    <td class="py-2">
+                        <span th:text="${u.active ? 'Ativo' : 'Bloqueado'}"
+                              th:classappend="${u.active} ? ' text-emerald-700' : ' text-red-600'">Estado</span>
+                    </td>
+                    <td class="py-2 text-right">
+                        <details class="relative inline-block text-left"
+                                 :open="openUserId === id">
+                            <summary class="list-none inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-3 cursor-pointer"
+                                     @click.prevent="openUserId = (openUserId === id ? null : id)">
+                                Gerir
+                            </summary>
+                            <div class="absolute right-0 mt-2 w-72 rounded-md border bg-popover p-3 text-popover-foreground shadow-md z-10"
+                                 x-show="openUserId === id" @click.outside="openUserId = null"
+                                 style="display: none;">
+                                <div class="space-y-3">
+                                    <form th:action="@{/dashboard/admin/users/status}" method="post" class="flex items-center justify-between gap-2">
+                                        <input type="hidden" name="userId" th:value="${u.id}" />
+                                        <input type="hidden" name="active" th:value="${u.active ? 'false' : 'true'}" />
+                                        <span class="text-xs text-muted-foreground">Estado</span>
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-3">
+                                            <span th:text="${u.active ? 'Bloquear' : 'Ativar'}">Bloquear</span>
+                                        </button>
+                                    </form>
+
+                                    <div class="h-px bg-border"></div>
+
+                                    <form th:if="${profileNames != null && !#lists.contains(profileNames, 'Condutor')}"
+                                          th:action="@{/dashboard/admin/users/profiles/add}" method="post"
+                                          class="flex items-center gap-2">
+                                        <input type="hidden" name="userId" th:value="${u.id}" />
+                                        <input type="hidden" name="profileName" value="Condutor" />
+                                        <span class="text-xs text-muted-foreground flex-1">Adicionar Condutor</span>
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3">
+                                            Adicionar
+                                        </button>
+                                    </form>
+                                    <form th:if="${profileNames != null && #lists.contains(profileNames, 'Condutor')}"
+                                          th:action="@{/dashboard/admin/users/profiles/remove}" method="post"
+                                          class="flex items-center gap-2">
+                                        <input type="hidden" name="userId" th:value="${u.id}" />
+                                        <input type="hidden" name="profileName" value="Condutor" />
+                                        <span class="text-xs text-muted-foreground flex-1">Remover Condutor</span>
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-3 text-red-600">
+                                            Remover
+                                        </button>
+                                    </form>
+
+                                    <form th:if="${profileNames != null && !#lists.contains(profileNames, 'Passageiro')}"
+                                          th:action="@{/dashboard/admin/users/profiles/add}" method="post"
+                                          class="flex items-center gap-2">
+                                        <input type="hidden" name="userId" th:value="${u.id}" />
+                                        <input type="hidden" name="profileName" value="Passageiro" />
+                                        <span class="text-xs text-muted-foreground flex-1">Adicionar Passageiro</span>
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3">
+                                            Adicionar
+                                        </button>
+                                    </form>
+                                    <form th:if="${profileNames != null && #lists.contains(profileNames, 'Passageiro')}"
+                                          th:action="@{/dashboard/admin/users/profiles/remove}" method="post"
+                                          class="flex items-center gap-2">
+                                        <input type="hidden" name="userId" th:value="${u.id}" />
+                                        <input type="hidden" name="profileName" value="Passageiro" />
+                                        <span class="text-xs text-muted-foreground flex-1">Remover Passageiro</span>
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-3 text-red-600">
+                                            Remover
+                                        </button>
+                                    </form>
+
+                                    <form th:if="${profileNames != null && !#lists.contains(profileNames, 'Admin')}"
+                                          th:action="@{/dashboard/admin/users/profiles/add}" method="post"
+                                          class="flex items-center gap-2">
+                                        <input type="hidden" name="userId" th:value="${u.id}" />
+                                        <input type="hidden" name="profileName" value="Admin" />
+                                        <span class="text-xs text-muted-foreground flex-1">Adicionar Admin</span>
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3">
+                                            Adicionar
+                                        </button>
+                                    </form>
+                                    <form th:if="${profileNames != null && #lists.contains(profileNames, 'Admin')}"
+                                          th:action="@{/dashboard/admin/users/profiles/remove}" method="post"
+                                          class="flex items-center gap-2">
+                                        <input type="hidden" name="userId" th:value="${u.id}" />
+                                        <input type="hidden" name="profileName" value="Admin" />
+                                        <span class="text-xs text-muted-foreground flex-1">Remover Admin</span>
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-3 text-red-600">
+                                            Remover
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </details>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="5" class="py-4 text-muted-foreground">Sem utilizadores.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

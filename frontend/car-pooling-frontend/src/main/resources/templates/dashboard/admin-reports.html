@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Administração - Relatórios</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight">Relatórios & Exportação</h1>
+        <p class="text-muted-foreground mt-2">Gere relatórios CSV por período.</p>
+    </div>
+
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="p-6 pt-0">
+            <form th:action="@{/dashboard/admin/reports/export}" method="get" class="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+                <div class="md:col-span-2">
+                    <label class="text-xs text-muted-foreground">Data inicial</label>
+                    <input name="startDate" type="date" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-xs text-muted-foreground">Data final</label>
+                    <input name="endDate" type="date" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                </div>
+                <div class="md:col-span-2 flex flex-col gap-2">
+                    <button type="submit" name="type" value="trips" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                        Exportar viagens CSV
+                    </button>
+                    <button type="submit" name="type" value="users" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2">
+                        Exportar utilizadores CSV
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

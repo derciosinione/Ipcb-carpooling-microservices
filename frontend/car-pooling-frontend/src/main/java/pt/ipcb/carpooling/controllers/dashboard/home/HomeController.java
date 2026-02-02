@@ -25,6 +25,9 @@ public class HomeController {
         if (user == null) {
             return "redirect:/auth";
         }
+        if (isAdmin(user)) {
+            return "redirect:/dashboard/admin";
+        }
 
         List<TripDto.TripResponse> driverTrips = tripsDashboardService.getTripsByDriver(user.getId());
         List<TripDto.TripResponse> passengerTrips = tripsDashboardService.getTripsByPassenger(user.getId());
@@ -48,5 +51,10 @@ public class HomeController {
         model.addAttribute("passengerTotalKm",
                 passengerMetrics != null ? passengerMetrics.getTotalKm() : java.math.BigDecimal.ZERO);
         return "dashboard/home";
+    }
+
+    private boolean isAdmin(AuthDto.LoginResponse user) {
+        return user.getRoles() != null
+                && user.getRoles().stream().anyMatch(r -> "Admin".equalsIgnoreCase(r) || "ADMIN".equalsIgnoreCase(r));
     }
 }

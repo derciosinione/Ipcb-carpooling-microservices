@@ -221,7 +221,7 @@ services:
   web-service:
     image: car-pooling/frontend:${FRONTEND_IMAGE_TAG:-latest}
     deploy:
-      replicas: 2
+      replicas: 1
       restart_policy:
         condition: any
       resources:

@@ -37,8 +37,17 @@
     </div>
 
     <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-        <div class="p-6 pb-4">
-            <h3 class="font-semibold leading-none tracking-tight">Lista de Utilizadores</h3>
+        <div class="p-6 pb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h3 class="font-semibold leading-none tracking-tight">Lista de Utilizadores</h3>
+                <p class="text-sm text-muted-foreground mt-1">Pesquise por nome, email ou perfil.</p>
+            </div>
+            <div class="relative w-full md:w-80">
+                <i data-lucide="search" class="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"></i>
+                <input id="userSearch" type="text"
+                       placeholder="Pesquisar utilizador..."
+                       class="flex h-10 w-full rounded-md border border-input bg-background pl-9 pr-3 text-sm" />
+            </div>
         </div>
         <div class="p-6 pt-0 overflow-x-auto">
             <table class="w-full text-sm" x-data="{ openUserId: null }">
@@ -54,7 +63,7 @@
                 <tbody>
                 <tr th:each="u : ${users}"
                     th:with="profileNames=${u.profiles != null ? u.profiles.![name] : T(java.util.Collections).emptyList()}"
-                    th:attr="data-user-id=${u.id}"
+                    th:attr="data-user-id=${u.id}, data-search=${(u.name != null ? u.name : '') + ' ' + (u.email != null ? u.email : '') + ' ' + (u.profiles != null ? #strings.listJoin(profileNames, ' ') : '')}"
                     x-data="{ id: null }"
                     x-init="id = $el.dataset.userId"
                     class="border-t">
@@ -161,7 +170,7 @@
                         </details>
                     </td>
                 </tr>
-                <tr th:if="${#lists.isEmpty(users)}">
+                <tr th:if="${#lists.isEmpty(users)}" id="usersEmptyState">
                     <td colspan="5" class="py-4 text-muted-foreground">Sem utilizadores.</td>
                 </tr>
                 </tbody>
@@ -169,5 +178,38 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const input = document.getElementById("userSearch");
+        if (!input) {
+            return;
+        }
+        const rows = Array.from(document.querySelectorAll("tbody tr[data-user-id]"));
+        const emptyRow = document.getElementById("usersEmptyState");
+
+        const normalize = (value) => (value || "").toLowerCase();
+        const matches = (row, query) => {
+            const text = normalize(row.dataset.search);
+            return text.includes(query);
+        };
+
+        const applyFilter = () => {
+            const query = normalize(input.value);
+            let visibleCount = 0;
+            rows.forEach((row) => {
+                const show = query === "" || matches(row, query);
+                row.style.display = show ? "" : "none";
+                if (show) {
+                    visibleCount += 1;
+                }
+            });
+            if (emptyRow) {
+                emptyRow.style.display = visibleCount === 0 ? "" : "none";
+            }
+        };
+
+        input.addEventListener("input", applyFilter);
+    });
+</script>
 </body>
 </html>

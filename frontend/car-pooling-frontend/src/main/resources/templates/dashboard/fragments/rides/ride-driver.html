@@ -30,7 +30,8 @@
                     </button>
                     <button th:if="${trip != null && currentUserBooking != null && currentUserBooking.status == 'CONFIRMED' && trip.status == 'FINISHED'}"
                             class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 gap-2"
-                            th:attr="x-on:click=|$dispatch('open-rate-user-modal', { name: '${userNames != null && userNames[trip.driverId] != null ? userNames[trip.driverId] : 'Condutor'}', role: 'driver', userId: '${trip.driverId}' })|">
+                            th:attr="data-user-name=${userNames != null && userNames[trip.driverId] != null ? userNames[trip.driverId] : 'Condutor'}, data-user-id=${trip.driverId}"
+                            x-on:click="$dispatch('open-rate-user-modal', { name: $el.dataset.userName, role: 'driver', userId: $el.dataset.userId })">
                         <i data-lucide="star" class="h-4 w-4"></i>
                         Avaliar condutor
                     </button>

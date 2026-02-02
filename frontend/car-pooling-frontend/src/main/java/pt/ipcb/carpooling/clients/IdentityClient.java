@@ -49,7 +49,7 @@ public interface IdentityClient {
     @GetMapping("/identity/api/v1/admin/users")
     List<UserDto.UserResponse> getAllUsersForAdmin();
 
-    @PatchMapping("/identity/api/v1/admin/users/{id}/status")
+    @PutMapping("/identity/api/v1/admin/users/{id}/status")
     UserDto.UserResponse updateUserStatus(@PathVariable("id") String id, @RequestBody UserDto.AdminStatusRequest request);
 
     @PostMapping("/identity/api/v1/admin/users")

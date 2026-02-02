@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,8 +52,21 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.markRead(id, userId));
     }
 
+    @PutMapping("/{id}/read")
+    public ResponseEntity<NotificationResponse> markReadPut(@PathVariable UUID id, HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        return ResponseEntity.ok(notificationService.markRead(id, userId));
+    }
+
     @PatchMapping("/read-all")
     public ResponseEntity<Void> markAllRead(HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        notificationService.markAllRead(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/read-all")
+    public ResponseEntity<Void> markAllReadPut(HttpServletRequest httpRequest) {
         UUID userId = requireUserId(httpRequest);
         notificationService.markAllRead(userId);
         return ResponseEntity.noContent().build();

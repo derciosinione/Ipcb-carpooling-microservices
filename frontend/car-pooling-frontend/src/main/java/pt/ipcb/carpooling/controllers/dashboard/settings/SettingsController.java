@@ -2,7 +2,6 @@ package pt.ipcb.carpooling.controllers.dashboard.settings;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
-@Slf4j
 public class SettingsController {
 
     private final IdentityClient identityClient;
@@ -33,17 +31,10 @@ public class SettingsController {
         }
 
         model.addAttribute("roles", user.getRoles() != null ? user.getRoles() : List.of());
-        try {
-            var profile = identityClient.getUserById(user.getId());
-            model.addAttribute("profileName", profile.getName());
-            model.addAttribute("profilePhone", profile.getPhone());
-            model.addAttribute("profileDescription", profile.getDescription());
-        } catch (Exception e) {
-            log.error("Error loading profile for user {}: {}", user.getId(), e.getMessage());
-            model.addAttribute("profileName", user.getName());
-            model.addAttribute("profilePhone", "");
-            model.addAttribute("profileDescription", "");
-        }
+        var profile = identityClient.getUserById(user.getId());
+        model.addAttribute("profileName", profile.getName());
+        model.addAttribute("profilePhone", profile.getPhone());
+        model.addAttribute("profileDescription", profile.getDescription());
         return "dashboard/settings";
     }
 
@@ -69,16 +60,11 @@ public class SettingsController {
             return "redirect:/dashboard/settings";
         }
 
-        try {
-            identityClient.addProfileToUser(user.getId(), profileName);
-            roles.add(profileName);
-            user.setRoles(roles);
-            session.setAttribute("user", user);
-            redirectAttributes.addFlashAttribute("success", "Perfil adicionado com sucesso.");
-        } catch (Exception e) {
-            log.error("Error adding role {} to user {}: {}", profileName, user.getId(), e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Não foi possível adicionar o perfil.");
-        }
+        identityClient.addProfileToUser(user.getId(), profileName);
+        roles.add(profileName);
+        user.setRoles(roles);
+        session.setAttribute("user", user);
+        redirectAttributes.addFlashAttribute("success", "Perfil adicionado com sucesso.");
 
         return "redirect:/dashboard/settings";
     }
@@ -109,16 +95,11 @@ public class SettingsController {
             return "redirect:/dashboard/settings";
         }
 
-        try {
-            identityClient.removeProfileFromUser(user.getId(), profileName);
-            roles.removeIf(r -> r != null && r.equalsIgnoreCase(profileName));
-            user.setRoles(roles);
-            session.setAttribute("user", user);
-            redirectAttributes.addFlashAttribute("success", "Perfil removido com sucesso.");
-        } catch (Exception e) {
-            log.error("Error removing role {} from user {}: {}", profileName, user.getId(), e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Não foi possível remover o perfil.");
-        }
+        identityClient.removeProfileFromUser(user.getId(), profileName);
+        roles.removeIf(r -> r != null && r.equalsIgnoreCase(profileName));
+        user.setRoles(roles);
+        session.setAttribute("user", user);
+        redirectAttributes.addFlashAttribute("success", "Perfil removido com sucesso.");
 
         return "redirect:/dashboard/settings";
     }
@@ -134,18 +115,13 @@ public class SettingsController {
             return "redirect:/auth";
         }
 
-        try {
-            UserDto.UpdateUserRequest request = new UserDto.UpdateUserRequest(name, phone, description);
-            UserDto.UserResponse response = identityClient.updateUser(user.getId(), request);
-            user.setName(response.getName());
-            session.setAttribute("user", user);
-            session.setAttribute("userName", response.getName());
-            session.setAttribute("userInitials", buildInitials(response.getName()));
-            redirectAttributes.addFlashAttribute("success", "Perfil atualizado com sucesso.");
-        } catch (Exception e) {
-            log.error("Error updating profile for user {}: {}", user.getId(), e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Não foi possível atualizar o perfil.");
-        }
+        UserDto.UpdateUserRequest request = new UserDto.UpdateUserRequest(name, phone, description);
+        UserDto.UserResponse response = identityClient.updateUser(user.getId(), request);
+        user.setName(response.getName());
+        session.setAttribute("user", user);
+        session.setAttribute("userName", response.getName());
+        session.setAttribute("userInitials", buildInitials(response.getName()));
+        redirectAttributes.addFlashAttribute("success", "Perfil atualizado com sucesso.");
 
         return "redirect:/dashboard/settings";
     }

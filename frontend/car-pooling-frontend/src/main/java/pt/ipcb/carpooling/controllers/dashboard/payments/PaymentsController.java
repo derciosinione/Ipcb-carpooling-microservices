@@ -2,7 +2,6 @@ package pt.ipcb.carpooling.controllers.dashboard.payments;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
-@Slf4j
 public class PaymentsController {
     private final PaymentsDashboardService paymentsDashboardService;
 
@@ -33,26 +31,11 @@ public class PaymentsController {
             return "redirect:/auth";
         }
 
-        List<DriverPaymentDto> driverPayments = List.of();
-        List<PassengerPaymentDto> passengerPayments = List.of();
+        List<DriverPaymentDto> driverPayments = paymentsDashboardService.buildDriverPayments(user.getId());
+        driverPayments = paymentsDashboardService.filterDriverPaymentsByPeriod(driverPayments, period);
 
-        try {
-            driverPayments = paymentsDashboardService.buildDriverPayments(user.getId());
-            driverPayments = paymentsDashboardService.filterDriverPaymentsByPeriod(driverPayments, period);
-        } catch (Exception e) {
-            log.error("Error loading driver payments for user {}: {}", user.getId(), e.getMessage());
-            model.addAttribute("error", "Erro ao carregar pagamentos do condutor.");
-        }
-
-        try {
-            passengerPayments = paymentsDashboardService.buildPassengerPayments(user.getId());
-            passengerPayments = paymentsDashboardService.filterPassengerPaymentsByPeriod(passengerPayments, period);
-        } catch (Exception e) {
-            log.error("Error loading passenger payments for user {}: {}", user.getId(), e.getMessage());
-            if (!model.containsAttribute("error")) {
-                model.addAttribute("error", "Erro ao carregar pagamentos do passageiro.");
-            }
-        }
+        List<PassengerPaymentDto> passengerPayments = paymentsDashboardService.buildPassengerPayments(user.getId());
+        passengerPayments = paymentsDashboardService.filterPassengerPaymentsByPeriod(passengerPayments, period);
 
         model.addAttribute("period", paymentsDashboardService.normalizePeriod(period));
         model.addAttribute("driverPayments", driverPayments);

@@ -2,7 +2,6 @@ package pt.ipcb.carpooling.controllers.dashboard.search;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pt.ipcb.carpooling.clients.GpsClient;
 import pt.ipcb.carpooling.clients.TripsClient;
+import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.LocationDto;
 import pt.ipcb.carpooling.dto.TripDto;
 import pt.ipcb.carpooling.services.identity.IdentityDashboardService;
@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Controller("dashboardSearchController")
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
-@Slf4j
 public class SearchController {
     private final TripsClient tripsClient;
     private final GpsClient gpsClient;
@@ -39,50 +38,39 @@ public class SearchController {
             @RequestParam(required = false, defaultValue = "25") BigDecimal nearbyRadiusKm,
             Model model,
             HttpSession session) {
-        var user = (pt.ipcb.carpooling.dto.AuthDto.LoginResponse) session.getAttribute("user");
+        AuthDto.LoginResponse user = (AuthDto.LoginResponse) session.getAttribute("user");
         if (user != null) {
             model.addAttribute("currentUserId", user.getId());
         }
         if (origin != null && destination != null) {
-            try {
-                List<TripDto.TripResponse> results = tripsClient.searchTrips(origin, destination, seats);
-                model.addAttribute("results", results);
-                Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = identityDashboardService
-                        .fetchUsersByIds(results.stream()
-                                .map(TripDto.TripResponse::getDriverId)
-                                .filter(Objects::nonNull)
-                                .toList());
-                model.addAttribute("userNames", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.safeName(e.getValue()))));
-                model.addAttribute("userInitials", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
-            } catch (Exception e) {
-                log.error("Error searching trips: {}", e.getMessage());
-                model.addAttribute("results", List.of());
-                model.addAttribute("error", "Erro ao procurar viagens.");
-            }
+            List<TripDto.TripResponse> results = tripsClient.searchTrips(origin, destination, seats);
+            model.addAttribute("results", results);
+            Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = identityDashboardService
+                    .fetchUsersByIds(results.stream()
+                            .map(TripDto.TripResponse::getDriverId)
+                            .filter(Objects::nonNull)
+                            .toList());
+            model.addAttribute("userNames", users.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.safeName(e.getValue()))));
+            model.addAttribute("userInitials", users.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
         } else {
             model.addAttribute("results", List.of());
         }
 
         if (nearbyLat != null && nearbyLon != null) {
-            try {
-                List<TripDto.TripResponse> nearbyResults = tripsClient.nearbyTrips(nearbyLat, nearbyLon, nearbyRadiusKm,
-                        10);
-                model.addAttribute("nearbyResults", nearbyResults);
-                Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = identityDashboardService
-                        .fetchUsersByIds(nearbyResults.stream()
-                                .map(TripDto.TripResponse::getDriverId)
-                                .filter(Objects::nonNull)
-                                .toList());
-                model.addAttribute("nearbyUserNames", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.safeName(e.getValue()))));
-                model.addAttribute("nearbyUserInitials", users.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
-            } catch (Exception e) {
-                log.error("Error searching nearby trips: {}", e.getMessage());
-                model.addAttribute("nearbyResults", List.of());
-            }
+            List<TripDto.TripResponse> nearbyResults = tripsClient.nearbyTrips(nearbyLat, nearbyLon, nearbyRadiusKm,
+                    10);
+            model.addAttribute("nearbyResults", nearbyResults);
+            Map<String, pt.ipcb.carpooling.dto.UserDto.UserResponse> users = identityDashboardService
+                    .fetchUsersByIds(nearbyResults.stream()
+                            .map(TripDto.TripResponse::getDriverId)
+                            .filter(Objects::nonNull)
+                            .toList());
+            model.addAttribute("nearbyUserNames", users.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.safeName(e.getValue()))));
+            model.addAttribute("nearbyUserInitials", users.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
         } else {
             model.addAttribute("nearbyResults", List.of());
         }
@@ -101,11 +89,6 @@ public class SearchController {
         if (query == null || query.isBlank() || query.trim().length() < 2) {
             return List.of();
         }
-        try {
-            return gpsClient.searchLocations(query.trim(), 6);
-        } catch (Exception e) {
-            log.warn("Error searching locations: {}", e.getMessage());
-            return List.of();
-        }
+        return gpsClient.searchLocations(query.trim(), 6);
     }
 }

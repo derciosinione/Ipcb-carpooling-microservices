@@ -2,7 +2,6 @@ package pt.ipcb.carpooling.controllers.dashboard.home;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,6 @@ import java.util.List;
 @Controller("dashboardHomeController")
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
-@Slf4j
 public class HomeController {
     private final TripsDashboardService tripsDashboardService;
 
@@ -28,11 +26,11 @@ public class HomeController {
             return "redirect:/auth";
         }
 
-        List<TripDto.TripResponse> driverTrips = tripsDashboardService.safeGetTripsByDriver(user.getId());
-        List<TripDto.TripResponse> passengerTrips = tripsDashboardService.safeGetTripsByPassenger(user.getId());
+        List<TripDto.TripResponse> driverTrips = tripsDashboardService.getTripsByDriver(user.getId());
+        List<TripDto.TripResponse> passengerTrips = tripsDashboardService.getTripsByPassenger(user.getId());
 
-        MetricsDto.MetricsResponse driverMetrics = tripsDashboardService.safeGetMetrics("DRIVER");
-        MetricsDto.MetricsResponse passengerMetrics = tripsDashboardService.safeGetMetrics("PASSENGER");
+        MetricsDto.MetricsResponse driverMetrics = tripsDashboardService.getMetrics("DRIVER");
+        MetricsDto.MetricsResponse passengerMetrics = tripsDashboardService.getMetrics("PASSENGER");
 
         model.addAttribute("driverTotalTrips",
                 driverMetrics != null ? driverMetrics.getTotalTrips() : driverTrips.size());

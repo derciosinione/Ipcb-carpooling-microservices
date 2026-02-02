@@ -52,6 +52,7 @@ public class TripDto {
         private BigDecimal distanceKm;
         private BigDecimal distanceFromUserKm;
         private String status;
+        private LocalDateTime createdAt;
     }
 
     @Data

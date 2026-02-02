@@ -25,6 +25,9 @@ public interface TripsClient {
     @GetMapping("/trips/api/v1/trips/{tripId}")
     TripDto.TripResponse getTripById(@PathVariable("tripId") String tripId);
 
+    @GetMapping("/trips/api/v1/trips")
+    List<TripDto.TripResponse> getAllTrips();
+
     @GetMapping("/trips/api/v1/trips/search")
     List<TripDto.TripResponse> searchTrips(@RequestParam("origin") String origin,
             @RequestParam("destination") String destination,

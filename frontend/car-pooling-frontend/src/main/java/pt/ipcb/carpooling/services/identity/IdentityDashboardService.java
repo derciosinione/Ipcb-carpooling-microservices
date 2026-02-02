@@ -1,7 +1,6 @@
 package pt.ipcb.carpooling.services.identity;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pt.ipcb.carpooling.clients.IdentityClient;
 import pt.ipcb.carpooling.dto.UserDto;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class IdentityDashboardService {
 
     private final IdentityClient identityClient;
@@ -22,13 +20,8 @@ public class IdentityDashboardService {
             return Map.of();
         }
         UserDto.BatchUsersRequest request = new UserDto.BatchUsersRequest(ids);
-        try {
-            return identityClient.getUsersByIds(request).stream()
-                    .collect(Collectors.toMap(UserDto.UserResponse::getId, u -> u));
-        } catch (Exception e) {
-            log.error("Error fetching users by ids: {}", e.getMessage());
-            return Map.of();
-        }
+        return identityClient.getUsersByIds(request).stream()
+                .collect(Collectors.toMap(UserDto.UserResponse::getId, u -> u));
     }
 
     public String safeName(UserDto.UserResponse user) {

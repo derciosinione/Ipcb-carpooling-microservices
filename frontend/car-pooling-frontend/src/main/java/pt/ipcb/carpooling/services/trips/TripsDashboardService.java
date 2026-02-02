@@ -1,7 +1,6 @@
 package pt.ipcb.carpooling.services.trips;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pt.ipcb.carpooling.clients.TripsClient;
 import pt.ipcb.carpooling.dto.BookingDto;
@@ -16,36 +15,20 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TripsDashboardService {
 
     private final TripsClient tripsClient;
 
-    public List<TripDto.TripResponse> safeGetTripsByDriver(String userId) {
-        try {
-            return tripsClient.getTripsByDriver(userId);
-        } catch (Exception e) {
-            log.error("Error loading driver trips for user {}: {}", userId, e.getMessage());
-            return List.of();
-        }
+    public List<TripDto.TripResponse> getTripsByDriver(String userId) {
+        return tripsClient.getTripsByDriver(userId);
     }
 
-    public List<TripDto.TripResponse> safeGetTripsByPassenger(String userId) {
-        try {
-            return tripsClient.getTripsByPassenger(userId);
-        } catch (Exception e) {
-            log.error("Error loading passenger trips for user {}: {}", userId, e.getMessage());
-            return List.of();
-        }
+    public List<TripDto.TripResponse> getTripsByPassenger(String userId) {
+        return tripsClient.getTripsByPassenger(userId);
     }
 
-    public MetricsDto.MetricsResponse safeGetMetrics(String role) {
-        try {
-            return tripsClient.getMetrics(role);
-        } catch (Exception e) {
-            log.error("Error loading metrics for {}: {}", role, e.getMessage());
-            return null;
-        }
+    public MetricsDto.MetricsResponse getMetrics(String role) {
+        return tripsClient.getMetrics(role);
     }
 
     public List<TripDto.TripResponse> filterUpcoming(List<TripDto.TripResponse> trips) {
@@ -81,14 +64,8 @@ public class TripsDashboardService {
             }
             TripDto.TripResponse trip = tripsById.get(booking.getTripId());
             if (trip == null) {
-                try {
-                    trip = tripsClient.getTripById(booking.getTripId());
-                    tripsById.put(booking.getTripId(), trip);
-                } catch (Exception e) {
-                    log.error("Error loading trip {} for booking {}: {}", booking.getTripId(), booking.getId(),
-                            e.getMessage());
-                    continue;
-                }
+                trip = tripsClient.getTripById(booking.getTripId());
+                tripsById.put(booking.getTripId(), trip);
             }
             result.add(new PassengerTripDto(trip, booking));
         }

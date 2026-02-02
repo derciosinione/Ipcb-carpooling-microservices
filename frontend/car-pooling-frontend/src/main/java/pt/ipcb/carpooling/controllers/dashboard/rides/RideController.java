@@ -1,7 +1,6 @@
 package pt.ipcb.carpooling.controllers.dashboard.rides;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 @Controller("dashboardRideController")
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
-@Slf4j
 public class RideController {
     private final TripsClient tripsClient;
     private final VehicleClient vehicleClient;
@@ -46,30 +44,15 @@ public class RideController {
             return "redirect:/auth";
         }
 
-        TripDto.TripResponse trip;
-        try {
-            trip = tripsClient.getTripById(id);
-            model.addAttribute("trip", trip);
-        } catch (Exception e) {
-            log.error("Error loading trip {}: {}", id, e.getMessage());
-            model.addAttribute("error", "Erro ao carregar a viagem.");
-            model.addAttribute("isDriver", false);
-            model.addAttribute("isCompleted", false);
-            return "dashboard/ride-details";
-        }
+        TripDto.TripResponse trip = tripsClient.getTripById(id);
+        model.addAttribute("trip", trip);
 
         boolean isDriver = Objects.equals(trip.getDriverId(), user.getId());
         model.addAttribute("isDriver", isDriver);
         model.addAttribute("currentUserId", user.getId());
         model.addAttribute("isCompleted", "FINISHED".equalsIgnoreCase(trip.getStatus()));
 
-        List<BookingDto.BookingResponse> bookings;
-        try {
-            bookings = tripsClient.getBookingsByTrip(id);
-        } catch (Exception e) {
-            log.error("Error loading bookings for trip {}: {}", id, e.getMessage());
-            bookings = List.of();
-        }
+        List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(id);
 
         List<BookingDto.BookingResponse> pendingBookings = bookings.stream()
                 .filter(b -> "PENDING".equalsIgnoreCase(b.getStatus()))
@@ -103,31 +86,20 @@ public class RideController {
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> identityDashboardService.initials(e.getValue()))));
         }
 
-        try {
-            List<ExpenseDto.ExpenseResponse> expenses = tripsClient.getExpensesByTrip(id);
-            model.addAttribute("expenses", expenses);
-            model.addAttribute("totalExpenses",
-                    expenses.stream()
-                            .map(ExpenseDto.ExpenseResponse::getAmount)
-                            .filter(Objects::nonNull)
-                            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add));
-        } catch (Exception e) {
-            log.error("Error loading expenses for trip {}: {}", id, e.getMessage());
-            model.addAttribute("expenses", List.of());
-            model.addAttribute("totalExpenses", java.math.BigDecimal.ZERO);
-        }
+        List<ExpenseDto.ExpenseResponse> expenses = tripsClient.getExpensesByTrip(id);
+        model.addAttribute("expenses", expenses);
+        model.addAttribute("totalExpenses",
+                expenses.stream()
+                        .map(ExpenseDto.ExpenseResponse::getAmount)
+                        .filter(Objects::nonNull)
+                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add));
 
-        try {
-            List<VehicleDto.VehicleResponse> vehicles = vehicleClient.getAllVehicles();
-            VehicleDto.VehicleResponse vehicle = vehicles.stream()
-                    .filter(v -> Objects.equals(v.getId(), trip.getVehicleId()))
-                    .findFirst()
-                    .orElse(null);
-            model.addAttribute("vehicle", vehicle);
-        } catch (Exception e) {
-            log.error("Error loading vehicles: {}", e.getMessage());
-            model.addAttribute("vehicle", null);
-        }
+        List<VehicleDto.VehicleResponse> vehicles = vehicleClient.getAllVehicles();
+        VehicleDto.VehicleResponse vehicle = vehicles.stream()
+                .filter(v -> Objects.equals(v.getId(), trip.getVehicleId()))
+                .findFirst()
+                .orElse(null);
+        model.addAttribute("vehicle", vehicle);
 
         return "dashboard/ride-details";
     }
@@ -153,13 +125,8 @@ public class RideController {
     @PostMapping("/ride/{tripId}/bookings/{bookingId}/pay")
     public String payBooking(@PathVariable String tripId, @PathVariable String bookingId,
             RedirectAttributes redirectAttributes) {
-        try {
-            tripsClient.payBooking(bookingId);
-            redirectAttributes.addFlashAttribute("success", "Pagamento efetuado com sucesso!");
-        } catch (Exception e) {
-            log.error("Error paying booking {}: {}", bookingId, e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Não foi possível efetuar o pagamento.");
-        }
+        tripsClient.payBooking(bookingId);
+        redirectAttributes.addFlashAttribute("success", "Pagamento efetuado com sucesso!");
         return "redirect:/dashboard/ride/" + tripId;
     }
 
@@ -173,42 +140,27 @@ public class RideController {
             return "redirect:/auth";
         }
 
-        try {
-            BookingDto.CreateBookingRequest request = new BookingDto.CreateBookingRequest();
-            request.setTripId(tripId);
-            request.setSeats(seats);
-            request.setPassengerId(user.getId());
-            tripsClient.createBooking(request);
-            redirectAttributes.addFlashAttribute("success", "Reserva efetuada com sucesso!");
-        } catch (Exception e) {
-            log.error("Error creating booking for trip {}: {}", tripId, e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Erro ao solicitar reserva.");
-        }
+        BookingDto.CreateBookingRequest request = new BookingDto.CreateBookingRequest();
+        request.setTripId(tripId);
+        request.setSeats(seats);
+        request.setPassengerId(user.getId());
+        tripsClient.createBooking(request);
+        redirectAttributes.addFlashAttribute("success", "Reserva efetuada com sucesso!");
 
         return "redirect:/dashboard/ride/" + tripId;
     }
 
     @PostMapping("/ride/{tripId}/finish")
     public String finishTrip(@PathVariable String tripId, RedirectAttributes redirectAttributes) {
-        try {
-            tripsClient.updateTripStatus(tripId, new TripDto.UpdateTripStatusRequest("FINISHED"));
-            redirectAttributes.addFlashAttribute("success", "Viagem concluida com sucesso.");
-        } catch (Exception e) {
-            log.error("Error finishing trip {}: {}", tripId, e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Nao foi possivel concluir a viagem.");
-        }
+        tripsClient.updateTripStatus(tripId, new TripDto.UpdateTripStatusRequest("FINISHED"));
+        redirectAttributes.addFlashAttribute("success", "Viagem concluida com sucesso.");
         return "redirect:/dashboard/ride/" + tripId;
     }
 
     @PostMapping("/ride/{tripId}/start")
     public String startTrip(@PathVariable String tripId, RedirectAttributes redirectAttributes) {
-        try {
-            tripsClient.updateTripStatus(tripId, new TripDto.UpdateTripStatusRequest("STARTED"));
-            redirectAttributes.addFlashAttribute("success", "Viagem iniciada com sucesso.");
-        } catch (Exception e) {
-            log.error("Error starting trip {}: {}", tripId, e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Nao foi possivel iniciar a viagem.");
-        }
+        tripsClient.updateTripStatus(tripId, new TripDto.UpdateTripStatusRequest("STARTED"));
+        redirectAttributes.addFlashAttribute("success", "Viagem iniciada com sucesso.");
         return "redirect:/dashboard/ride/" + tripId;
     }
 
@@ -225,55 +177,50 @@ public class RideController {
             return "redirect:/auth";
         }
 
-        try {
-            TripDto.TripResponse trip = tripsClient.getTripById(tripId);
-            if (!"FINISHED".equalsIgnoreCase(trip.getStatus())) {
-                redirectAttributes.addFlashAttribute("error", "A viagem ainda não foi concluída.");
+        TripDto.TripResponse trip = tripsClient.getTripById(tripId);
+        if (!"FINISHED".equalsIgnoreCase(trip.getStatus())) {
+            redirectAttributes.addFlashAttribute("error", "A viagem ainda não foi concluída.");
+            return "redirect:/dashboard/ride/" + tripId;
+        }
+
+        if ("driver".equalsIgnoreCase(role)) {
+            // passenger rating driver
+            if (!targetUserId.equals(trip.getDriverId())) {
+                redirectAttributes.addFlashAttribute("error", "Condutor inválido para avaliação.");
                 return "redirect:/dashboard/ride/" + tripId;
             }
-
-            if ("driver".equalsIgnoreCase(role)) {
-                // passenger rating driver
-                if (!targetUserId.equals(trip.getDriverId())) {
-                    redirectAttributes.addFlashAttribute("error", "Condutor inválido para avaliação.");
-                    return "redirect:/dashboard/ride/" + tripId;
-                }
-                List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(tripId);
-                boolean isConfirmedPassenger = bookings.stream()
-                        .anyMatch(b -> user.getId().equals(b.getPassengerId())
-                                && "CONFIRMED".equalsIgnoreCase(b.getStatus()));
-                if (!isConfirmedPassenger) {
-                    redirectAttributes.addFlashAttribute("error", "Apenas passageiros confirmados podem avaliar o condutor.");
-                    return "redirect:/dashboard/ride/" + tripId;
-                }
-            } else {
-                // driver rating passenger
-                if (!user.getId().equals(trip.getDriverId())) {
-                    redirectAttributes.addFlashAttribute("error", "Apenas o condutor pode avaliar passageiros.");
-                    return "redirect:/dashboard/ride/" + tripId;
-                }
-                List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(tripId);
-                boolean passengerConfirmed = bookings.stream()
-                        .anyMatch(b -> targetUserId.equals(b.getPassengerId())
-                                && "CONFIRMED".equalsIgnoreCase(b.getStatus()));
-                if (!passengerConfirmed) {
-                    redirectAttributes.addFlashAttribute("error", "Passageiro inválido para avaliação.");
-                    return "redirect:/dashboard/ride/" + tripId;
-                }
+            List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(tripId);
+            boolean isConfirmedPassenger = bookings.stream()
+                    .anyMatch(b -> user.getId().equals(b.getPassengerId())
+                            && "CONFIRMED".equalsIgnoreCase(b.getStatus()));
+            if (!isConfirmedPassenger) {
+                redirectAttributes.addFlashAttribute("error", "Apenas passageiros confirmados podem avaliar o condutor.");
+                return "redirect:/dashboard/ride/" + tripId;
             }
-
-            RatingDto.CreateRatingRequest request = new RatingDto.CreateRatingRequest();
-            request.setRaterId(user.getId());
-            request.setRatedUserId(targetUserId);
-            request.setStars(stars);
-            request.setComment(comment);
-            ratingsClient.create(request);
-
-            redirectAttributes.addFlashAttribute("success", "Avaliação enviada com sucesso.");
-        } catch (Exception e) {
-            log.error("Error rating user on trip {}: {}", tripId, e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Não foi possível enviar a avaliação.");
+        } else {
+            // driver rating passenger
+            if (!user.getId().equals(trip.getDriverId())) {
+                redirectAttributes.addFlashAttribute("error", "Apenas o condutor pode avaliar passageiros.");
+                return "redirect:/dashboard/ride/" + tripId;
+            }
+            List<BookingDto.BookingResponse> bookings = tripsClient.getBookingsByTrip(tripId);
+            boolean passengerConfirmed = bookings.stream()
+                    .anyMatch(b -> targetUserId.equals(b.getPassengerId())
+                            && "CONFIRMED".equalsIgnoreCase(b.getStatus()));
+            if (!passengerConfirmed) {
+                redirectAttributes.addFlashAttribute("error", "Passageiro inválido para avaliação.");
+                return "redirect:/dashboard/ride/" + tripId;
+            }
         }
+
+        RatingDto.CreateRatingRequest request = new RatingDto.CreateRatingRequest();
+        request.setRaterId(user.getId());
+        request.setRatedUserId(targetUserId);
+        request.setStars(stars);
+        request.setComment(comment);
+        ratingsClient.create(request);
+
+        redirectAttributes.addFlashAttribute("success", "Avaliação enviada com sucesso.");
 
         return "redirect:/dashboard/ride/" + tripId;
     }

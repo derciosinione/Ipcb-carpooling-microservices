@@ -1,7 +1,6 @@
 package pt.ipcb.carpooling.services.payments;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pt.ipcb.carpooling.clients.TripsClient;
 import pt.ipcb.carpooling.dto.BookingDto;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PaymentsDashboardService {
 
     private final TripsClient tripsClient;

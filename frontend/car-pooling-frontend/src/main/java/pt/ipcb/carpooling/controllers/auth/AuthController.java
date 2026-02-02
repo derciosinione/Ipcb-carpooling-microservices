@@ -13,8 +13,6 @@ import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.RegisterForm;
 
 import jakarta.servlet.http.HttpSession;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequiredArgsConstructor
@@ -52,43 +50,32 @@ public class AuthController {
     public String login(@RequestParam String email,
             @RequestParam String password,
             @RequestParam(name = "redirect", required = false) String redirect,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-        try {
-            AuthDto.LoginRequest request = new AuthDto.LoginRequest(email, password);
-            AuthDto.LoginResponse response = identityClient.signIn(request);
+            HttpSession session) {
+        AuthDto.LoginRequest request = new AuthDto.LoginRequest(email, password);
+        AuthDto.LoginResponse response = identityClient.signIn(request);
 
-            // Store user data in session
-            session.setAttribute("token", response.getToken());
-            session.setAttribute("user", response);
+        // Store user data in session
+        session.setAttribute("token", response.getToken());
+        session.setAttribute("user", response);
 
-            // Calculate initials
-            String initials = "";
-            if (response.getName() != null && !response.getName().isBlank()) {
-                String[] parts = response.getName().trim().split("\\s+");
-                if (parts.length > 0 && !parts[0].isEmpty()) {
-                    initials += parts[0].charAt(0);
-                }
-                if (parts.length > 1 && !parts[parts.length - 1].isEmpty()) {
-                    initials += parts[parts.length - 1].charAt(0);
-                }
-            } else {
-                initials = "U";
+        // Calculate initials
+        String initials = "";
+        if (response.getName() != null && !response.getName().isBlank()) {
+            String[] parts = response.getName().trim().split("\\s+");
+            if (parts.length > 0 && !parts[0].isEmpty()) {
+                initials += parts[0].charAt(0);
             }
-            session.setAttribute("userInitials", initials.toUpperCase());
-            session.setAttribute("userName", response.getName());
-
-            String safeRedirect = sanitizeRedirect(redirect);
-            return "redirect:" + (safeRedirect != null ? safeRedirect : "/dashboard");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erro ao iniciar sessão. Verifique os seus dados.");
-            String safeRedirect = sanitizeRedirect(redirect);
-            if (safeRedirect != null) {
-                String encodedRedirect = URLEncoder.encode(safeRedirect, StandardCharsets.UTF_8);
-                return "redirect:/auth?tab=login&redirect=" + encodedRedirect;
+            if (parts.length > 1 && !parts[parts.length - 1].isEmpty()) {
+                initials += parts[parts.length - 1].charAt(0);
             }
-            return "redirect:/auth?tab=login";
+        } else {
+            initials = "U";
         }
+        session.setAttribute("userInitials", initials.toUpperCase());
+        session.setAttribute("userName", response.getName());
+
+        String safeRedirect = sanitizeRedirect(redirect);
+        return "redirect:" + (safeRedirect != null ? safeRedirect : "/dashboard");
     }
 
     @PostMapping("/auth/register")
@@ -107,29 +94,23 @@ public class AuthController {
             return "redirect:/auth?tab=register";
         }
 
-        try {
-            AuthDto.RegisterRequest request = AuthDto.RegisterRequest.builder()
-                    .username(form.getUsername())
-                    .email(form.getEmail())
-                    .password(form.getPassword())
-                    .name((form.getFirstName() + " " + form.getLastName()).trim())
-                    .build();
+        AuthDto.RegisterRequest request = AuthDto.RegisterRequest.builder()
+                .username(form.getUsername())
+                .email(form.getEmail())
+                .password(form.getPassword())
+                .name((form.getFirstName() + " " + form.getLastName()).trim())
+                .build();
 
-            if (form.isPassenger() && form.isDriver()) {
-                identityClient.registerBoth(request);
-            } else if (form.isDriver()) {
-                identityClient.registerDriver(request);
-            } else {
-                identityClient.registerPassenger(request);
-            }
-
-            redirectAttributes.addFlashAttribute("success", "Conta criada com sucesso! Por favor, inicie sessão.");
-            return "redirect:/auth?tab=login";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erro ao criar conta. Tente outro email/username.");
-            redirectAttributes.addFlashAttribute("registerForm", form);
-            return "redirect:/auth?tab=register";
+        if (form.isPassenger() && form.isDriver()) {
+            identityClient.registerBoth(request);
+        } else if (form.isDriver()) {
+            identityClient.registerDriver(request);
+        } else {
+            identityClient.registerPassenger(request);
         }
+
+        redirectAttributes.addFlashAttribute("success", "Conta criada com sucesso! Por favor, inicie sessão.");
+        return "redirect:/auth?tab=login";
     }
 
     @GetMapping("/logout")

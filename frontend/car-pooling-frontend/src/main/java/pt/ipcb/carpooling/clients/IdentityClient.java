@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import pt.ipcb.carpooling.dto.AuthDto;
 import pt.ipcb.carpooling.dto.UserDto;
@@ -33,6 +34,9 @@ public interface IdentityClient {
     @GetMapping("/identity/api/v1/users/{id}")
     UserDto.UserResponse getUserById(@PathVariable("id") String id);
 
+    @GetMapping("/identity/api/v1/users/{id}/public")
+    UserDto.PublicUserResponse getPublicUserById(@PathVariable("id") String id);
+
     @PutMapping("/identity/api/v1/users/{id}")
     UserDto.UserResponse updateUser(@PathVariable("id") String id, @RequestBody UserDto.UpdateUserRequest request);
 
@@ -41,4 +45,13 @@ public interface IdentityClient {
 
     @DeleteMapping("/identity/api/v1/users/{id}/profiles/{profileName}")
     void removeProfileFromUser(@PathVariable("id") String id, @PathVariable("profileName") String profileName);
+
+    @GetMapping("/identity/api/v1/admin/users")
+    List<UserDto.UserResponse> getAllUsersForAdmin();
+
+    @PatchMapping("/identity/api/v1/admin/users/{id}/status")
+    UserDto.UserResponse updateUserStatus(@PathVariable("id") String id, @RequestBody UserDto.AdminStatusRequest request);
+
+    @PostMapping("/identity/api/v1/admin/users")
+    UserDto.UserResponse createAdmin(@RequestBody AuthDto.RegisterRequest request);
 }

@@ -25,6 +25,11 @@ public class UserRoleModelAdvice {
         return hasDriverRole(session) && hasPassengerRole(session);
     }
 
+    @ModelAttribute("hasAdminRole")
+    public boolean hasAdminRole(HttpSession session) {
+        return hasRole(session, "Admin", "ADMIN");
+    }
+
     @ModelAttribute("defaultIsDriver")
     public boolean defaultIsDriver(HttpSession session) {
         boolean driver = hasDriverRole(session);

@@ -2,7 +2,6 @@ package pt.ipcb.carpooling.controllers.dashboard.publish;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
-@Slf4j
 public class PublishRideController {
     private final VehicleClient vehicleClient;
     private final TripsClient tripsClient;
@@ -37,14 +35,8 @@ public class PublishRideController {
             return "redirect:/auth";
         }
 
-        try {
-            List<?> vehicles = vehicleClient.getVehiclesByOwner(user.getId());
-            model.addAttribute("vehicles", vehicles);
-        } catch (Exception e) {
-            log.error("Error loading vehicles for user {}: {}", user.getId(), e.getMessage());
-            model.addAttribute("vehicles", List.of());
-            model.addAttribute("error", "Erro ao carregar os seus veículos. Por favor, tente mais tarde.");
-        }
+        List<?> vehicles = vehicleClient.getVehiclesByOwner(user.getId());
+        model.addAttribute("vehicles", vehicles);
 
         return "dashboard/publish-ride";
     }
@@ -57,35 +49,29 @@ public class PublishRideController {
             return "redirect:/auth";
         }
 
-        try {
-            LocalDate date = LocalDate.parse(form.getDate());
-            LocalTime time = LocalTime.parse(form.getTime());
-            LocalDateTime departureTime = LocalDateTime.of(date, time);
+        LocalDate date = LocalDate.parse(form.getDate());
+        LocalTime time = LocalTime.parse(form.getTime());
+        LocalDateTime departureTime = LocalDateTime.of(date, time);
 
-            TripDto.CreateTripRequest request = TripDto.CreateTripRequest.builder()
-                    .driverId(user.getId())
-                    .vehicleId(form.getVehicleId())
-                    .origin(form.getOrigin())
-                    .destination(form.getDestination())
-                    .originLat(form.getOriginLat())
-                    .originLon(form.getOriginLon())
-                    .destinationLat(form.getDestinationLat())
-                    .destinationLon(form.getDestinationLon())
-                    .description(form.getDescription())
-                    .departureTime(departureTime)
-                    .availableSeats(form.getSeats())
-                    .build();
+        TripDto.CreateTripRequest request = TripDto.CreateTripRequest.builder()
+                .driverId(user.getId())
+                .vehicleId(form.getVehicleId())
+                .origin(form.getOrigin())
+                .destination(form.getDestination())
+                .originLat(form.getOriginLat())
+                .originLon(form.getOriginLon())
+                .destinationLat(form.getDestinationLat())
+                .destinationLon(form.getDestinationLon())
+                .description(form.getDescription())
+                .departureTime(departureTime)
+                .availableSeats(form.getSeats())
+                .build();
 
-            tripsClient.createTrip(request);
-            gpsDashboardService.saveUserLocation(user.getId(), form.getOrigin(), form.getOriginLat(), form.getOriginLon());
-            gpsDashboardService.saveUserLocation(user.getId(), form.getDestination(), form.getDestinationLat(),
-                    form.getDestinationLon());
-            redirectAttributes.addFlashAttribute("success", "Boleia publicada com sucesso!");
-            return "redirect:/dashboard/rides";
-        } catch (Exception e) {
-            log.error("Error creating trip: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Erro ao publicar boleia. Verifique os dados.");
-            return "redirect:/dashboard/publish-ride";
-        }
+        tripsClient.createTrip(request);
+        gpsDashboardService.saveUserLocation(user.getId(), form.getOrigin(), form.getOriginLat(), form.getOriginLon());
+        gpsDashboardService.saveUserLocation(user.getId(), form.getDestination(), form.getDestinationLat(),
+                form.getDestinationLon());
+        redirectAttributes.addFlashAttribute("success", "Boleia publicada com sucesso!");
+        return "redirect:/dashboard/rides";
     }
 }

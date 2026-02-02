@@ -10,10 +10,14 @@ services:
       replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "8761:8761"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
 
@@ -23,9 +27,12 @@ services:
   identity-service:
     image: car-pooling/identity:latest
     deploy:
-      replicas: 3
+      replicas: 2
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 768M
     ports:
       - "8080:8080"
     environment:
@@ -36,6 +43,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       EUREKA_INSTANCE_HOSTNAME: identity-service
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
     depends_on:
@@ -47,9 +55,12 @@ services:
   vehicles-service:
     image: car-pooling/vehicles:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 768M
     ports:
       - "8081:8081"
     environment:
@@ -60,6 +71,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       EUREKA_INSTANCE_HOSTNAME: vehicles-service
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
     depends_on:
@@ -71,9 +83,12 @@ services:
   trips-service:
     image: car-pooling/trips:latest
     deploy:
-      replicas: 3
+      replicas: 2
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 768M
     ports:
       - "8083:8083"
     environment:
@@ -84,6 +99,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       EUREKA_INSTANCE_HOSTNAME: trips-service
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
     depends_on:
@@ -95,9 +111,12 @@ services:
   payments-service:
     image: car-pooling/payments:latest
     deploy:
-      replicas: 3
+      replicas: 2
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "8084:8084"
     environment:
@@ -108,6 +127,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       EUREKA_INSTANCE_HOSTNAME: payments-service
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
     depends_on:
@@ -119,9 +139,12 @@ services:
   gps-service:
     image: car-pooling/gps:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "8085:8085"
     environment:
@@ -132,6 +155,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       EUREKA_INSTANCE_HOSTNAME: gps-service
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
     depends_on:
@@ -143,9 +167,12 @@ services:
   notifications-service:
     image: car-pooling/notifications:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "8086:8086"
     environment:
@@ -156,6 +183,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       EUREKA_INSTANCE_HOSTNAME: notifications-service
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
     depends_on:
@@ -171,6 +199,9 @@ services:
       replicas: 2
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "8888:8888"
     environment:
@@ -178,6 +209,7 @@ services:
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       EUREKA_INSTANCE_HOSTNAME: cloud-gateway
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0"
     networks:
       - carpooling_network
     depends_on:
@@ -192,6 +224,9 @@ services:
       replicas: 2
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "3003:3002"
     environment:
@@ -214,6 +249,9 @@ services:
       replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "9090:9090"
     volumes:
@@ -227,6 +265,9 @@ services:
       replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/loki-config.yml
@@ -241,6 +282,9 @@ services:
       replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 256M
     command: -config.file=/etc/promtail/promtail-config.yml
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
@@ -255,6 +299,9 @@ services:
       replicas: 1
       restart_policy:
         condition: any
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "3000:3000"
     volumes:

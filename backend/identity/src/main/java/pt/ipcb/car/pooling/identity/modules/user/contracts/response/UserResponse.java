@@ -14,6 +14,7 @@ public record UserResponse(
         String name,
         String phone,
         String description,
+        Boolean active,
         java.util.List<ProfileResponse> profiles,
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {

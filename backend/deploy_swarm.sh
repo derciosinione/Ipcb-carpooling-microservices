@@ -67,11 +67,18 @@ docker compose -f payments/docker-compose.yml build
 echo "Building GPS Service..."
 docker compose -f gps/docker-compose.yml build
 
+echo "Building Notifications Service..."
+docker compose -f notifications/docker-compose.yml build
+
 echo "Building Cloud Gateway..."
 docker compose -f cloud-gateway-service/docker-compose.yml build
 
+FRONTEND_IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+export FRONTEND_IMAGE_TAG
+echo "Frontend image tag for this deploy: ${FRONTEND_IMAGE_TAG}"
+
 echo "Building Frontend Service..."
-docker compose -f ../frontend/car-pooling-frontend/docker-compose.yml build
+docker compose -f ../frontend/car-pooling-frontend/docker-compose.yml build --no-cache
 
 
 # 3. Deploy Stack
@@ -93,3 +100,6 @@ echo "Monitor status with: docker stack ps carpooling_stack"
 echo "Portainer UI:        http://localhost:9000"
 echo "Eureka Dashboard:    http://localhost:8761"   
 echo "Gateway API:         http://localhost:8888"
+echo "Prometheus:          http://localhost:9090"
+echo "Loki:                http://localhost:3100"
+echo "Grafana:             http://localhost:3000 (default admin/admin)"

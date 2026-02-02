@@ -1,5 +1,6 @@
 package pt.ipcb.car.pooling.vehicles.modules.vehicles.useCases;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,7 @@ public class CreateVehicleUseCase {
                 java.util.UUID userId = java.util.UUID.fromString(userIdStr);
 
                 // Validate User via Feign Client
-                try {
-                        identityClient.getUserById(userId);
-                } catch (Exception e) {
-                        throw new RuntimeException("User verification failed: " + e.getMessage());
-                }
+                verifyUser(userId);
 
                 BrandEntity brand = brandRepository.findById(request.getBrandId())
                                 .orElseThrow(() -> new RuntimeException("Brand not found"));
@@ -40,5 +37,14 @@ public class CreateVehicleUseCase {
                 VehicleEntity savedVehicle = vehicleRepository.save(vehicle);
 
                 return vehicleMapper.toResponse(savedVehicle);
+        }
+
+        @CircuitBreaker(name = "identity", fallbackMethod = "verifyUserFallback")
+        private void verifyUser(java.util.UUID userId) {
+                identityClient.getUserById(userId);
+        }
+
+        private void verifyUserFallback(java.util.UUID userId, Throwable throwable) {
+                throw new RuntimeException("User verification unavailable");
         }
 }

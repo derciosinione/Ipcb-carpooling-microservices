@@ -48,6 +48,9 @@ public class UserEntity {
     private String password;
     private String description;
 
+    @Builder.Default
+    private Boolean active = true;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<ProfileEntity> profiles;
 

@@ -39,4 +39,10 @@ public class FallbackController {
         return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body("GPS Service is currently unavailable. Please try again later."));
     }
+
+    @RequestMapping("/notifications")
+    public Mono<ResponseEntity<String>> notificationsFallback() {
+        return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Notifications Service is currently unavailable. Please try again later."));
+    }
 }

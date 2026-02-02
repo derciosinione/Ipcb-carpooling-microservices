@@ -53,6 +53,10 @@ echo "Starting GPS Service..."
 docker compose -f gps/docker-compose.yml up -d --build
 
 echo "--------------------------------------------------"
+echo "Starting Notifications Service..."
+docker compose -f notifications/docker-compose.yml up -d --build
+
+echo "--------------------------------------------------"
 echo "Starting Cloud Gateway..."
 docker compose -f cloud-gateway-service/docker-compose.yml up -d --build
 

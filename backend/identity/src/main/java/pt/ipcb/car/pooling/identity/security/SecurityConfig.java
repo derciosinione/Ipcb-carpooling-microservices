@@ -24,6 +24,9 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/v3/api-docs/**"
     };
+    private final String[] ACTUATOR_WHITELIST = {
+            "/actuator/**"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,6 +34,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/admin/bootstrap").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/ratings/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/*/public").permitAll()
+                        .requestMatchers(ACTUATOR_WHITELIST).permitAll()
                         // .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         // .requestMatchers(HttpMethod.POST, "/profiles").permitAll()
                         .anyRequest().authenticated())

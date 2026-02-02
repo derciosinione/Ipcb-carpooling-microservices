@@ -48,6 +48,12 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.cancelBooking(id, userId));
     }
 
+    @PostMapping("/{id}/pay")
+    public ResponseEntity<BookingResponse> pay(@PathVariable UUID id, HttpServletRequest httpRequest) {
+        UUID userId = requireUserId(httpRequest);
+        return ResponseEntity.ok(bookingService.payBooking(id, userId));
+    }
+
     @GetMapping("/trip/{tripId}")
     public ResponseEntity<List<BookingResponse>> listByTrip(@PathVariable UUID tripId) {
         return ResponseEntity.ok(bookingService.listBookingsByTrip(tripId));

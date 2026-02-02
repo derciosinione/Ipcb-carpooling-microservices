@@ -13,6 +13,9 @@ public class BookingResponse {
     private UUID passengerId;
     private Integer seats;
     private BigDecimal priceToPay;
+    private Boolean paid;
+    private LocalDateTime paidAt;
+    private String paymentReference;
     private String status;
     private LocalDateTime createdAt;
 }

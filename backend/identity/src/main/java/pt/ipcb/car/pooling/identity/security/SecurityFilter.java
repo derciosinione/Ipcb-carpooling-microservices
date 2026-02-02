@@ -23,7 +23,8 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().startsWith("/api/v1/auth")
                 || request.getServletPath().startsWith("/swagger-ui")
-                || request.getServletPath().startsWith("/v3/api-docs");
+                || request.getServletPath().startsWith("/v3/api-docs")
+                || request.getServletPath().startsWith("/actuator");
     }
 
     @Override
@@ -43,6 +44,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
 
             request.setAttribute("userId", subjectToken);
+            request.setAttribute("roles", jwtProvider.getRoles(header));
 
             var authentication = new UsernamePasswordAuthenticationToken(subjectToken, null, Collections.emptyList());
 

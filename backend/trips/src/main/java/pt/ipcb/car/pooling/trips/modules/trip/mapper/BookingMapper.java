@@ -13,6 +13,9 @@ public class BookingMapper {
         response.setPassengerId(entity.getPassengerId());
         response.setSeats(entity.getSeats());
         response.setPriceToPay(entity.getPriceToPay());
+        response.setPaid(Boolean.TRUE.equals(entity.getPaid()));
+        response.setPaidAt(entity.getPaidAt());
+        response.setPaymentReference(entity.getPaymentReference());
         response.setCreatedAt(entity.getCreatedAt());
 
 

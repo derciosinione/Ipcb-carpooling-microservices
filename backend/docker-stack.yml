@@ -137,6 +137,30 @@ services:
     depends_on:
       - service-discovery
 
+  # ==========================================
+  # NOTIFICATIONS SERVICE
+  # ==========================================
+  notifications-service:
+    image: car-pooling/notifications:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_server:5432/notifications_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: learnJava!2025
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+      EUREKA_INSTANCE_HOSTNAME: notifications-service
+    networks:
+      - carpooling_network
+    depends_on:
+      - service-discovery
+
 
   # ==========================================
   # CLOUD GATEWAY (Stateless - 2 Replicas)
@@ -163,7 +187,7 @@ services:
   # FRONTEND SERVICE
   # ==========================================
   web-service:
-    image: car-pooling/frontend:latest
+    image: car-pooling/frontend:${FRONTEND_IMAGE_TAG:-latest}
     deploy:
       replicas: 1
       restart_policy:
@@ -181,9 +205,69 @@ services:
       - service-discovery
       - cloud-gateway
 
+  # ==========================================
+  # MONITORING (Prometheus + Grafana)
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - carpooling_network
+
+  loki:
+    image: grafana/loki:2.9.4
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/loki-config.yml
+    volumes:
+      - ./monitoring/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+    networks:
+      - carpooling_network
+
+  promtail:
+    image: grafana/promtail:2.9.4
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    command: -config.file=/etc/promtail/promtail-config.yml
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./monitoring/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+    networks:
+      - carpooling_network
+
+  grafana:
+    image: grafana/grafana:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - carpooling_network
+
 networks:
   carpooling_network:
     external: true
 
 volumes:
   portainer_data:
+  grafana_data:

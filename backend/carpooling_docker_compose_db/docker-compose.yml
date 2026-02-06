@@ -42,6 +42,21 @@ services:
       - carpooling_network
       - db_network
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9000:9000"   # HTTP UI
+      - "8000:8000"   # optional (Edge/agent tunnel)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - carpooling_network
+      - db_network
+    
+
 networks:
   carpooling_network:
     external: true
@@ -51,4 +66,9 @@ networks:
 volumes:
   pgdata:
   pgadmin_data:
+  portainer_data:
 
+
+# docker compose down --remove-orphans
+# docker compose up -d --build
+# docker compose config | grep -n "network_mode" -n

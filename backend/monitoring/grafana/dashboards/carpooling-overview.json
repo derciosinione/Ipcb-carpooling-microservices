@@ -1,0 +1,207 @@
+{
+  "id": null,
+  "uid": "carpooling-overview",
+  "title": "CarPooling - Overview",
+  "tags": [
+    "carpooling",
+    "spring",
+    "actuator"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Instance Up (Identity)",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"identity-service\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Instance Up (Trips)",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"trips-service\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Instance Up (Vehicles)",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"vehicles-service\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Instance Up (Payments)",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"payments-service\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Instance Up (GPS)",
+      "gridPos": { "x": 0, "y": 4, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"gps-service\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Instance Up (Notifications)",
+      "gridPos": { "x": 6, "y": 4, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"notifications-service\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Instance Up (Gateway)",
+      "gridPos": { "x": 12, "y": 4, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"cloud-gateway\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Instance Up (Service Discovery)",
+      "gridPos": { "x": 18, "y": 4, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "up{job=\"service-discovery\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal"
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP Requests (5m rate)",
+      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 7 },
+      "targets": [
+        {
+          "expr": "sum by (job) (rate(http_server_requests_seconds_count[5m]))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "req/s"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "JVM Memory Used",
+      "gridPos": { "x": 0, "y": 15, "w": 24, "h": 7 },
+      "targets": [
+        {
+          "expr": "sum by (job) (jvm_memory_used_bytes)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Circuit Breaker State (Trips)",
+      "gridPos": { "x": 0, "y": 22, "w": 24, "h": 7 },
+      "targets": [
+        {
+          "expr": "resilience4j_circuitbreaker_state{job=\"trips-service\"}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "type": "logs",
+      "title": "Service Logs (Loki)",
+      "gridPos": { "x": 0, "y": 29, "w": 24, "h": 9 },
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "targets": [
+        {
+          "expr": "{stack=\"carpooling_stack\"} |= \"\"",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true
+      }
+    }
+  ],
+  "templating": {
+    "list": []
+  }
+}

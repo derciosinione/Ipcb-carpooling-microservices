@@ -35,6 +35,14 @@ public class TripEntity {
     @NotBlank
     private String destination;
 
+    private Double originLat;
+
+    private Double originLon;
+
+    private Double destinationLat;
+
+    private Double destinationLon;
+
     @Column(length = 500)
     private String description;
 
@@ -42,7 +50,7 @@ public class TripEntity {
     @Future
     private LocalDateTime departureTime;
 
-    @Min(1)
+    @Min(0)
     private Integer availableSeats;
 
     private BigDecimal totalCost = BigDecimal.ZERO;

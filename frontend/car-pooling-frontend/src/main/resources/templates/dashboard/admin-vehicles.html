@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Administração - Veículos</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight">Veículos</h1>
+        <p class="text-muted-foreground mt-2">Gestão e remoção de veículos inativos.</p>
+    </div>
+
+    <div th:if="${success}" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg text-sm" th:text="${success}">OK</div>
+    <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm" th:text="${error}">Erro</div>
+
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="p-6 pt-0 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="text-muted-foreground">
+                <tr>
+                    <th class="text-left py-2">Modelo</th>
+                    <th class="text-left py-2">Matrícula</th>
+                    <th class="text-left py-2">Ano</th>
+                    <th class="text-right py-2">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="v : ${vehicles}" class="border-t">
+                    <td class="py-2" th:text="${v.model}">Modelo</td>
+                    <td class="py-2" th:text="${v.licensePlate}">AA-00-00</td>
+                    <td class="py-2" th:text="${v.year}">2020</td>
+                    <td class="py-2 text-right">
+                        <form th:action="@{/dashboard/admin/vehicles/delete}" method="post">
+                            <input type="hidden" name="vehicleId" th:value="${v.id}" />
+                            <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium border border-input bg-background hover:bg-accent h-8 px-3">
+                                Remover
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(vehicles)}">
+                    <td colspan="4" class="py-4 text-muted-foreground">Sem veículos.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

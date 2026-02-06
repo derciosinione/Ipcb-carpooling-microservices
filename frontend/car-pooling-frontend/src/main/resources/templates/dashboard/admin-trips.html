@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Administração - Viagens</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight">Viagens</h1>
+        <p class="text-muted-foreground mt-2">Todas as viagens registadas no sistema.</p>
+    </div>
+
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="p-6 pt-0 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="text-muted-foreground">
+                <tr>
+                    <th class="text-left py-2">Origem</th>
+                    <th class="text-left py-2">Destino</th>
+                    <th class="text-left py-2">Partida</th>
+                    <th class="text-left py-2">Estado</th>
+                    <th class="text-left py-2">Total pessoas</th>
+                    <th class="text-right py-2">Custo total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${trips}" class="border-t">
+                    <td class="py-2" th:text="${t.origin}">Origem</td>
+                    <td class="py-2" th:text="${t.destination}">Destino</td>
+                    <td class="py-2" th:text="${t.departureTime != null ? #temporals.format(t.departureTime, 'dd/MM/yyyy HH:mm') : '-'}">Data</td>
+                    <td class="py-2" th:text="${t.status}">Estado</td>
+                    <td class="py-2" th:text="${t.totalTravelers != null ? t.totalTravelers : 1}">1</td>
+                    <td class="py-2 text-right" th:text="${t.totalCost != null ? '€' + #numbers.formatDecimal(t.totalCost, 1, 2) : '€0,00'}">€0,00</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(trips)}">
+                    <td colspan="6" class="py-4 text-muted-foreground">Sem viagens registadas.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

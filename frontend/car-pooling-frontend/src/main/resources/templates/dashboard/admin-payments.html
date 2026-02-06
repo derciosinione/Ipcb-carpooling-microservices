@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Administração - Pagamentos</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight">Pagamentos</h1>
+        <p class="text-muted-foreground mt-2">Histórico de pagamentos e estados das reservas.</p>
+    </div>
+
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="p-6 pt-0 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="text-muted-foreground">
+                <tr>
+                    <th class="text-left py-2">Viagem</th>
+                    <th class="text-left py-2">Passageiro</th>
+                    <th class="text-left py-2">Lugares</th>
+                    <th class="text-left py-2">Estado</th>
+                    <th class="text-left py-2">Pago</th>
+                    <th class="text-right py-2">Valor</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${payments}" class="border-t">
+                    <td class="py-2" th:text="${p.tripRoute}">Origem -> Destino</td>
+                    <td class="py-2" th:text="${p.passengerName}">Passageiro</td>
+                    <td class="py-2" th:text="${p.seats}">1</td>
+                    <td class="py-2" th:text="${p.bookingStatus}">CONFIRMED</td>
+                    <td class="py-2" th:text="${p.paid != null && p.paid ? 'SIM' : 'NAO'}">NAO</td>
+                    <td class="py-2 text-right" th:text="${p.amount != null ? '€' + #numbers.formatDecimal(p.amount, 1, 2) : '€0,00'}">€0,00</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(payments)}">
+                    <td colspan="6" class="py-4 text-muted-foreground">Sem pagamentos registados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

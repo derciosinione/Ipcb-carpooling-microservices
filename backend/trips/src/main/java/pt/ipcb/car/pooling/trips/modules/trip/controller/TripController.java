@@ -12,6 +12,7 @@ import pt.ipcb.car.pooling.trips.modules.trip.contracts.UpdateTripStatusRequest;
 import pt.ipcb.car.pooling.trips.modules.trip.service.TripService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,6 +80,15 @@ public class TripController {
         return ResponseEntity.ok(tripService.searchTrips(origin, destination, seats));
     }
 
+    @GetMapping("/nearby")
+    public ResponseEntity<List<TripResponse>> nearby(
+            @RequestParam Double lat,
+            @RequestParam Double lon,
+            @RequestParam(defaultValue = "25") BigDecimal radiusKm,
+            @RequestParam(defaultValue = "10") Integer limit) {
+        return ResponseEntity.ok(tripService.nearbyTrips(lat, lon, radiusKm, limit));
+    }
+
     @PatchMapping("/{tripId}/status")
     public ResponseEntity<TripResponse> updateStatus(@PathVariable UUID tripId,
             @Valid @RequestBody UpdateTripStatusRequest request,
@@ -89,6 +99,13 @@ public class TripController {
             throw new ForbiddenException("Only the driver can update trip status");
         }
         return ResponseEntity.ok(tripService.updateTripStatus(tripId, request.getStatus().toUpperCase()));
+    }
+
+    @PostMapping("/{tripId}/status")
+    public ResponseEntity<TripResponse> updateStatusPost(@PathVariable UUID tripId,
+            @Valid @RequestBody UpdateTripStatusRequest request,
+            HttpServletRequest httpRequest) {
+        return updateStatus(tripId, request, httpRequest);
     }
 
     private UUID requireUserId(HttpServletRequest request) {

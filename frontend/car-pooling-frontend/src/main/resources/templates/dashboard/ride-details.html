@@ -8,7 +8,7 @@
 </head>
 <body>
     <div layout:fragment="content" class="space-y-6 pb-12 p-4 md:p-8 pt-6" th:attr="x-data=|{ isModalOpen: new URLSearchParams(window.location.search).get('openExpenses') === 'true', isCompleted: ${isCompleted}, isDriver: ${isDriver} }|">
-        <div th:replace="dashboard/fragments/rides/ride-header :: rideHeader"></div>
+        <div th:replace="~{dashboard/fragments/rides/ride-header :: rideHeader}"></div>
         <div th:if="${success}" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
             <i data-lucide="check-circle" class="h-4 w-4"></i>
             <span th:text="${success}">Reserva efetuada com sucesso!</span>
@@ -17,35 +17,73 @@
             <i data-lucide="alert-circle" class="h-4 w-4"></i>
             <span th:text="${error}">Ocorreu um erro ao processar o seu pedido.</span>
         </div>
+        <div th:if="${isDriver && trip != null && (trip.status == 'OPEN' || trip.status == 'FULL')}" class="rounded-lg border bg-card text-card-foreground shadow-sm p-4 flex items-center justify-between gap-3">
+            <div class="text-sm text-muted-foreground">Tudo pronto? Inicie a viagem quando estiver a sair.</div>
+            <form th:action="@{'/dashboard/ride/' + ${trip.id} + '/start'}" method="post">
+                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3">
+                    Iniciar viagem
+                </button>
+            </form>
+        </div>
+        <div th:if="${isDriver && trip != null && trip.status == 'STARTED'}" class="rounded-lg border bg-card text-card-foreground shadow-sm p-4 flex items-center justify-between gap-3">
+            <div class="text-sm text-muted-foreground">A viagem ja iniciou. Marque como concluida quando terminar.</div>
+            <form th:action="@{'/dashboard/ride/' + ${trip.id} + '/finish'}" method="post">
+                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 h-9 px-3">
+                    Concluir viagem
+                </button>
+            </form>
+        </div>
+        <div th:if="${!isDriver && currentUserBooking != null}" class="rounded-lg border bg-card text-card-foreground shadow-sm p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="space-y-1">
+                <div class="text-sm text-muted-foreground">
+                    Estado da sua reserva:
+                    <span class="font-medium text-foreground" th:text="${currentUserBooking.status}">PENDING</span>
+                </div>
+                <div th:if="${currentUserBooking.priceToPay != null && currentUserBooking.priceToPay > 0}" class="text-sm text-muted-foreground">
+                    Valor a pagar:
+                    <span class="font-medium text-foreground" th:text="${'€' + #numbers.formatDecimal(currentUserBooking.priceToPay, 1, 2)}">€0,00</span>
+                </div>
+                <div th:if="${currentUserBooking.paid}" class="text-sm text-emerald-700">
+                    Pagamento concluído
+                    <span th:if="${currentUserBooking.paymentReference != null}" th:text="${'(' + currentUserBooking.paymentReference + ')'}">(SIM-XXXX)</span>
+                </div>
+            </div>
+            <form th:if="${currentUserBooking.status == 'CONFIRMED' && !currentUserBooking.paid}" th:action="@{'/dashboard/ride/' + ${trip.id} + '/bookings/' + ${currentUserBooking.id} + '/pay'}" method="post">
+                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-emerald-600 text-white hover:bg-emerald-700 h-9 px-3">
+                    Pagar a minha parte
+                </button>
+            </form>
+        </div>
         <div x-show="!isDriver" class="rounded-lg border bg-card text-card-foreground shadow-sm p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div class="text-sm text-muted-foreground">Quer reservar esta viagem?</div>
-            <form th:if="${currentUserId != null && currentUserId != trip.driverId}" th:action="@{'/dashboard/ride/' + ${trip.id} + '/book'}" method="post" class="flex items-center gap-2">
+            <form th:if="${currentUserId != null && currentUserId != trip.driverId && currentUserBooking == null}" th:action="@{'/dashboard/ride/' + ${trip.id} + '/book'}" method="post" class="flex items-center gap-2">
                 <input type="number" name="seats" min="1" class="flex h-9 w-20 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="1" />
                 <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3">
                     Solicitar reserva
                 </button>
             </form>
+            <div th:if="${currentUserBooking != null}" class="text-sm text-muted-foreground">Já tem uma reserva nesta viagem.</div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column: Route & Details -->
             <div class="lg:col-span-2 space-y-6">
 
-                <div th:replace="dashboard/fragments/rides/ride-requests :: rideRequests"></div>
+                <div th:replace="~{dashboard/fragments/rides/ride-requests :: rideRequests}"></div>
 
-                <div th:replace="dashboard/fragments/rides/ride-driver :: rideDriver"></div>
+                <div th:replace="~{dashboard/fragments/rides/ride-driver :: rideDriver}"></div>
 
-                <div th:replace="dashboard/fragments/rides/ride-map :: rideMap"></div>
+                <div th:replace="~{dashboard/fragments/rides/ride-map :: rideMap}"></div>
 
-                <div th:replace="dashboard/fragments/rides/ride-vehicle :: rideVehicle"></div>
+                <div th:replace="~{dashboard/fragments/rides/ride-vehicle :: rideVehicle}"></div>
             </div>
 
             <!-- Right Column: Passengers & Price -->
             <div class="space-y-6">
-                <div th:replace="dashboard/fragments/rides/ride-price :: ridePrice"></div>
+                <div th:replace="~{dashboard/fragments/rides/ride-price :: ridePrice}"></div>
 
-                <div th:replace="dashboard/fragments/rides/ride-passengers :: ridePassengers"></div>
+                <div th:replace="~{dashboard/fragments/rides/ride-passengers :: ridePassengers}"></div>
 
-                <div th:replace="dashboard/fragments/rides/ride-safety :: rideSafety"></div>
+                <div th:replace="~{dashboard/fragments/rides/ride-safety :: rideSafety}"></div>
             </div>
         </div>
     <!-- Expense Manager Modal -->

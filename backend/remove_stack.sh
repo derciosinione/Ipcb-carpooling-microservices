@@ -6,6 +6,8 @@ echo "=================================================="
 
 docker stack rm carpooling_stack
 
+docker compose -f carpooling_docker_compose_db/docker-compose.yml down
+
 echo "=================================================="
 echo "      Stack removal initiated!"
 echo "=================================================="

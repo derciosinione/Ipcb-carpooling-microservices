@@ -33,6 +33,13 @@ public class BookingEntity {
     @Column(nullable = false)
     private Integer seats;
 
+    @Column(nullable = false)
+    private Boolean paid = false;
+
+    private LocalDateTime paidAt;
+
+    private String paymentReference;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Painel Administrativo</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6" id="overview">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight">Painel Administrativo</h1>
+        <p class="text-muted-foreground mt-2">Gestão global da aplicação, utilizadores e métricas ambientais.</p>
+    </div>
+
+    <div th:if="${success}" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg text-sm" th:text="${success}">OK</div>
+    <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm" th:text="${error}">Erro</div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="rounded-lg border bg-card p-4">
+            <p class="text-xs text-muted-foreground">Utilizadores totais</p>
+            <p class="text-2xl font-bold" th:text="${totalUsers}">0</p>
+        </div>
+        <div class="rounded-lg border bg-card p-4">
+            <p class="text-xs text-muted-foreground">Utilizadores ativos</p>
+            <p class="text-2xl font-bold" th:text="${activeUsers}">0</p>
+        </div>
+        <div class="rounded-lg border bg-card p-4">
+            <p class="text-xs text-muted-foreground">Viagens partilhadas</p>
+            <p class="text-2xl font-bold" th:text="${totalTrips}">0</p>
+        </div>
+        <div class="rounded-lg border bg-card p-4">
+            <p class="text-xs text-muted-foreground">CO₂ poupado (kg)</p>
+            <p class="text-2xl font-bold" th:text="${co2SavedKg}">0</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a th:href="@{/dashboard/admin/users}" class="rounded-lg border bg-card p-5 hover:bg-muted/30 transition-colors">
+            <p class="text-sm text-muted-foreground">Utilizadores & Perfis</p>
+            <h3 class="text-lg font-semibold mt-2">Gerir utilizadores</h3>
+        </a>
+        <a th:href="@{/dashboard/admin/trips}" class="rounded-lg border bg-card p-5 hover:bg-muted/30 transition-colors">
+            <p class="text-sm text-muted-foreground">Viagens registadas</p>
+            <h3 class="text-lg font-semibold mt-2">Ver viagens</h3>
+        </a>
+        <a th:href="@{/dashboard/admin/payments}" class="rounded-lg border bg-card p-5 hover:bg-muted/30 transition-colors">
+            <p class="text-sm text-muted-foreground">Pagamentos</p>
+            <h3 class="text-lg font-semibold mt-2">Acompanhar pagamentos</h3>
+        </a>
+        <a th:href="@{/dashboard/admin/reports}" class="rounded-lg border bg-card p-5 hover:bg-muted/30 transition-colors">
+            <p class="text-sm text-muted-foreground">Relatórios & Exportação</p>
+            <h3 class="text-lg font-semibold mt-2">Gerar CSV</h3>
+        </a>
+        <a th:href="@{/dashboard/admin/vehicles}" class="rounded-lg border bg-card p-5 hover:bg-muted/30 transition-colors">
+            <p class="text-sm text-muted-foreground">Veículos inativos</p>
+            <h3 class="text-lg font-semibold mt-2">Gerir veículos</h3>
+        </a>
+        <a th:href="@{/dashboard/admin/monitoring}" class="rounded-lg border bg-card p-5 hover:bg-muted/30 transition-colors">
+            <p class="text-sm text-muted-foreground">Monitorização</p>
+            <h3 class="text-lg font-semibold mt-2">Serviços & métricas</h3>
+        </a>
+    </div>
+</div>
+</body>
+</html>

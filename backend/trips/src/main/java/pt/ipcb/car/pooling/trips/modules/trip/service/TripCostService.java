@@ -37,8 +37,10 @@ public class TripCostService {
         List<BookingEntity> bookings = bookingRepository.findByTripId(tripId);
         for (BookingEntity booking : bookings) {
             if ("CONFIRMED".equals(booking.getStatus().getName())) {
-                BigDecimal seatCost = costPerTraveler.multiply(BigDecimal.valueOf(booking.getSeats()));
-                booking.setPriceToPay(seatCost);
+                if (!Boolean.TRUE.equals(booking.getPaid())) {
+                    BigDecimal seatCost = costPerTraveler.multiply(BigDecimal.valueOf(booking.getSeats()));
+                    booking.setPriceToPay(seatCost);
+                }
             } else {
                 booking.setPriceToPay(BigDecimal.ZERO);
             }

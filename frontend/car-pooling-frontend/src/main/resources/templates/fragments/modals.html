@@ -257,48 +257,44 @@
     </div>
 
     <!-- Rate User Dialog -->
-    <div th:fragment="rate-user-modal" x-data="{ open: false, targetName: '', targetRole: 'passenger', rating: 0, comment: '', isSubmitting: false, handleSubmit() {
-            if(this.rating === 0) return;
-            this.isSubmitting = true;
-            setTimeout(() => {
-                this.isSubmitting = false;
-                this.open = false;
-                this.rating = 0; 
-                this.comment = '';
-            }, 1000);
-         }}" 
-         x-show="open" 
-         @open-rate-user-modal.window="open = true; targetName = $event.detail.name; targetRole = $event.detail.role"
+    <div th:fragment="rate-user-modal" x-data="{ open: false, targetName: '', targetRole: 'passenger', targetUserId: '', rating: 0, comment: '' }"
+         x-show="open"
+         @open-rate-user-modal.window="open = true; targetName = $event.detail.name; targetRole = $event.detail.role; targetUserId = $event.detail.userId; rating = 0; comment = ''"
          style="display: none;" 
          class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
         <div @click.outside="open = false" class="bg-background rounded-lg shadow-lg max-w-[425px] w-full p-6">
-            <div class="flex flex-col space-y-1.5 text-center sm:text-left mb-4">
-                <h3 class="text-lg font-semibold leading-none tracking-tight">Avaliar <span x-text="targetRole === 'driver' ? 'condutor' : 'passageiro'"></span></h3>
-                <p class="text-sm text-muted-foreground">Como correu a experiência com <span x-text="targetName"></span>?</p>
-            </div>
-            
-            <div class="flex flex-col items-center gap-6 py-4">
-                 <div class="flex items-center gap-1">
-                    <template x-for="star in [1, 2, 3, 4, 5]">
-                        <button @click="rating = star" class="focus:outline-none transition-transform hover:scale-110">
-                            <i data-lucide="star" class="w-8 h-8" :class="star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'"></i>
-                        </button>
-                    </template>
-                 </div>
-                 
-                 <div class="w-full space-y-2">
-                    <label class="text-sm font-medium leading-none">Comentário (opcional)</label>
-                    <textarea x-model="comment" class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none" :placeholder="targetRole === 'driver' ? 'O carro estava limpo? O condutor foi pontual?' : 'O passageiro foi pontual? Foi respeitador?'"></textarea>
-                 </div>
-            </div>
+            <form th:action="@{'/dashboard/ride/' + ${trip.id} + '/rate-user'}" method="post" @submit="if (rating === 0) { $event.preventDefault(); }">
+                <input type="hidden" name="targetUserId" :value="targetUserId">
+                <input type="hidden" name="role" :value="targetRole">
+                <input type="hidden" name="stars" :value="rating">
 
-            <div class="flex items-center justify-end gap-2 mt-4">
-                 <button @click="open = false" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Cancelar</button>
-                 <button @click="handleSubmit()" :disabled="isSubmitting || rating === 0" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-                    <span x-show="!isSubmitting">Enviar Avaliação</span>
-                    <span x-show="isSubmitting">A enviar...</span>
-                 </button>
-            </div>
+                <div class="flex flex-col space-y-1.5 text-center sm:text-left mb-4">
+                    <h3 class="text-lg font-semibold leading-none tracking-tight">Avaliar <span x-text="targetRole === 'driver' ? 'condutor' : 'passageiro'"></span></h3>
+                    <p class="text-sm text-muted-foreground">Como correu a experiência com <span x-text="targetName"></span>?</p>
+                </div>
+
+                <div class="flex flex-col items-center gap-6 py-4">
+                    <div class="flex items-center gap-1">
+                        <template x-for="star in [1, 2, 3, 4, 5]">
+                            <button type="button" @click="rating = star" class="focus:outline-none transition-transform hover:scale-110">
+                                <i data-lucide="star" class="w-8 h-8" :class="star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/30'"></i>
+                            </button>
+                        </template>
+                    </div>
+
+                    <div class="w-full space-y-2">
+                        <label class="text-sm font-medium leading-none">Comentário (opcional)</label>
+                        <textarea name="comment" x-model="comment" class="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none" :placeholder="targetRole === 'driver' ? 'O carro estava limpo? O condutor foi pontual?' : 'O passageiro foi pontual? Foi respeitador?'"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 mt-4">
+                    <button type="button" @click="open = false" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Cancelar</button>
+                    <button type="submit" :disabled="rating === 0" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                        Enviar Avaliação
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

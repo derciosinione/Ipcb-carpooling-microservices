@@ -1,7 +1,7 @@
 <!-- Fragment: Expense Manager Modal -->
 <div th:fragment="rideExpenseModal">
-    <div x-show="isModalOpen" style="display: none;" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-        <div @click.outside="isModalOpen = false" class="bg-background rounded-lg shadow-lg max-w-[600px] w-full max-h-[90vh] overflow-y-auto">
+    <div x-show="isModalOpen" style="display: none; z-index: 10000;" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4">
+        <div @click.outside="isModalOpen = false" style="position: relative; z-index: 10001;" class="bg-background rounded-lg shadow-lg max-w-[600px] w-full max-h-[90vh] overflow-y-auto">
             <div class="flex flex-col space-y-1.5 p-6">
                 <h3 class="font-semibold leading-none tracking-tight flex items-center gap-2">
                     <i data-lucide="calculator" class="h-5 w-5 text-primary"></i>

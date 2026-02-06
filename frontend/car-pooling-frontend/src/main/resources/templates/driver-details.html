@@ -28,10 +28,13 @@
                                 </span>
                                 <div class="mt-3 text-center">
                                     <h1 class="text-2xl font-bold flex items-center justify-center gap-2">
-                                        Ricardo Sousa
+                                        <span th:text="${driverName}">Utilizador</span>
                                         <i data-lucide="shield" class="h-5 w-5 text-blue-500 fill-blue-50"></i>
                                     </h1>
-                                    <p class="text-muted-foreground text-sm">Membro desde Março 2022</p>
+                                    <p class="text-muted-foreground text-sm"
+                                       th:text="${driver != null && driver.createdAt != null ? 'Membro desde ' + #temporals.format(driver.createdAt, 'MMMM yyyy') : 'Membro da comunidade'}">
+                                        Membro da comunidade
+                                    </p>
                                 </div>
                             </div>
 
@@ -39,15 +42,15 @@
                                 <div class="p-3 bg-muted/30 rounded-lg">
                                     <div class="flex items-center justify-center gap-1 font-bold text-lg text-amber-500">
                                         <i data-lucide="star" class="h-4 w-4 fill-current"></i>
-                                        4.9
+                                        <span th:text="${avgRating}">0</span>
                                     </div>
-                                    <p class="text-xs text-muted-foreground">124 avaliações</p>
+                                    <p class="text-xs text-muted-foreground" th:text="${ratingsCount + ' avaliações'}">0 avaliações</p>
                                 </div>
                                 <div class="p-3 bg-muted/30 rounded-lg">
                                     <div class="font-bold text-lg">
-                                        342
+                                        <span th:text="${ratingsCount}">0</span>
                                     </div>
-                                    <p class="text-xs text-muted-foreground">Boleias realizadas</p>
+                                    <p class="text-xs text-muted-foreground">Avaliações recebidas</p>
                                 </div>
                             </div>
 
@@ -93,11 +96,12 @@
                 <div class="lg:col-span-2 space-y-6">
                     <div class="rounded-xl border bg-card text-card-foreground border-muted shadow-sm">
                         <div class="flex flex-col space-y-1.5 p-6">
-                            <h3 class="font-semibold leading-none tracking-tight text-lg">Sobre o Ricardo</h3>
+                            <h3 class="font-semibold leading-none tracking-tight text-lg" th:text="${'Sobre ' + driverName}">Sobre o utilizador</h3>
                         </div>
                         <div class="p-6 pt-0">
-                            <p class="text-muted-foreground leading-relaxed">
-                                Olá! Sou o Ricardo, tenho 35 anos e faço viagens regulares entre Lisboa e Porto a trabalho. Gosto de conversar, ouvir boa música e garantir uma viagem segura e tranquila para todos. O meu carro é espaçoso e confortável.
+                            <p class="text-muted-foreground leading-relaxed"
+                               th:text="${driver != null && driver.description != null && !driver.description.isBlank() ? driver.description : 'Este utilizador ainda não adicionou uma descrição pública.'}">
+                                Este utilizador ainda não adicionou uma descrição pública.
                             </p>
                             
                             <div class="mt-6">
@@ -122,67 +126,42 @@
 
                     <div class="rounded-xl border bg-card text-card-foreground border-muted shadow-sm">
                         <div class="flex flex-row items-center justify-between p-6">
-                            <h3 class="font-semibold leading-none tracking-tight text-lg">Avaliações (124)</h3>
+                            <h3 class="font-semibold leading-none tracking-tight text-lg" th:text="${'Avaliações (' + ratingsCount + ')'}">Avaliações (0)</h3>
                             <div class="flex items-center gap-1 text-sm bg-amber-50 text-amber-700 px-3 py-1 rounded-full border border-amber-100">
                                 <i data-lucide="star" class="h-3 w-3 fill-current"></i>
-                                <span class="font-semibold">4.9</span>
+                                <span class="font-semibold" th:text="${avgRating}">0</span>
                                 <span>/ 5.0</span>
                             </div>
                         </div>
                         <div class="p-6 pt-0 space-y-6">
-                            <!-- Review 1 -->
-                            <div class="border-b last:border-0 pb-6 last:pb-0">
+                            <div th:if="${#lists.isEmpty(ratings)}" class="text-sm text-muted-foreground">
+                                Ainda não existem avaliações públicas.
+                            </div>
+                            <div th:each="rating : ${ratings}" class="border-b last:border-0 pb-6 last:pb-0">
                                 <div class="flex justify-between items-start mb-2">
                                     <div class="flex items-center gap-3">
-                                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                                            <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" />
+                                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full bg-muted text-xs items-center justify-center">
+                                            <span th:text="${rating.raterName != null && !rating.raterName.isEmpty() ? rating.raterName.substring(0,1) : '?'}">U</span>
                                         </span>
                                         <div>
-                                            <h4 class="font-semibold text-sm">Ana Silva</h4>
-                                            <p class="text-xs text-muted-foreground">Há 2 dias</p>
+                                            <h4 class="font-semibold text-sm" th:text="${rating.raterName}">Utilizador</h4>
+                                            <p class="text-xs text-muted-foreground"
+                                               th:text="${rating.createdAt != null ? #temporals.format(rating.createdAt, 'dd/MM/yyyy') : ''}">data</p>
                                         </div>
                                     </div>
                                     <div class="flex">
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-muted-foreground ml-[52px]">
-                                    Viagem excelente! O Ricardo é super pontual e simpático. O carro estava impecável. Recomendo muito!
-                                </p>
-                            </div>
-
-                            <!-- Review 2 -->
-                            <div class="border-b last:border-0 pb-6 last:pb-0">
-                                <div class="flex justify-between items-start mb-2">
-                                    <div class="flex items-center gap-3">
-                                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                                            <img class="aspect-square h-full w-full" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=100" />
+                                        <span th:each="star : ${#numbers.sequence(1,5)}">
+                                            <i data-lucide="star"
+                                               class="h-3 w-3"
+                                               th:classappend="${star <= (rating.stars != null ? rating.stars : 0)} ? ' fill-amber-400 text-amber-400' : ' text-muted-foreground/30'"></i>
                                         </span>
-                                        <div>
-                                            <h4 class="font-semibold text-sm">Pedro Santos</h4>
-                                            <p class="text-xs text-muted-foreground">Semana passada</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex">
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
-                                        <i data-lucide="star" class="h-3 w-3 fill-amber-400 text-amber-400"></i>
                                     </div>
                                 </div>
-                                <p class="text-sm text-muted-foreground ml-[52px]">
-                                    Tudo correu como planeado. Condutor seguro e agradável.
+                                <p class="text-sm text-muted-foreground ml-[52px]"
+                                   th:text="${rating.comment != null && !rating.comment.isBlank() ? rating.comment : 'Sem comentário.'}">
+                                    Sem comentário.
                                 </p>
                             </div>
-                            
-                            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full mt-4">
-                                Ver todas as avaliações
-                            </button>
                         </div>
                     </div>
                 </div>

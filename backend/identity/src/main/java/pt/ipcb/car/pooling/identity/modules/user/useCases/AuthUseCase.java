@@ -41,6 +41,9 @@ public class AuthUseCase {
         if (!passwordMatches) {
             throw new BadCredentialsException();
         }
+        if (Boolean.FALSE.equals(user.getActive())) {
+            throw new BadCredentialsException("Account is inactive");
+        }
 
         var roles = user.getProfiles().stream()
                 .map(pt.ipcb.car.pooling.identity.modules.profile.entities.ProfileEntity::getName).toList();

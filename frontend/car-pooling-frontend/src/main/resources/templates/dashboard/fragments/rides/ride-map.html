@@ -1,32 +1,68 @@
 <!-- Fragment: Map Card -->
 <div th:fragment="rideMap">
     <div class="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
-        <div class="relative h-64 bg-slate-100">
-            <img src="https://images.unsplash.com/photo-1758872014553-f0deb7b12d58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXAlMjByb3V0ZSUyMG5hdmlnYXRpb24lMjBncHN8ZW58MXx8fHwxNzY3NTQxNTM3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" class="w-full h-full object-cover opacity-80" />
-            <div class="absolute bottom-4 left-4 bg-background/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium shadow-sm flex items-center gap-2">
+        <div th:if="${trip.originLat != null && trip.originLon != null && trip.destinationLat != null && trip.destinationLon != null}">
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+            <div id="ride-map"
+                 class="h-64"
+                 th:attr="data-origin-lat=${trip.originLat},data-origin-lon=${trip.originLon},data-destination-lat=${trip.destinationLat},data-destination-lon=${trip.destinationLon}"></div>
+            <div class="px-6 py-3 bg-muted/40 text-xs text-muted-foreground flex items-center gap-2">
                 <i data-lucide="navigation" class="h-3 w-3 text-primary"></i>
-                278 km • 2h 45m estimativa
+                <span th:text="${trip.distanceKm != null ? #numbers.formatDecimal(trip.distanceKm, 1, 2) + ' km' : 'Distância indisponível'}">Distância indisponível</span>
             </div>
         </div>
+        <div th:if="${trip.originLat == null || trip.originLon == null || trip.destinationLat == null || trip.destinationLon == null}" class="p-6 text-sm text-muted-foreground">
+            Mapa indisponível para esta viagem.
+        </div>
+
         <div class="p-6">
             <div class="relative pl-8 space-y-8 before:absolute before:left-3 before:top-2 before:h-full before:w-0.5 before:bg-muted">
                 <div class="relative">
                     <div class="absolute -left-8 mt-1.5 h-4 w-4 rounded-full border-2 border-primary bg-background ring-4 ring-background"></div>
                     <div>
-                        <p class="font-semibold text-lg">17:30</p>
-                        <p class="font-medium">Lisboa</p>
-                        <p class="text-sm text-muted-foreground">Estação do Oriente</p>
+                        <p class="font-semibold text-lg" th:text="${#temporals.format(trip.departureTime, 'HH:mm')}">00:00</p>
+                        <p class="font-medium" th:text="${trip.origin}">Origem</p>
                     </div>
                 </div>
                 <div class="relative">
                     <div class="absolute -left-8 mt-1.5 h-4 w-4 rounded-full bg-primary ring-4 ring-background"></div>
                     <div>
-                        <p class="font-semibold text-lg">20:15</p>
-                        <p class="font-medium">Faro</p>
-                        <p class="text-sm text-muted-foreground">Aeroporto de Faro</p>
+                        <p class="font-semibold text-lg">Chegada</p>
+                        <p class="font-medium" th:text="${trip.destination}">Destino</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        (() => {
+            const mapEl = document.getElementById('ride-map');
+            if (!mapEl || typeof L === 'undefined') {
+                return;
+            }
+
+            const originLat = Number(mapEl.dataset.originLat);
+            const originLon = Number(mapEl.dataset.originLon);
+            const destinationLat = Number(mapEl.dataset.destinationLat);
+            const destinationLon = Number(mapEl.dataset.destinationLon);
+            if ([originLat, originLon, destinationLat, destinationLon].some(Number.isNaN)) {
+                return;
+            }
+
+            const map = L.map(mapEl, { scrollWheelZoom: false });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            const origin = L.latLng(originLat, originLon);
+            const destination = L.latLng(destinationLat, destinationLon);
+            L.marker(origin).addTo(map).bindPopup('Origem');
+            L.marker(destination).addTo(map).bindPopup('Destino');
+            const line = L.polyline([origin, destination], { color: '#0f172a', weight: 4, opacity: 0.8 }).addTo(map);
+            map.fitBounds(line.getBounds(), { padding: [30, 30] });
+        })();
+    </script>
 </div>

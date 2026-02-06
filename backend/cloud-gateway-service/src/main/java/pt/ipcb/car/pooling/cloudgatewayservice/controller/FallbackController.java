@@ -21,4 +21,28 @@ public class FallbackController {
         return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body("Vehicles Service is currently unavailable. Please try again later."));
     }
+
+    @RequestMapping("/trips")
+    public Mono<ResponseEntity<String>> tripsFallback() {
+        return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Trips Service is currently unavailable. Please try again later."));
+    }
+
+    @RequestMapping("/payments")
+    public Mono<ResponseEntity<String>> paymentsFallback() {
+        return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Payments Service is currently unavailable. Please try again later."));
+    }
+
+    @RequestMapping("/gps")
+    public Mono<ResponseEntity<String>> gpsFallback() {
+        return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("GPS Service is currently unavailable. Please try again later."));
+    }
+
+    @RequestMapping("/notifications")
+    public Mono<ResponseEntity<String>> notificationsFallback() {
+        return Mono.just(ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Notifications Service is currently unavailable. Please try again later."));
+    }
 }

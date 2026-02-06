@@ -37,7 +37,9 @@
                         </div>
                     </template>
                     <template x-if="isCompleted">
-                        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-2 gap-1">
+                        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-2 gap-1"
+                                th:attr="data-user-name=${userNames != null && userNames[booking.passengerId] != null ? userNames[booking.passengerId] : 'Passageiro'}, data-user-id=${booking.passengerId}"
+                                x-on:click="$dispatch('open-rate-user-modal', { name: $el.dataset.userName, role: 'passenger', userId: $el.dataset.userId })">
                             <i data-lucide="star" class="h-3 w-3"></i> Avaliar
                         </button>
                     </template>

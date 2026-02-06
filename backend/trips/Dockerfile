@@ -1,5 +1,5 @@
 # ===== STAGE 1: Build the application =====
-FROM eclipse-temurin:21-jdk AS build
+FROM eclipse-temurin:19-jdk AS build
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ RUN --mount=type=cache,target=/root/.m2 ./mvnw -q -e -DskipTests package
 
 
 # ===== STAGE 2: Create lightweight runtime image =====
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:19-jre
 
 WORKDIR /app
 

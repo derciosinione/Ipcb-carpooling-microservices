@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{dashboard/layout}">
+<head>
+    <title>Administração - Monitorização</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4 md:p-8 pt-6 space-y-6">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight">Monitorização</h1>
+        <p class="text-muted-foreground mt-2">Acesso rápido a serviços de monitorização e métricas.</p>
+    </div>
+
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="p-6 pt-0 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <a href="http://localhost:3000" target="_blank" rel="noreferrer"
+               class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2">
+                Grafana
+            </a>
+            <a href="http://localhost:9090" target="_blank" rel="noreferrer"
+               class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2">
+                Prometheus
+            </a>
+            <a href="http://localhost:9000" target="_blank" rel="noreferrer"
+               class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2">
+                Portainer
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

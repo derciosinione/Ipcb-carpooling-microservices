@@ -14,28 +14,28 @@
         </div>
 
         <!-- Search Form -->
-        <form class="rounded-lg border bg-card text-card-foreground shadow-sm" method="get" th:action="@{/dashboard/search}">
+        <form id="searchForm" class="rounded-lg border bg-card text-card-foreground shadow-sm" method="get" th:action="@{/dashboard/search}">
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                     <div class="md:col-span-4 space-y-2">
                         <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">De onde sai?</label>
                         <div class="relative">
                             <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
-                            <input name="origin" th:value="${origin}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Origem">
+                            <input id="originInput" name="origin" th:value="${origin}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Origem">
                         </div>
                     </div>
                     <div class="md:col-span-4 space-y-2">
                         <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Para onde vai?</label>
                         <div class="relative">
                             <i data-lucide="map-pin" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
-                            <input name="destination" th:value="${destination}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Destino">
+                            <input id="destinationInput" name="destination" th:value="${destination}" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9" placeholder="Destino">
                         </div>
                     </div>
                     <div class="md:col-span-2 space-y-2">
                         <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Data</label>
                         <div class="relative">
                             <i data-lucide="calendar" class="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground"></i>
-                            <input type="date" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9">
+                            <input id="dateInput" type="date" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-9">
                         </div>
                     </div>
                     <div class="md:col-span-2">
@@ -59,9 +59,37 @@
                     <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 text-muted-foreground">
                         <i data-lucide="filter" class="h-3 w-3 mr-2"></i> Filtros Avançados
                     </button>
+                    <button type="button" onclick="searchNearbyRides()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent h-9 px-3 text-muted-foreground">
+                        <i data-lucide="navigation" class="h-3 w-3 mr-2"></i> Sugestões perto de mim
+                    </button>
                 </div>
             </div>
         </form>
+
+        <!-- Nearby Results -->
+        <div th:if="${nearbyResults != null && !#lists.isEmpty(nearbyResults)}" class="space-y-4">
+            <h2 class="text-xl font-semibold">Sugestões próximas (<span th:text="${nearbyResults.size()}">0</span>)</h2>
+            <div class="grid gap-4">
+                <div th:each="ride : ${nearbyResults}" class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div class="p-6 flex flex-col md:flex-row justify-between gap-4">
+                        <div>
+                            <p class="font-semibold" th:text="${ride.origin + ' → ' + ride.destination}">Origem → Destino</p>
+                            <p class="text-sm text-muted-foreground" th:text="${#temporals.format(ride.departureTime, 'dd/MM/yyyy HH:mm')}">data</p>
+                            <p class="text-xs text-muted-foreground mt-1">
+                                Distância até à origem:
+                                <span th:text="${ride.distanceFromUserKm != null ? #numbers.formatDecimal(ride.distanceFromUserKm, 1, 2) + ' km' : '-'}">0 km</span>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-primary">€<span th:text="${ride.costPerSeat != null ? #numbers.formatDecimal(ride.costPerSeat, 1, 2) : '0,00'}">0,00</span></p>
+                            <a th:href="@{'/dashboard/ride/' + ${ride.id}}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 mt-2">
+                                Ver detalhes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Results -->
         <div th:if="${origin != null && destination != null}" class="space-y-4">
@@ -135,5 +163,54 @@
             </div>
         </div>
     </div>
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const originInput = document.getElementById('originInput');
+        const destinationInput = document.getElementById('destinationInput');
+        const dateInput = document.getElementById('dateInput');
+
+        if (originInput && destinationInput) {
+            [originInput, destinationInput, dateInput].forEach((input) => {
+                if (!input) return;
+                input.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            const restoreValue = (input, key) => {
+                if (input.value) return;
+                const stored = sessionStorage.getItem(key);
+                if (stored) input.value = stored;
+            };
+
+            restoreValue(originInput, 'search.origin');
+            restoreValue(destinationInput, 'search.destination');
+            restoreValue(dateInput, 'search.date');
+
+            [originInput, destinationInput, dateInput].forEach((input) => {
+                if (!input) return;
+                input.addEventListener('input', () => {
+                    sessionStorage.setItem(`search.${input.id.replace('Input', '').toLowerCase()}`, input.value);
+                });
+            });
+        }
+
+        function searchNearbyRides() {
+            if (!navigator.geolocation) {
+                alert('Geolocalizacao nao suportada no navegador.');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    window.location.href = `/dashboard/search?nearbyLat=${lat}&nearbyLon=${lon}&nearbyRadiusKm=25`;
+                },
+                () => alert('Nao foi possivel obter a sua localizacao.')
+            );
+        }
+    </script>
 </body>
 </html>

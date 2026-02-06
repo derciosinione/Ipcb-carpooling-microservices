@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import pt.ipcb.car.pooling.vehicles.modules.vehicles.contracts.request.CreateVeh
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.contracts.response.VehicleResponse;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.useCases.CreateVehicleUseCase;
 import pt.ipcb.car.pooling.vehicles.modules.vehicles.useCases.ListVehiclesUseCase;
+import pt.ipcb.car.pooling.vehicles.modules.vehicles.useCases.DeleteVehicleUseCase;
 
 import java.util.List;
 
@@ -30,6 +32,7 @@ public class VehicleController {
     private final CreateVehicleUseCase createVehicleUseCase;
     private final ListVehiclesUseCase listVehiclesUseCase;
     private final ListVehiclesByUserUseCase listVehiclesByUserUseCase;
+    private final DeleteVehicleUseCase deleteVehicleUseCase;
 
     @PostMapping
     @Operation(summary = "Create a new vehicle", description = "Creates a new vehicle linked to a model")
@@ -47,5 +50,12 @@ public class VehicleController {
     @Operation(summary = "List vehicles by user", description = "Returns a list of vehicles owned by a specific user")
     public ResponseEntity<List<VehicleResponse>> listByUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(listVehiclesByUserUseCase.execute(userId));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete vehicle", description = "Deletes a vehicle by ID")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        deleteVehicleUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }

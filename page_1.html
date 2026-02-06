@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Análise Detalhada: Plataforma de Partilha de Boleias em Microsserviços</title>
+<link href="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/table.css?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914044665&amp;Signature=X%2F%2BipJztge3UJ3Ojq5wcxRk%2F7zk%3D" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" rel="stylesheet"/>
+<link href="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/new_color_css/blue_v2.css?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=33299356499&amp;Signature=YGVaTE9YLO97otxLx%2FGBU8pQEr4%3D" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://us-tiangong-data.oss-accelerate.aliyuncs.com/doc/gemini_css/macarons_v2.js?OSSAccessKeyId=LTAI5tGmBYBVtG6Cxb4BaviJ&amp;Expires=4914188330&amp;Signature=mE%2FFv6owOnvs%2FB7rWTRxwD9tj9M%3D"></script>
+<style>.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px 40px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    }
+.chart-container {
+    position: relative;
+    margin: 3em auto;
+    max-width: 700px;
+    min-height: 200px;
+    max-height: 400px;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    }
+img {
+    display: block;
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 280px;
+    margin: 1em auto;
+    border-radius: 8px;
+    }
+h4 {
+    font-size: 18px;
+    }
+h5 {
+    font-size: 16px;
+    }
+body {
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+    margin: 0 24px 0 24px;
+    padding: 0;
+    font-size: 16px;
+    max-width: None;
+    }
+h1, h2, h3 {
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-top: 24px;
+    font-size: 28px;
+    margin-bottom: 20px;
+    }
+h1 {
+    font-size: 28px;
+    text-align: center;
+    border-bottom: 3px solid #2980b9;
+    margin-top: 24px;
+    margin-bottom: 20px;
+    }
+h2 {
+    font-size: 22px;
+    }
+h3 {
+    font-size: 20px;
+    border-bottom-style: dashed;
+    border-bottom-width: 1px;
+    }
+p {
+    text-align: justify;
+    margin-bottom: 1em;
+    }
+ul {
+    padding-left: 20px;
+    list-style-type: disc;
+    }
+li {
+    margin-bottom: 0.5em;
+    }
+code {
+    background-color: #ecf0f1;
+    color: #c0392b;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.95em;
+    }
+.header-info {
+    text-align: center;
+    margin-bottom: 2em;
+    color: #7f8c8d;
+    }
+.header-info span {
+    display: block;
+    margin-top: 5px;
+    }
+.note {
+    background-color: #e8f4fd;
+    border-left: 5px solid #3498db;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 5px;
+    }
+strong {
+    }
+@media only screen and (max-device-width: 768px) {
+            body {
+                padding: 0;
+                margin: 0;
+                font-size: 15px;
+                line-height: 1.5;
+            }
+
+            .container {
+                padding: 0;
+                margin: 16px 20px 30px;
+                box-shadow: none;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4 {
+            }
+
+            h1 {
+                font-size: 1.87em;
+                line-height: 1.6;
+                margin-bottom: 0.5em;
+                text-align: center;
+            }
+
+            h2 {
+                font-size: 1.6em;
+                font-weight: 600;
+                margin-top: 1.3em;
+                margin-bottom: 0.8em;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 0.5em;
+            }
+
+            h3 {
+                font-size: 1.2em;
+                font-weight: 600;
+                margin-top: 1em;
+                margin-bottom: 0.6em;
+            }
+
+            h4 {
+                font-size: 1.1em;
+                font-weight: 500;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+                font-style: normal;
+            }
+
+            h5 {
+                font-size: 1em;
+                font-weight: 500;
+                margin-bottom: 1.2em;
+            }
+
+            ul,
+            ol {
+                font-size: 1em; /* Equivalent to 17.6px if base is 16px */
+                font-weight: 400;
+                margin-bottom: 1.2em;
+                line-height: 1.8;
+            }
+
+            p {
+                font-size: 1em;
+                line-height: 1.8; /* Equivalent to 17.6px if base is 16px */
+                font-weight: 400;
+                margin-top: 0.8em;
+                margin-bottom: 0.8em;
+            }
+
+            blockquote {
+                padding: 1em 1.2em;
+
+            p {
+                margin: 0;
+            }
+        }
+
+        figcaption {
+            margin-top: 0.5em;
+            font-size: 0.8em; /* Equivalent to 17.6px if base is 16px */
+            font-weight: 400;
+            text-align: center;
+            font-style: normal;
+            color: #7F8896;
+        }
+
+        img {
+            display: block;
+            overflow: hidden;
+            max-width: 100%;
+            max-height: 335px;
+            margin: 1em auto;
+            border-radius: 8px;
+        }
+        }</style>
+</head>
+<body>
+<main class="container">
+<article>
+<h1 id="section-1">Análise Detalhada: Plataforma de Partilha de Boleias em Microsserviços</h1>
+<div class="header-info">
+<p><strong>Autores:</strong> Dercio Sinione Domingos (20220103), Joel Dialamicua (20221985)</p>
+<p><strong>Data de Referência:</strong> 2026-02-02</p>
+</div>
+<section id="visao-geral">
+<h2 id="section-1">Visão Geral e Proposta de Valor</h2>
+<p>
+                    Este documento detalha a arquitetura e implementação de uma plataforma de partilha de boleias (carpooling), concebida como um sistema de <strong>Aplicações Distribuídas</strong>. O projeto, desenvolvido por Dercio Domingos e Joel Dialamicua, adota uma abordagem moderna baseada em <strong>microsserviços</strong>, orquestrada com <strong>Docker Swarm</strong> e com autenticação via <strong>JWT (JSON Web Tokens)</strong>. A solução visa oferecer um ecossistema completo e resiliente para condutores e passageiros, cobrindo todo o ciclo de vida de uma viagem partilhada.
+                </p>
+<p>
+                    O sistema foi projetado para ser modular, escalável e de fácil manutenção, separando as responsabilidades de negócio em serviços independentes. As funcionalidades centrais incluem:
+                </p>
+<ul>
+<li><strong>Gestão de Identidade e Perfis:</strong> Registo, autenticação segura e gestão de papéis distintos (Condutor, Passageiro, Administrador).</li>
+<li><strong>Ciclo de Vida das Viagens:</strong> Publicação, pesquisa avançada, sistema de reservas com aprovação e cancelamento.</li>
+<li><strong>Transações e Custos:</strong> Simulação de pagamentos e gestão de despesas associadas a cada viagem.</li>
+<li><strong>Inteligência de Localização:</strong> Integração com serviços de GPS para cálculo de rotas, distâncias e geolocalização.</li>
+<li><strong>Comunicação Assíncrona:</strong> Sistema de notificações para manter os utilizadores informados sobre eventos relevantes.</li>
+<li><strong>Administração e Monitorização:</strong> Um painel de controlo centralizado para gestão global e observabilidade do sistema.</li>
+</ul>
+</section>
+<section id="arquitetura-backend">
+<h2 id="section-2">Arquitetura de Microsserviços: O Coração do Sistema</h2>
+<p>
+                    A espinha dorsal da plataforma é a sua arquitetura de microsserviços. Cada serviço é autónomo, focado numa capacidade de negócio específica, e comunica com os outros através de APIs bem definidas. Esta abordagem promove a resiliência, escalabilidade individual dos componentes e agilidade no desenvolvimento.
+                </p>
+<div class="note">
+<p><strong>Ponto de Entrada Único:</strong> Todas as requisições externas são direcionadas para o <strong>Cloud Gateway</strong> no endereço <code>http://localhost:8888</code>, que atua como um proxy reverso, encaminhando o tráfego para o serviço apropriado com base em prefixos de rota (ex: <code>/identity</code>, <code>/trips</code>).</p>
+</div>
+<h3 id="section-2-1">1) Service Discovery (Eureka)</h3>
+<p>
+                    Num ambiente distribuído dinâmico, os serviços precisam de se encontrar uns aos outros. O <strong>Eureka</strong> atua como um <strong>Service Registry</strong>, onde cada microsserviço se regista automaticamente ao iniciar. Isto elimina a necessidade de configurações de rede estáticas, permitindo que os serviços descubram dinamicamente as localizações (endereço IP e porta) dos outros. Esta capacidade é fundamental para o balanceamento de carga e a resiliência do sistema, pois o Gateway pode consultar o Eureka para encontrar instâncias saudáveis de um serviço antes de encaminhar uma requisição.
+                </p>
+<h3 id="section-2-2">2) Cloud Gateway</h3>
+<p>
+                    O <strong>Cloud Gateway</strong> é a porta de entrada para todo o ecossistema de backend. Ele desempenha várias funções críticas:
+                </p>
+<ul>
+<li><strong>Ponto Único de Entrada (Single Point of Entry):</strong> Simplifica a arquitetura para o cliente (frontend), que só precisa de conhecer um único endereço.</li>
+<li><strong>Roteamento Dinâmico:</strong> Utiliza a informação do Eureka para encaminhar as requisições para as instâncias corretas dos microsserviços. Por exemplo, uma chamada para <code>/identity/api/v1/auth/login</code> é automaticamente direcionada para o <strong>Identity Service</strong>.</li>
+<li><strong>Centralização de Lógicas Transversais (Cross-Cutting Concerns):</strong> É o local ideal para implementar segurança (validação de tokens JWT), rate limiting, logging de requisições e políticas de CORS, evitando a duplicação deste código em cada serviço.</li>
+</ul>
+<h3 id="section-2-3">3) Identity Service</h3>
+<p>
+                    Este é um dos serviços mais críticos, responsável pela segurança e gestão de utilizadores. As suas responsabilidades incluem a autenticação (login com email/senha e geração de JWTs), o registo de novos utilizadores e a gestão completa de perfis. Ele armazena informações sobre os papéis (<strong>Condutor, Passageiro, Admin</strong>), controlando o que cada utilizador pode fazer no sistema. Além disso, gere o sistema de avaliações (ratings) entre utilizadores, um pilar para construir confiança na comunidade. Fornece também endpoints administrativos para tarefas como a criação de novos administradores ou o bloqueio de contas.
+                </p>
+<h3 id="section-2-4">4) Vehicles Service</h3>
+<p>
+                    Totalmente desacoplado da lógica de utilizadores, este serviço foca-se exclusivamente na gestão de veículos. Permite que os condutores registem os seus carros, associando-os ao seu perfil de condutor através de um ID. O serviço mantém um catálogo de marcas e modelos, garantindo a consistência dos dados. Esta separação de responsabilidades é um exemplo claro dos benefícios dos microsserviços: a lógica de veículos pode evoluir independentemente da lógica de utilizadores.
+                </p>
+<h3 id="section-2-5">5) Trips Service</h3>
+<p>
+                    Este serviço orquestra a principal lógica de negócio da plataforma. Ele gere todo o ciclo de vida de uma viagem, desde a sua criação por um condutor até à sua conclusão. As suas funções incluem a publicação de viagens (com detalhes como origem, destino, data, vagas), a pesquisa por parte dos passageiros e a gestão de reservas (pedidos, aceitações, rejeições e cancelamentos). É também responsável por calcular o custo por pessoa e gerir o estado da viagem (ex: <code>aberta</code>, <code>iniciada</code>, <code>concluída</code>), interagindo com outros serviços quando necessário (ex: com o <strong>GPS Service</strong> para calcular distâncias).
+                </p>
+<h3 id="section-2-6">6) Payments Service</h3>
+<p>
+                    Para manter a lógica de pagamentos isolada, este serviço simula as transações financeiras. Embora não processe pagamentos reais, ele regista cada transação simulada associada a uma viagem. Isto permite consultar o histórico de pagamentos, gerar relatórios financeiros e, futuramente, integrar um gateway de pagamento real sem impactar os outros serviços.
+                </p>
+<h3 id="section-2-7">7) GPS Service</h3>
+<p>
+                    Este serviço abstrai todas as funcionalidades relacionadas com geolocalização. Ele oferece endpoints para pesquisar locais, realizar <strong>reverse geocoding</strong> (converter coordenadas em moradas), e, crucialmente, calcular a distância entre dois pontos. Esta última função é essencial para o <strong>Trips Service</strong> estimar custos e tempos de viagem. Também pode gerir localizações recentes de um utilizador para melhorar a experiência de pesquisa.
+                </p>
+<h3 id="section-2-8">8) Notifications Service</h3>
+<p>
+                    A comunicação eficaz com o utilizador é vital. Este serviço gere a criação e entrega de notificações em tempo real ou assíncronas. Exemplos incluem: &#34;A sua reserva foi aceite&#34;, &#34;A viagem está prestes a começar&#34;, &#34;Recebeu uma nova avaliação&#34;. O serviço garante o isolamento de dados, assegurando que cada utilizador apenas vê as suas próprias notificações, e permite a gestão do estado das mesmas (lida/não lida, eliminação).
+                </p>
+</section>
+<section id="frontend">
+<h2 id="section-3">Frontend (Web): A Interface com o Utilizador</h2>
+<p>
+                    A interface web foi desenvolvida com <strong>Spring Boot + Thymeleaf</strong>, uma escolha que permite uma forte integração com o ecossistema backend, também baseado em Spring. A aplicação é renderizada no lado do servidor e oferece uma experiência rica e segmentada para os diferentes tipos de utilizador.
+                </p>
+<ul>
+<li><strong>Área Pública:</strong> Acessível a todos, permite pesquisar viagens e visualizar detalhes sem necessidade de autenticação, promovendo a descoberta da plataforma.</li>
+<li><strong>Dashboards de Utilizador:</strong> Após o login, os utilizadores são direcionados para dashboards personalizados. O <strong>Passageiro</strong> pode gerir as suas reservas e pagamentos, enquanto o <strong>Condutor</strong> pode gerir as suas viagens publicadas, veículos e pedidos de reserva.</li>
+<li><strong>Publicação de Viagem:</strong> Um fluxo guiado em várias etapas para facilitar a criação de uma nova oferta de boleia.</li>
+<li><strong>Painel Administrativo:</strong> Uma área restrita e poderosa que oferece uma visão global do sistema. Está dividida em secções para gestão de utilizadores, viagens, veículos, pagamentos, e para a visualização de relatórios e métricas de monitorização, permitindo um controlo total sobre a plataforma.</li>
+</ul>
+</section>
+<section id="orquestracao">
+<h2 id="section-4">Orquestração e Implantação com Docker Swarm</h2>
+<p>
+                    A complexidade de gerir múltiplos serviços é resolvida através da orquestração de contentores com <strong>Docker Swarm</strong>. Esta ferramenta, nativa do Docker, permite definir e executar toda a aplicação multi-serviço de forma declarativa.
+                </p>
+<p>
+                    O ficheiro <code>backend/docker-stack.yml</code> é o manifesto que descreve todos os componentes da stack: os microsserviços, a aplicação frontend, as bases de dados e a stack de monitorização. O Docker Swarm garante que os serviços são implantados, reiniciados em caso de falha e podem comunicar entre si através de uma <strong>rede overlay</strong> partilhada. A automação é garantida pelo script <code>backend/deploy_swarm.sh</code>, que realiza o build das imagens Docker e faz o deploy de toda a stack, simplificando drasticamente o processo de implantação.
+                </p>
+</section>
+<section id="monitorizacao">
+<h2 id="section-5">Monitorização e Observabilidade: A Visão Interna</h2>
+<p>
+                    Um sistema distribuído robusto exige uma forte capacidade de observabilidade. A plataforma integra uma stack de monitorização completa, acessível localmente, que fornece insights profundos sobre a saúde e o desempenho do sistema.
+                </p>
+<ul>
+<li><strong>Spring Boot Actuator:</strong> Cada microsserviço expõe endpoints (ex: <code>/health</code>, <code>/metrics</code>) que fornecem informações vitais sobre o seu estado.</li>
+<li><strong>Prometheus (<code>http://localhost:9090</code>):</strong> Uma ferramenta de monitorização que periodicamente &#34;raspa&#34; (scrapes) as métricas expostas pelo Actuator, armazenando-as como séries temporais.</li>
+<li><strong>Grafana (<code>http://localhost:3000</code>):</strong> Uma plataforma de visualização que se conecta ao Prometheus para criar dashboards interativos. Estes painéis permitem monitorizar em tempo real a latência das requisições, taxas de erro, uso de CPU/memória, e outros indicadores chave de desempenho (KPIs).</li>
+<li><strong>Loki + Promtail:</strong> Esta combinação oferece um sistema de <strong>agregação de logs centralizado</strong>. O Promtail recolhe os logs de todos os contentores e envia-os para o Loki, que os indexa. Isto permite pesquisar e analisar logs de toda a aplicação a partir de um único local (geralmente através do Grafana), o que é indispensável para a depuração de problemas em ambientes distribuídos.</li>
+</ul>
+<p>
+                    A documentação completa de todos os endpoints, incluindo os de API (Swagger) e os do Actuator, está consolidada no ficheiro <code>Endpoints.md</code>, servindo como um guia de referência essencial para desenvolvedores e administradores.
+                </p>
+</section>
+<section id="conclusao">
+<h2 id="section-6">Conclusão</h2>
+<p>
+                    O projeto da plataforma de partilha de boleias demonstra com sucesso a aplicação de princípios modernos de engenharia de software para construir um sistema distribuído complexo. A escolha de uma arquitetura de <strong>microsserviços</strong>, aliada à orquestração com <strong>Docker Swarm</strong> e a uma stack de <strong>observabilidade</strong> completa, resulta numa solução que é simultaneamente robusta, escalável e manutenível.
+                </p>
+<p>
+                    A clara separação de responsabilidades entre os serviços, a segurança centralizada no Gateway com JWT, e a experiência de utilizador segmentada no frontend, compõem um ecossistema coeso e funcional. Este trabalho não só resolve um problema de negócio concreto, mas também serve como um excelente caso de estudo sobre como projetar, implantar e monitorizar aplicações distribuídas no mundo real.
+                </p>
+</section>
+</article>
+</main>
+
+</body></html>

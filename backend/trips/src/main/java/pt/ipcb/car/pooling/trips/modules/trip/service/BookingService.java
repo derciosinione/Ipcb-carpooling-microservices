@@ -1,11 +1,9 @@
 package pt.ipcb.car.pooling.trips.modules.trip.service;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pt.ipcb.car.pooling.trips.clients.NotificationsClient;
 import pt.ipcb.car.pooling.trips.exceptions.BadRequestException;
 import pt.ipcb.car.pooling.trips.exceptions.ForbiddenException;
 import pt.ipcb.car.pooling.trips.exceptions.NotFoundException;
@@ -37,7 +35,7 @@ public class BookingService {
     private final TripStatusRepository tripStatusRepository;
     private final BookingMapper bookingMapper;
     private final TripCostService tripCostService;
-    private final NotificationsClient notificationsClient;
+    private final NotificationsService notificationsService;
 
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request, UUID userId){
@@ -255,15 +253,6 @@ public class BookingService {
     }
 
     private void notifySafely(CreateNotificationRequest request) {
-        sendNotification(request);
-    }
-
-    @CircuitBreaker(name = "notifications", fallbackMethod = "notifyFallback")
-    private void sendNotification(CreateNotificationRequest request) {
-        notificationsClient.create(request);
-    }
-
-    private void notifyFallback(CreateNotificationRequest request, Throwable throwable) {
-        log.warn("Notification service unavailable: {}", throwable.getMessage());
+        notificationsService.send(request);
     }
 }

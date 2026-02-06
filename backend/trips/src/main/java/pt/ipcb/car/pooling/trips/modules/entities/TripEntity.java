@@ -50,7 +50,7 @@ public class TripEntity {
     @Future
     private LocalDateTime departureTime;
 
-    @Min(1)
+    @Min(0)
     private Integer availableSeats;
 
     private BigDecimal totalCost = BigDecimal.ZERO;

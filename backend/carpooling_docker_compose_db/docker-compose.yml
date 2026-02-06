@@ -52,6 +52,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+    networks:
+      - carpooling_network
+      - db_network
+    
 
 networks:
   carpooling_network:
@@ -64,3 +68,7 @@ volumes:
   pgadmin_data:
   portainer_data:
 
+
+# docker compose down --remove-orphans
+# docker compose up -d --build
+# docker compose config | grep -n "network_mode" -n

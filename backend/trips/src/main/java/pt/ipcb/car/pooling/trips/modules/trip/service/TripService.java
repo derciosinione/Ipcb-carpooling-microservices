@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pt.ipcb.car.pooling.trips.clients.GpsClient;
-import pt.ipcb.car.pooling.trips.clients.NotificationsClient;
 import pt.ipcb.car.pooling.trips.exceptions.BadRequestException;
 import pt.ipcb.car.pooling.trips.exceptions.NotFoundException;
 import pt.ipcb.car.pooling.trips.modules.entities.BookingEntity;
@@ -41,7 +40,7 @@ public class TripService {
     private final TripMapper tripMapper;
     private final BookingRepository bookingRepository;
     private final GpsClient gpsClient;
-    private final NotificationsClient notificationsClient;
+    private final NotificationsService notificationsService;
 
     @Transactional
     public TripResponse createTrip(CreateTripRequest request) {
@@ -198,16 +197,7 @@ public class TripService {
     }
 
     private void notifySafely(CreateNotificationRequest request) {
-        sendNotification(request);
-    }
-
-    @CircuitBreaker(name = "notifications", fallbackMethod = "notifyFallback")
-    private void sendNotification(CreateNotificationRequest request) {
-        notificationsClient.create(request);
-    }
-
-    private void notifyFallback(CreateNotificationRequest request, Throwable throwable) {
-        log.warn("Notification service unavailable: {}", throwable.getMessage());
+        notificationsService.send(request);
     }
 
     @CircuitBreaker(name = "gpsReverse", fallbackMethod = "reverseFallback")

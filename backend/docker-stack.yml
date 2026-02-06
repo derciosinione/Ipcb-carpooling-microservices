@@ -22,7 +22,7 @@ services:
       - carpooling_network
 
   # ==========================================
-  # IDENTITY SERVICE (Stateless - 3 Replicas)
+  # IDENTITY SERVICE (Stateless - 2 Replicas)
   # ==========================================
   identity-service:
     image: car-pooling/identity:latest
@@ -50,7 +50,7 @@ services:
       - service-discovery
 
   # ==========================================
-  # VEHICLES SERVICE (Stateless - 3 Replicas)
+  # VEHICLES SERVICE (Stateless - 1 Replicas)
   # ==========================================
   vehicles-service:
     image: car-pooling/vehicles:latest
@@ -78,7 +78,7 @@ services:
       - service-discovery
 
   # ==========================================
-  # TRIPS SERVICE (Stateless - 3 Replicas)
+  # TRIPS SERVICE (Stateless - 2 Replicas)
   # ==========================================
   trips-service:
     image: car-pooling/trips:latest
